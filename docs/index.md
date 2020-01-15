@@ -4,7 +4,7 @@
 
 MQTTDevice ist ein Arduino Sketch für die Module ESP8266 Wemos D1 mini. Damit ist es möglich eine Kommunikation zwischen einem MQTT Broker und einem ESP8266 herzustellen, um Sensoren und Aktoren mit CraftbeerPi zu steuern.
 
-![Startseite](./img/startseite.jpg)
+![Startseite](img/startseite.jpg)
 
 ## Was bietet diese Firmware?
 
