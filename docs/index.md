@@ -1,6 +1,3 @@
-theme: jekyll-theme-leap-day
-title: MQTTDevice V2
-
 # MQTTDevice Version 2
 
 ## Changelog
