@@ -59,6 +59,8 @@ Unter Win10 wird der USB Treiber CH341SER benötigt: http://www.wch.cn/download/
 Beispiel für ein ESP8266 Modul vom Typ Wemos D1 mini mit 4MB Flash verbunden mit COM3
 
 	* Download von github entpacken (komplett)
+    
+    * Im Ordner tools das Archiv tools.zip entpacken. Enthalten sind das esptool und das Skript Flashen.cmd
 
     * Eingabeaufforderung öffnen
 
