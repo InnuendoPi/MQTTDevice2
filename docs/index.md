@@ -1,6 +1,6 @@
 # MQTTDevice Version 2
 
-## Was ist ein MQTTDevice?
+**Was ist ein MQTTDevice?**
 
 MQTTDevice ist ein Arduino Sketch für die Module ESP8266 Wemos D1 mini. Damit ist es möglich eine Kommunikation zwischen einem MQTT Broker und einem ESP8266 herzustellen, um Sensoren und Aktoren mit CraftbeerPi zu steuern.
 
@@ -122,7 +122,7 @@ config.txt editieren
 Auf die Datei config.txt klicken und aus dem PopUp Edit auswählen.
 Nun kann im Hauptfenster die Datei editiert werden. Zum Abspeichern CTRL+S verwenden. Vorsicht!!!
 
-# Bedienung der Firmware
+# Verwenden der Firmware
 
 Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder das Löschen von Sensoren und Aktoren wird daher hier nicht beschrieben.
 
@@ -141,7 +141,7 @@ Die Hauptfunktionen
 
 **Das Menü Enstellungen:**
 
-###### System
+1. System
 
 IP Adresse MQTT Server (CBPi):
 
@@ -153,7 +153,7 @@ mDNS:
 mDNS ist eine gute Möglichkeit, um das MQTTDevice mit einem beliebigen Namen anzusprechen. In der Standardkonfiguration ist das MQTTDevice im Webbrowser über http://mqttdevice erreichbar.
 Zu beachten gilt, dass mDNS Namen im Netzwerk eindeutig sein müssen. 
 
-Intervalle
+2. Intervalle
 
 Unter Intervalle werden die Zeitabstände konfiguriert, mit denen 
     - wie häufig Sensoren abgefragt werden und die Daten zum CBPi gesendet werden
@@ -161,7 +161,7 @@ Unter Intervalle werden die Zeitabstände konfiguriert, mit denen
 Mit diesen Intervallen kann die Performance vom Wemos verbessert werden. Die Standard Einstellung von 5 Sekunden ist in Umgebungen mit vielen Sensoren und vielen Aktoren zu häufig. Hier wäre eher 10 bis 30 Sekunden für den kleinen Wemos besser geeignet. Dies muss individuell ausprobiert werden.  
 
 
-###### Der Eventmanager
+3. Der Eventmanager
 
 Der Eventmanager behandelt Fehlverhalten. Wichtig zu Beginn: das Event handling ist in der Standard Einstellung deaktiviert!
 
@@ -192,7 +192,7 @@ Die Reihenfolge beim Event handling ist grundsätzlich
     - MQTT Fehler
     - Sensor Fehler
 
-**Restore**
+4. Restore
 
 Über das Menü Restore kann der Wemos gelöscht werden. Zur Auswahl stehen
     - WLAN Einstellungen löschen
@@ -212,3 +212,40 @@ Anschluss ESP8266 D1 Mini an AZ-Delivery 0.96 i2c 128x64 OLED Display (Verwendun
  * GND -> GND
  * SCL -> D1
  * SDA -> D2
+
+# Die MQTTDevice Platine
+
+Wichtiger Hinweis:
+Alle Informationen über die Platine sind rein informativ und können falsch sein. 
+Verwendung dieser Informationen auf eigene Gefahr. Jegliche Haftung wird ausgeschlossen.
+
+In diesem Projekt wurde eine Platine für das MQTTDevice entwickelt, um mit Klemmschraubblöcken eine einfache Anbindung an Sensoren, Aktoren und an das Induktionskochfeld GGM IDS2 zu bieten. Die Platine ist mit nur wenigen Bauteilen bestückt. Die Platine bietet folgende Vorteile:
+    - der Wemos D1 mini steckt auf einem Sockel und kann jederzeit abgenommen werden
+    - alle GPIOs werden auf Schraubklemmen geführt
+    - ein LevelShifter sorgt für 5V (statt 3V3) als Ausgangsspannung
+    - die Stromversorgung vom Wemos kann bei der Verwendung einer GGM IDS2 direkt vom Induktionskochfeld genutzt werden
+    - die Temperatursensoren können direkt an die Schraubklemmen angeschlossen werden (R4k7 gegen 3V3 vorhanden)
+
+**Platine Layout**
+
+![Platine](img/platine.jpg)
+
+Im Ordner Info befinden sich EasyEDA Dateien, mit deren Hilfe die Platine erstellt werden kann. Ebenfalls im Ordner Info befinden sich STL Dateien für einen 3D Druck MQTTDevice Gehäuse.
+
+**Platine Stückliste**
+
+**Platine Hinweise zum Aufbau**
+
+# Anbindung an den TCP Server Tozzi
+
+Die Firmware bietet eine Möglichkeit Daten mit dem TCP Server Tozzi auszutauschen, um eine graphische Darstellung von einem Brautag zu erstellen. Zur Konfiguration muss 
+    - der TCP Server um eine MQTTDevice Seite erweitert werden
+    - CBPi um ein Plugin erweitert werden
+    - das MQTTDevice konfiguriert werden 
+
+**Vorbereitung TCP Server**
+
+**Installation CBPi Plugin**
+
+**Konfiguration am MQTTDevice**
+
