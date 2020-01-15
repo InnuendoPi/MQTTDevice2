@@ -1,29 +1,10 @@
 # MQTTDevice Version 2
 
-## Changelog
-
-Version 2.0
-Wichtiger Hinweis 1: Ein Update von Version 1.x auf 2.x ist nicht möglich! Der Wemos D1 mini muss gelöscht werden.
-Wichtiger Hinweis 2: Zum Flashen der Firmware unbedingt die Einstellungen anpassen: 4MB (FS: 2MB OTA:~1019kB)
-                        - die Skripte zum Flashen mit esptool sind angepasst (siehe unten)
-                        
-- Add:      WebUpdate - die Firmware kann nun über das WebInterface aktualisiert werden
-- Update:   ESP8266 V2.6.3
-- Reworked: Debug Ausgaben werden nun über die ESP8266 lib verarbeitet. Die Standard Einstellung für die
-            Firmware Dateien (bin Dateien) ist keine Debug Ausgabe.
-- Removed:  Simulation
-- Removed:  Telnet - noch nicht in neue Debug lib eingebunden
-- Reworked: Das WebInterface ist schlanker und übersichtlicher (und in deutsch)    
-- Fixed:    NTP Zeit
-- Fixed:    MQTT reconnect
-
-# Generelle Infomrationen
-
 ## Was ist ein MQTTDevice?
 
 MQTTDevice ist ein Arduino Sketch für die Module ESP8266 Wemos D1 mini. Damit ist es möglich eine Kommunikation zwischen einem MQTT Broker und einem ESP8266 herzustellen, um Sensoren und Aktoren mit CraftbeerPi zu steuern.
 
-![ov1](/img/startseite.jpg)
+![Startseite](https://innuendopi.github.io/MQTTDevice2/img/startseite.jpg)
 
 ## Was bietet diese Firmware?
 
@@ -45,7 +26,7 @@ MQTTDevice ist ein Arduino Sketch für die Module ESP8266 Wemos D1 mini. Damit i
 * TCP Server Support (Tozzi Server)
 * Dateiexplorer
 
-Installation: https://hobbybrauer.de/forum/viewtopic.php?f=58&t=19036&p=309196#p309196 (german)
+Installation: https://hobbybrauer.de/forum/viewtopic.php?f=58&t=19036&p=309196#p309196
 
 # Die erste Installation
 
@@ -59,7 +40,7 @@ Unter Win10 wird der USB Treiber CH341SER benötigt: http://www.wch.cn/download/
 Beispiel für ein ESP8266 Modul vom Typ Wemos D1 mini mit 4MB Flash verbunden mit COM3
 
 	* Download von github entpacken (komplett)
-    
+
     * Im Ordner tools das Archiv tools.zip entpacken. Enthalten sind das esptool und das Skript Flashen.cmd
 
     * Eingabeaufforderung öffnen
@@ -83,7 +64,7 @@ Beispiel für ein ESP8266 Modul vom Typ Wemos D1 mini mit 4MB Flash verbunden mi
 
 ## Installation mit Quellcode
 
-### Voraussetzungen: (2020.01)
+Voraussetzungen: (2020.01)
 
 * Arduino IDE 1.8.10
 * Optional Microsoft VSCode + Arduino + ESP8266FS
@@ -260,7 +241,7 @@ In diesem Projekt wurde eine Platine für das MQTTDevice entwickelt, um mit Klem
 
 ## Platine Layout
 
-![ov1](/img/startseite.jpg)
+![Platine](https://innuendopi.github.io/MQTTDevice2/img/platine.jpg)
 
 Im Ordner Info befinden sich EasyEDA Dateien, mit deren Hilfe die Platine erstellt werden kann. Ebenfalls im Ordner Info befinden sich STL Dateien für einen 3D Druck MQTTDevice Gehäuse.
 
