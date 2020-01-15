@@ -236,7 +236,7 @@ Im Ordner Info befinden sich EasyEDA Dateien, mit deren Hilfe die Platine erstel
 
 **Platine Hinweise zum Aufbau**
 
-# Anbindung an den TCP Server Tozzi
+# TCP Server
 
 Die Firmware bietet eine Möglichkeit Daten mit dem TCP Server Tozzi auszutauschen, um eine graphische Darstellung von einem Brautag zu erstellen. Zur Konfiguration muss 
     - der TCP Server um eine MQTTDevice Seite erweitert werden

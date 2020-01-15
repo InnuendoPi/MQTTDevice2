@@ -1,2 +1,4 @@
 theme: jekyll-theme-leap-day
 title: MQTTDevice V2
+description: MQTTDevice & Platine
+show_downloads: true
