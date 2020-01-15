@@ -6,7 +6,7 @@ MQTTDevice ist ein Arduino Sketch für die Module ESP8266 Wemos D1 mini. Damit i
 
 ![Startseite](img/startseite.jpg)
 
-## Was bietet diese Firmware?
+**Was bietet diese Firmware?**
 
 * Ein Web Interface (WebIf) für die Konfiguration
 * Sensoren (max 6)
@@ -28,9 +28,9 @@ MQTTDevice ist ein Arduino Sketch für die Module ESP8266 Wemos D1 mini. Damit i
 
 Installation: https://hobbybrauer.de/forum/viewtopic.php?f=58&t=19036&p=309196#p309196
 
-# Die erste Installation
+# Installation
 
-## Installation ohne den Quellcode zu compilieren
+**Installation ohne den Quellcode zu compilieren**
 
 Mit Hilfe von esptool.exe (see https://github.com/igrr/esptool-ck/releases ) aus dem Ordner tools kann die Firmware auf das ESP Modul geladen werden. Das ESPTool ist für verschiedene Betriebssysteme verfügbar.
 ESPtool-ck Copyright (C) 2014 Christian Klippel ck@atelier-klippel.de. This code is licensed under GPL v2.
@@ -62,7 +62,7 @@ Beispiel für ein ESP8266 Modul vom Typ Wemos D1 mini mit 4MB Flash verbunden mi
     	* Das ESP8266 Modul über einen Webbrowser mit dem WLAN verbinden
 
 
-## Installation mit Quellcode
+**Installation mit Quellcode**
 
 Voraussetzungen: (2020.01)
 
@@ -91,33 +91,33 @@ Voraussetzungen: (2020.01)
     Die Firmware muss mit der Einstellung Flash size 4MB (FS: 2MB OTA:~1019kB) aufgespielt werden.
     Debug Ausgaben werden in der IDE über "Debug Port" aktiviert. In der Standard Einstellung (bin Dateien) hat die Firmware nach dem Start keine Ausgaben auf dem seriellen Monitor. 
 
-## Updates
+**Updates**
 
 Die Firmware bietet zwei Möglichkeiten, um Updates sehr einfach einspielen zu können.
 
-### Update durch Dateiupload
+Update durch Dateiupload
 
 Im Webbrowser die URL http://<IP Adresse Wemos>/update aufrufen
 Hier kann Firmware und das Filesystem SPIFFS aktualisiert werden. Wenn das Filesystem SPIFFS mit Dateiupload aktualisiert wird, wird die Konfigurationsdatei überschrieben. Siehe hierzu auch Backup und Restore.
 
-### WebUpdate
+WebUpdate
 
 Im Webbrowser die URL http://<IP Adresse Wemos> aufrufen und die Funktion WebUpdate aufrufen.
 WebUpdate aktualisiert  die Firmware, die index Datei und Zertifikate. Durch WebUpdate wird die Konfigurationsdatei nicht überschrieben.
 
-## Backup and Restore der Konfiguration
+**Backup and Restore der Konfiguration**
 
 Der Dateiexplorer ist erreichbar über den Webbrowser http://<IP Adresse Wemos>/edit 
 
-### Backup
+Backup
 
 Auf die Datei config.txt klicken und aus dem PopUp Download auswählen.
 
-### Restore
+Restore
 
 Auf Datei auswählen klicken, die config.txt auswählen und Upload auswählen
 
-### config.txt editieren
+config.txt editieren
 
 Auf die Datei config.txt klicken und aus dem PopUp Edit auswählen.
 Nun kann im Hauptfenster die Datei editiert werden. Zum Abspeichern CTRL+S verwenden. Vorsicht!!!
@@ -139,9 +139,9 @@ Die Hauptfunktionen
 * Filebrowser für einefaches Datei-Management (zB backup und restore config.json)
 * DS18B20 Temperatur Offset - einfaches kalibrieren der Sensoren
 
-## Das Menü Enstellungen:
+**Das Menü Enstellungen:**
 
-### System
+###### System
 
 IP Adresse MQTT Server (CBPi):
 
@@ -153,7 +153,7 @@ mDNS:
 mDNS ist eine gute Möglichkeit, um das MQTTDevice mit einem beliebigen Namen anzusprechen. In der Standardkonfiguration ist das MQTTDevice im Webbrowser über http://mqttdevice erreichbar.
 Zu beachten gilt, dass mDNS Namen im Netzwerk eindeutig sein müssen. 
 
-### Intervalle
+Intervalle
 
 Unter Intervalle werden die Zeitabstände konfiguriert, mit denen 
     - wie häufig Sensoren abgefragt werden und die Daten zum CBPi gesendet werden
@@ -161,7 +161,7 @@ Unter Intervalle werden die Zeitabstände konfiguriert, mit denen
 Mit diesen Intervallen kann die Performance vom Wemos verbessert werden. Die Standard Einstellung von 5 Sekunden ist in Umgebungen mit vielen Sensoren und vielen Aktoren zu häufig. Hier wäre eher 10 bis 30 Sekunden für den kleinen Wemos besser geeignet. Dies muss individuell ausprobiert werden.  
 
 
-### Der Eventmanager
+###### Der Eventmanager
 
 Der Eventmanager behandelt Fehlverhalten. Wichtig zu Beginn: das Event handling ist in der Standard Einstellung deaktiviert!
 
@@ -192,13 +192,13 @@ Die Reihenfolge beim Event handling ist grundsätzlich
     - MQTT Fehler
     - Sensor Fehler
 
-### Restore
+**Restore**
 
 Über das Menü Restore kann der Wemos gelöscht werden. Zur Auswahl stehen
     - WLAN Einstellungen löschen
     - Alle Einstellungen löschen (WLAN und Konfiguration)
 
-### Das OLED Display:
+**Das OLED Display:**
 Diese Firmware unterstützt OLED Display monochrom OLED 128x64 I2C 0.96".
 Das Display kann über das WebIf konfiguriert werden. Wenn das Display aktiviert wird, sind die PINS D1 (SDL) und D2 (SDA) belegt. Auf dem Display werden Sensoren, Aktoren und Induktion mit ihren aktuellen Werten dargestellt. Dabei bedeutet "S1 78 | A2 100 | I off" 
     - Sensor 1 meldet eine Temperatur von 78°C
