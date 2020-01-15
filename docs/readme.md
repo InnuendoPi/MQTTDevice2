@@ -1,24 +1,4 @@
-![ov1](/img/fw105x.jpg)
-
 # MQTTDevice Version 2
-
-## Changelog
-
-Version 2.0
-Wichtiger Hinweis 1: Ein Update von Version 1.x auf 2.x ist nicht möglich! Der Wemos D1 mini muss gelöscht werden.
-Wichtiger Hinweis 2: Zum Flashen der Firmware unbedingt die Einstellungen anpassen: 4MB (FS: 2MB OTA:~1019kB)
-                        - die Skripte zum Flashen mit esptool sind angepasst (siehe unten)
-                        
-- Add:      WebUpdate - die Firmware kann nun über das WebInterface aktualisiert werden
-- Update:   ESP8266 V2.6.3
-- Reworked: Debug Ausgaben werden nun über die ESP8266 lib verarbeitet. Die Standard Einstellung für die
-            Firmware Dateien (bin Dateien) ist keine Debug Ausgabe.
-- Removed:  Simulation
-- Removed:  Telnet - noch nicht in neue Debug lib eingebunden
-- Reworked: Das WebInterface ist schlanker und übersichtlicher (und in deutsch)    
-- Fixed:    NTP Zeit
-- Fixed:    MQTT reconnect
-
 
 ## Generelle Informationen
 ### Was ist MQTTDevice?
@@ -44,8 +24,6 @@ MQTTDevice ist ein Arduino Sketch für die Module ESP8266. Damit ist es möglich
 * Update Firmware und SPIFFS über Dateiupload
 * Event handling
 * TCP Server Support
-![tcp](/img/TCPServer.jpg)
-
 
 Installation: https://hobbybrauer.de/forum/viewtopic.php?f=58&t=19036&p=309196#p309196 (german)
 
@@ -171,8 +149,6 @@ Sensor 1 meldet eine Temperatur von 78°C
 Aktor 2 hat einen Powerlevel von 100%
 Induktion ist ausgeschaltet (oder nicht konfiguriert)
 Mit jeder Aktualisierung Display (siehe DISP_UPDATE) wandert die Anziege auf den nächsten Sensor bzw. Aktor. Im Beispiel wäre das S2 und A3
-
-![oled1](/img/display4.jpg)
 
 Anschluss ESP8266 D1 Mini an AZ-Delivery 0.96 i2c 128x64 OLED Display (Verwendung aller Information auf eigene Gefahr!)
 
