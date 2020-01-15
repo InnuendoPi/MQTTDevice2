@@ -1,4 +1,4 @@
-theme: jekyll-theme-leap-day
+theme: jekyll-theme-slate
 title: MQTTDevice V2
 tags: [mqtt, cbpi, esp8266]
 comments: true
