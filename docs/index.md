@@ -241,7 +241,7 @@ In diesem Projekt wurde eine Platine für das MQTTDevice entwickelt, um mit Klem
 
 ## Platine Layout
 
-![Platine](https://innuendopi.github.io/MQTTDevice2/img/platine.jpg)
+![Platine](img/platine.jpg)
 
 Im Ordner Info befinden sich EasyEDA Dateien, mit deren Hilfe die Platine erstellt werden kann. Ebenfalls im Ordner Info befinden sich STL Dateien für einen 3D Druck MQTTDevice Gehäuse.
 
