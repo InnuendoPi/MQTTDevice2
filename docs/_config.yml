@@ -1,7 +1,2 @@
 theme: jekyll-theme-leap-day
 title: MQTTDevice V2
-tags: [mqtt, cbpi, esp8266]
-comments: true
-category: presentation
-owner:
-  name: Innuendo
