@@ -17,34 +17,69 @@ Wichtiger Hinweis 2: Zum Flashen der Firmware unbedingt die Einstellungen anpass
 - Fixed:    NTP Zeit
 - Fixed:    MQTT reconnect
 
+# Generelle Infomrationen
 
-## Generelle Informationen
-### Was ist MQTTDevice?
+## Was ist ein MQTTDevice?
 
-MQTTDevice ist ein Arduino Sketch für die Module ESP8266. Damit ist es möglich eine Kommunikation zwischen einem MQTT Broker und einem ESP8266 herzustellen, um Sensoren und Aktoren mit CraftbeerPi zu steuern.
+MQTTDevice ist ein Arduino Sketch für die Module ESP8266 Wemos D1 mini. Damit ist es möglich eine Kommunikation zwischen einem MQTT Broker und einem ESP8266 herzustellen, um Sensoren und Aktoren mit CraftbeerPi zu steuern.
 
-### Was bietet diese Firmware?
+![ov1](/img/startseite.jpg)
+
+## Was bietet diese Firmware?
 
 * Ein Web Interface (WebIf) für die Konfiguration
-
-* Sensoren
+* Sensoren (max 6)
   * Suche nach angeschlossenen Sensoren basierend auf OneWire Adressen
   * Das Leseintervall der Sensordaten und das Offset sind konfigurierbar (in Sek) 
-* Aktoren
-  * PIN Auswahl
+* Aktoren (max 6)
+  * PIN Auswahl (GPIO)
   * PINs in Verwendung werden ausgeblendet
   * Invertierte GPIO
   * Power Percentage: Es werden Werte zwischen 0 und 100% gesendet. Das ESP8266 "pulses" mit einem Zyklus von 1000ms
-* Induktion
-  * das Induktionskochfeld GGM ID2 kann über serielle Kommunikation gesteuert werden
-* OLED display Integration
+* Induktionskochfeld
+  * das Induktionskochfeld GGM IDS2 kann direkt gesteuert werden
+* OLED Display Integration
 * WebUpdate Firmware
 * Update Firmware und SPIFFS über Dateiupload
 * Event handling
-* TCP Server Support
+* TCP Server Support (Tozzi Server)
+* Dateiexplorer
 
 Installation: https://hobbybrauer.de/forum/viewtopic.php?f=58&t=19036&p=309196#p309196 (german)
 
+# Die erste Installation
+
+## Installation ohne den Quellcode zu compilieren
+
+Mit Hilfe von esptool.exe (see https://github.com/igrr/esptool-ck/releases ) aus dem Ordner tools kann die Firmware auf das ESP Modul geladen werden. Das ESPTool ist für verschiedene Betriebssysteme verfügbar.
+ESPtool-ck Copyright (C) 2014 Christian Klippel ck@atelier-klippel.de. This code is licensed under GPL v2.
+
+Unter Win10 wird der USB Treiber CH341SER benötigt: http://www.wch.cn/download/CH341SER_ZIP.html
+
+Beispiel für ein ESP8266 Modul vom Typ Wemos D1 mini mit 4MB Flash verbunden mit COM3
+
+	* Download von github entpacken (komplett)
+
+    * Eingabeaufforderung öffnen
+
+	* in den Order .../MQTTDevice2/tools wechseln und das Skript Flashen.cmd ausführen
+    Das Skript löscht alle Daten aus dem Speicher und spielt die Firmware und das Filesystem SPIFFS auf.
+
+    alternativ manuell mit esptool:
+
+		* Wemos D1 mini löschen:
+        esptool.exe -cp COM3 -cd nodemcu -ce 
+        * Flashen:
+        esptool.exe -cp COM3 -cd nodemcu -ca 0x000000 -cf ..\build\MQTTDevice2.ino.bin -ca 0x200000 -cf ..\build\MQTTDevice2.spiffs.bin
+
+	    * Das ESP8266 Modul resetten
+
+	    * Das ESP8266 Modul startet anschließend im Access Point Modus mit der IP Adresse 192.168.4.1
+
+    	* Das ESP8266 Modul über einen Webbrowser mit dem WLAN verbinden
+
+
+## Installation mit Quellcode
 
 ### Voraussetzungen: (2020.01)
 
@@ -68,46 +103,48 @@ Installation: https://hobbybrauer.de/forum/viewtopic.php?f=58&t=19036&p=309196#p
     * OneWire By Jim Studt Version 2.3.5
     * PubSubClient by Nick O'Leary Version 2.7.0
     * WiFiManager by tzapu Version 0.15.0
-    * EventManager Download von https://github.com/igormiktor/arduino-EventManager
+    * EventManager
+
+    Die Firmware muss mit der Einstellung Flash size 4MB (FS: 2MB OTA:~1019kB) aufgespielt werden.
+    Debug Ausgaben werden in der IDE über "Debug Port" aktiviert. In der Standard Einstellung (bin Dateien) hat die Firmware nach dem Start keine Ausgaben auf dem seriellen Monitor. 
+
+## Updates
+
+Die Firmware bietet zwei Möglichkeiten, um Updates sehr einfach einspielen zu können.
+
+### Update durch Dateiupload
+
+Im Webbrowser die URL http://<IP Adresse Wemos>/update aufrufen
+Hier kann Firmware und das Filesystem SPIFFS aktualisiert werden. Wenn das Filesystem SPIFFS mit Dateiupload aktualisiert wird, wird die Konfigurationsdatei überschrieben. Siehe hierzu auch Backup und Restore.
+
+### WebUpdate
+
+Im Webbrowser die URL http://<IP Adresse Wemos> aufrufen und die Funktion WebUpdate aufrufen.
+WebUpdate aktualisiert  die Firmware, die index Datei und Zertifikate. Durch WebUpdate wird die Konfigurationsdatei nicht überschrieben.
+
+## Backup and Restore der Konfiguration
+
+Der Dateiexplorer ist erreichbar über den Webbrowser http://<IP Adresse Wemos>/edit 
+
+### Backup
+
+Auf die Datei config.txt klicken und aus dem PopUp Download auswählen.
+
+### Restore
+
+Auf Datei auswählen klicken, die config.txt auswählen und Upload auswählen
+
+### config.txt editieren
+
+Auf die Datei config.txt klicken und aus dem PopUp Edit auswählen.
+Nun kann im Hauptfenster die Datei editiert werden. Zum Abspeichern CTRL+S verwenden. Vorsicht!!!
+
+# Bedienung der Firmware
+
+Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder das Löschen von Sensoren und Aktoren wird daher hier nicht beschrieben.
 
 
-### Wie kann die Firmware geflashed werden ohne den Quellcode zu komplilieren
-
-* Mit Hilfe von esptool.exe (see https://github.com/igrr/esptool-ck/releases ) aus dem Ordner tools kann die Firmware auf das ESP Modul geladen werden. Das ESPTool ist für verschiedene Betriebssysteme verfügbar.
-ESPtool-ck Copyright (C) 2014 Christian Klippel ck@atelier-klippel.de. This code is licensed under GPL v2.
-
-Unter Win10 wird der USB Treiber CH341SER benötigt: http://www.wch.cn/download/CH341SER_ZIP.html
-
-Beispiel für ein ESP8266 Modul vom Typ D1 mini mit 4MB Flash verbunden mit COM3
-
-	* Eingabeaufforderung öffnen
-
-	* in den Order ./MQTTDevice2/build wechseln und das Skript Flashen.cmd ausführen
-
-    * alternativ manuell mit esptool:
-
-		* Firmware aufspielen: ../tools/esptool.exe -ca 0x000000 -cd nodemcu -cp COM3 -cb 921600 -cf MQTTDevice2.ino.bin
-
-	* Das ESP8266 Modul resetten
-
-	* Das ESP8266 Modul startet anschließend im Access Point Modus mit der IP Adresse 192.168.4.1
-
-	* Das ESP8266 Modul über einen Webbrowser mit dem WLAN verbinden
-
-    * Das SPIFFS kann nun über das WebIf ausgespielt werden <ip-address>/update
-
-    * alternativ manuell mit esptool: 
-    
-        * SPIFFS aufspielen:    ../tools/esptool.exe -ca 0x200000 -cd nodemcu -cp COM3 -cb 921600 -cf MQTTDevice2.spiffs.bin
-
-
-* Updates
-	Updates (firmware und SPIFFS) können über das WebIf geladen werden: <IP Adresse ESP Modul>/update
-
-* Backup and restore der Konfiguration
-    Der FileBrowser ist erreichbar über <IP Adresse ESP Modul>/edit download oder upload config.json 
-
-# Die Hauptfunktionen
+Die Hauptfunktionen
 
 * Hinzufügen, editieren und löschen von Sensoren
 * Auto reconnect MQTT
@@ -119,54 +156,72 @@ Beispiel für ein ESP8266 Modul vom Typ D1 mini mit 4MB Flash verbunden mit COM3
 * Filebrowser für einefaches Datei-Management (zB backup und restore config.json)
 * DS18B20 Temperatur Offset - einfaches kalibrieren der Sensoren
 
-## Das Misc Menü:
+## Das Menü Enstellungen:
 
-* Konfiguration der Update Intervalle für Sensoren, Aktoren, Induktion, Display und Systemdienste
-* Reset WiFi Einstellungen	-> ESP Modul startet im AP mode!
-* Lösche alle Einstellungen	-> ESP Modul startet im AP mode!
-* MQTT broker IP Adresse
-* Konfiguration Event handling (Aktoren und Induktion im Fehlerfall ein/aus mit Verzögerung)
-* Konfiguration Debug Ausgaben über den seriellen Monitor
-* Konfiguration mDNS        -> MDNS Namen eingeben und über Webbrowser http://<mDNS Name> das ESP Modul aufrufen
+### System
 
-## EventManager:
-Es gibt 4 Warteschlangen für Ereignisse (Events), die automatisiert behandelt werden können: Sensoren, Aktoren, Induktion und System
-Alle Ereignisse in einer Warteschlange werden nach dem FIFO Prinzip (First in First out) abgearbeitet.
+IP Adresse MQTT Server (CBPi):
 
-* SYS_UPDATE  0		-> Systemdienste in der Warteschage sollten ohne Verzögerung abgeabreitet werden. Empfohlene Werte 0-1000 (0-1 Sek)
-* SEN_UPDATE  5000	-> Sensordaten werden ca. alle 5 Sekunden abgefragt. Empfohlene Werte: 2000-5000 (2-5 Sek)
-* ACT_UPDATE  5000	-> Aktordaten werden ca. alle 5 Sekunden abgeabreitet. Empfohlene Werte 2000-10000 (2-10 Sek)
-* IND_UPDATE  5000	-> Daten für das Induktionsfeld werden ca. alle 5 Sekunden abgearbeitet. Empfohlene Werte 2000-10000 (2-10 Sek)
-* DISP_UPDATE 5000	-> Das Display wird ca. alle 5 Sekunden aktualisiert. Empfohlene Werte 1000-5000 (2-10 Sek)
-* TCP_UPDATE  60000 -> Daten an den TCP Server werden ca. alle 60 Sekunden gesendet.
+Unter System wird der MQTT Broker eingetragen. In den allermeisten Fällen dürfte dies mosquitto auf dem CBPi sein.
+Wichtig ist, dass die Firmware MQTTDevice permanent versucht, mit dem MQTT Broker eine Verbindung aufzubauen. Wenn der MQTT Broker nicht verfügbar ist, beeinträchtigt das Geschwindigkeit vom Wemos. Der Wemos wirkt abhängig von der bereits konfiguraierten Anzahl an Sensoren und Aktoren träge bis zu sehr lahm. Beim Testen sollte daher der MQTT Broker online sein. 
 
-Zusätzlich zu diesen Ereinissen werden Fehlerereignisse in die Warteschlangen geschrieben. Zum Beispiel ein Temperatursensor meldet einen Fehler oder der 
-MQTT Broker auf dem RaspberryPi ist nicht erreichbar. Diese Ereignisse können automatisiert behandlet werden. Um eine autmoatisierte Fehlerbehandlung zu aktivieren
-muss die Fehlerbehandlung (event handling) für Sensoren, Aktoren, Induktion, WLAN und/oder MQTT am Objekt aktiviert werden. Zusätzlich kann eine Wartezeit
-konfiguriert werden, bevor die Fehlerbehandlung aktiv wird.
-Beispiel:
-Wenn der MQTT Broker auf dem RaspberryPi unerwartet die Verbindung beendet, dann
+mDNS:
+
+mDNS ist eine gute Möglichkeit, um das MQTTDevice mit einem beliebigen Namen anzusprechen. In der Standardkonfiguration ist das MQTTDevice im Webbrowser über http://mqttdevice erreichbar.
+Zu beachten gilt, dass mDNS Namen im Netzwerk eindeutig sein müssen. 
+
+### Intervalle
+
+Unter Intervalle werden die Zeitabstände konfiguriert, mit denen 
+    - wie häufig Sensoren abgefragt werden und die Daten zum CBPi gesendet werden
+    - wie häufig Befehle für Aktoren / Induktion vom CBPi abgeholt werden
+Mit diesen Intervallen kann die Performance vom Wemos verbessert werden. Die Standard Einstellung von 5 Sekunden ist in Umgebungen mit vielen Sensoren und vielen Aktoren zu häufig. Hier wäre eher 10 bis 30 Sekunden für den kleinen Wemos besser geeignet. Dies muss individuell ausprobiert werden.  
+
+
+### Der Eventmanager
+
+Der Eventmanager behandelt Fehlverhalten. Wichtig zu Beginn: das Event handling ist in der Standard Einstellung deaktiviert!
+
+Was soll der Wemos machen, wenn
+    - die WLAN Verbindung zum MQTT Server verloren geht
+    - der MQTT Server offline geht
+    - ein Temperatursensor keine Daten mehr liefert
+Ohne das Event handling macht der Wemos nichts automatisert. Der Zustand verbleibt unverändert.
+
+Es gibt 4 Grundtypen von Ereignissen (Events), die automatisiert behandelt werden können: für Aktoren und für das Induktionkochfeld bei Sensorfehlern, sowie für Aktoren und das Induktionskochfeld bei WLAN und bei MQTT Fehlern. Für diese 4 Typen werden Verzögerungen für das Event handling konfiguriert. Während der Verzögerung verbleibt der Zustand unverändert.
+
+Zusätzlich kann jeder Sensor, jeder Aktor und das Induktionskochfeld separat für das Event handling aktiviert bzw. deaktiviert werden.
+
+Beispiel 1:
+Wenn der MQTT Broker unerwartet die Verbindung beendet, dann
 - wird automatisch versucht die Verbindung wieder aufzubauen
-- die konfigurierte Wartezeit eine Verzögerung, bevor ein Gerät automatisch ausgeschaltet 
-nach 5 erfolglosen Verbindungsversuchen mit dem MQTT Broker und 5 Wartezeiten zwischen den Versuchen kann bspw.
-- das Induktionsfeld auf einen niedrigen Powerlevel gesetzt werden (von 100% auf 20% -> Temperatur halten)
+- die konfigurierte Verzögerung wird abgewartet, bevor ein Aktor automatisch ausgeschaltet wird
+- das Induktionsfeld kann auf eine niedrigere Leistung gesetzt werden (von 100% auf 20% -> Temperatur halten)
+Beispiel 2:
 Wenn ein Temeratursensor beim Brauen -127°C meldet, dann
-- kann ein Aktor Pumpe am Nachgusskessel ausgeschaltet werden
-- das Rührwerk im Sudkessel soll weiterlaufen
+- kann ein Aktor Rührwerk am Sudkessel weiterlaufen. Dieser Aktor kann für das Event handling deaktiviert werden.
+- Das Induktionskochfeld kann automatisch von 100% Leistung auf 20% heruntergeschaltet werden
+- ein Aktor Pumpe kann abgeschaltet werden
+etc.
 
+Die Reihenfolge beim Event handling ist grundsätzlich
+    - WLAN Fehler
+    - MQTT Fehler
+    - Sensor Fehler
 
-## FileBrowser:
-Mit dem FileBrowser kann man sehr einfach im SPIFFS Dateisystem arbeiten. So ist es sehr einfach, die Konfiguration zu sichern und wiederherszustellen.
+### Restore
 
+Über das Menü Restore kann der Wemos gelöscht werden. Zur Auswahl stehen
+    - WLAN Einstellungen löschen
+    - Alle Einstellungen löschen (WLAN und Konfiguration)
 
-### OLED Display:
+### Das OLED Display:
 Diese Firmware unterstützt OLED Display monochrom OLED 128x64 I2C 0.96".
-Das Display kann über das WebIf konfiguriert werden. Wenn das Display aktiviert wird, sind die PINS D1 (SDL) und D2 (SDA) belegt. 
-Sensoren, Aktoren und Induktion werden mit ihren aktuellen Werten dargestellt. Dabei bedeutet "S1 78 | A2 100 | I off" 
-Sensor 1 meldet eine Temperatur von 78°C
-Aktor 2 hat einen Powerlevel von 100%
-Induktion ist ausgeschaltet (oder nicht konfiguriert)
-Mit jeder Aktualisierung Display (siehe DISP_UPDATE) wandert die Anziege auf den nächsten Sensor bzw. Aktor. Im Beispiel wäre das S2 und A3
+Das Display kann über das WebIf konfiguriert werden. Wenn das Display aktiviert wird, sind die PINS D1 (SDL) und D2 (SDA) belegt. Auf dem Display werden Sensoren, Aktoren und Induktion mit ihren aktuellen Werten dargestellt. Dabei bedeutet "S1 78 | A2 100 | I off" 
+    - Sensor 1 meldet eine Temperatur von 78°C
+    - Aktor 2 hat einen Powerlevel von 100%
+    - Induktion ist ausgeschaltet (oder nicht konfiguriert)
+Mit jeder Aktualisierung Display wandert die Anzeige auf den nächsten Sensor bzw. Aktor. Im Beispiel wäre das S2 und A3.
 
 Anschluss ESP8266 D1 Mini an AZ-Delivery 0.96 i2c 128x64 OLED Display (Verwendung aller Information auf eigene Gefahr!)
 
@@ -175,10 +230,38 @@ Anschluss ESP8266 D1 Mini an AZ-Delivery 0.96 i2c 128x64 OLED Display (Verwendun
  * SCL -> D1
  * SDA -> D2
 
+# Anbindung an den TCP Server Tozzi
+
+Die Firmware bietet eine Möglichkeit Daten mit dem TCP Server Tozzi auszutauschen, um eine graphische Darstellung von einem Brautag zu erstellen. Zur Konfiguration muss 
+    - der TCP Server um eine MQTTDevice Seite erweitert werden
+    - CBPi um ein Plugin erweitert werden
+    - das MQTTDevice konfiguriert werden 
+
+## Vorbereitung TCP Server
+
+## Installation CBPi Plugin
+
+## Konfiguration am MQTTDevice
+
 # Die MQTTDevice Platine
+
+Wichtiger Hinweis:
+Alle Informationen über die Platine sind rein informativ und können falsch sein. 
+Verwendung dieser Informationen auf eigene Gefahr. Jegliche Haftung wird ausgeschlossen.
+
+In diesem Projekt wurde eine Platine für das MQTTDevice entwickelt, um mit Klemmschraubblöcken eine einfache Anbindung an Sensoren, Aktoren und an das Induktionskochfeld GGM IDS2 zu bieten. Die Platine ist mit nur wenigen Bauteilen bestückt. Die Platine bietet folgende Vorteile:
+    - der Wemos D1 mini steckt auf einem Sockel und kann jederzeit abgenommen werden
+    - alle GPIOs werden auf Schraubklemmen geführt
+    - ein LevelShifter sorgt für 5V (statt 3V3) als Ausgangsspannung
+    - die Stromversorgung vom Wemos kann bei der Verwendung einer GGM IDS2 direkt vom Induktionskochfeld genutzt werden
+    - die Temperatursensoren können direkt an die Schraubklemmen angeschlossen werden (R4k7 gegen 3V3 vorhanden)
 
 ## Platine Layout
 
+![ov1](/img/startseite.jpg)
+
+Im Ordner Info befinden sich EasyEDA Dateien, mit deren Hilfe die Platine erstellt werden kann. Ebenfalls im Ordner Info befinden sich STL Dateien für einen 3D Druck MQTTDevice Gehäuse.
+
 ## Platine Stückliste
 
-## PLatine Hinweise zum Aufbau
+## Platine Hinweise zum Aufbau
