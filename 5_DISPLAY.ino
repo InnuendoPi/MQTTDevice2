@@ -319,7 +319,7 @@ void showDispInd() // Show InductionCooker status on the right
 void showDispTime(const String &value) // Show time value in the upper left with fontsize 2
 {
   display.setCursor(5, 5);
-  display.setTextSize(2);
+  display.setTextSize(1);
   display.setTextColor(WHITE);
   display.print(value);
 }

@@ -276,8 +276,7 @@ void saveConfigCallback()
 
   if (SPIFFS.begin())
   {
-    //saveConfig();
-    Serial.println("*** SYSINFO: WiFiManager should save MQTT broker IP");
+    saveConfig();
     shouldSaveConfig = true;
   }
   else
@@ -433,7 +432,7 @@ bool saveConfig()
     miscObj["tcp"] = "0";
     DEBUG_MSG("TCP Server: %d\n", startTCP);
   }
-  miscObj["MQTTHOST"] = mqtthost;
+  miscObj["MQTTHOST"] = mqtthost;  
   miscObj["upsen"] = SEN_UPDATE;
   miscObj["upact"] = ACT_UPDATE;
   miscObj["upind"] = IND_UPDATE;

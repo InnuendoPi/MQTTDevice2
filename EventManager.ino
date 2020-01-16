@@ -38,17 +38,15 @@ void listenerSystem(int event, int parm) // System event listener
     break;
   case EM_MQTTER: // MQTT Error -> handling
     oledDisplay.mqttOK = false;
-    if (millis() > (mqttconnectlasttry + wait_on_error_mqtt)) // Test!
+    if (pubsubClient.connect(mqtt_clientid))
     {
-      if (pubsubClient.connect(mqtt_clientid))
-      {
-        cbpiEventSystem(EM_MQTTSUB); // MQTT subscribe
-        cbpiEventSystem(EM_MQTTRES);
-        break;
-      }
+      DEBUG_MSG("%s", "MQTT auto reconnect successful. Subscribing..\n");
+      cbpiEventSystem(EM_MQTTSUB); // MQTT subscribe
+      cbpiEventSystem(EM_MQTTRES);
+      break;
     }
     if (retriesMQTT <= maxRetriesMQTT)
-      DEBUG_MSG(" #%d/%d ... verscuhe zu verbinden\n", retriesMQTT, maxRetriesMQTT);
+      DEBUG_MSG(" #%d/%d ... versuche zu verbinden\n", retriesMQTT, maxRetriesMQTT);
     if (retriesMQTT == maxRetriesMQTT)
     {
       DEBUG_MSG("EM MQTTER: MQTT Broker %s nicht erreichbar! Max retries %d StopOnMQTTError: %d mqtt_state: %d\n", mqtthost, maxRetriesMQTT, StopOnMQTTError, mqtt_state);
@@ -529,5 +527,5 @@ void cbpiEventInduction(int parm) // Induction events
 
 void timerNTPCallback(void *pArg) // Timer Objekt Temperatur mit Pointer
 {
-	tickNTP = true; // Bei true wird im nächsten loop readTemperature ausgeführt
+  tickNTP = true; // Bei true wird im nächsten loop readTemperature ausgeführt
 }
