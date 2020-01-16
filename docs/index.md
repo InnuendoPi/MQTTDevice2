@@ -146,15 +146,19 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
 
 1. System
 
-    #### IP Adresse MQTT Server (CBPi):
+    **IP Adresse MQTT Server (CBPi):**
 
     Unter System wird der MQTT Broker eingetragen. In den allermeisten Fällen dürfte dies mosquitto auf dem CBPi sein.
     Wichtig ist, dass die Firmware MQTTDevice permanent versucht, mit dem MQTT Broker eine Verbindung aufzubauen. Wenn der MQTT Broker nicht verfügbar ist, beeinträchtigt das Geschwindigkeit vom Wemos. Der Wemos wirkt abhängig von der bereits konfiguraierten Anzahl an Sensoren und Aktoren träge bis zu sehr lahm. Beim Testen sollte daher der MQTT Broker online sein. 
 
-    #### mDNS:
+    **mDNS:**
 
     mDNS ist eine einfache Möglichkeit, um das MQTTDevice mit einem beliebigen Namen anzusprechen. In der Standardkonfiguration ist das MQTTDevice im Webbrowser über http://mqttdevice erreichbar.
     Zu beachten gilt, dass mDNS Namen im Netzwerk eindeutig sein müssen. 
+
+    **TCPServer IP, Port und Update Intervall**
+
+    siehe Rubrik TCP Server.
 
 2. Intervalle
 
@@ -178,13 +182,13 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
 
     Zusätzlich kann jeder Sensor, jeder Aktor und das Induktionskochfeld separat für das Event handling aktiviert bzw. deaktiviert werden. Die Szenarien für die Verwendung vom Event handling sind vielfältig. Hier sind jeweils die Funktionen von Sensoren und Aktoren individuell zu unterscheiden. 2 Beispiele zur Erläuterung:
 
-    #### Beispiel 1:
+    **Beispiel 1:**
     Wenn der MQTT Broker unerwartet die Verbindung beendet, dann
     1. wird automatisch versucht die Verbindung wieder aufzubauen
     2. die konfigurierte Verzögerung wird abgewartet, bevor ein Aktor automatisch ausgeschaltet wird
     3. das Induktionsfeld kann auf eine niedrigere Leistung gesetzt werden (von 100% auf 20%) um die Temperatur zu halten
     
-    #### Beispiel 2:
+    **Beispiel 2:**
     Wenn ein Temeratursensor beim Brauen einen Fehler meldet (bspw. "Unplugged" oder "-127°C"), dann
     1. wird automatisch versucht, in den nächsten Zyklen brauchbare Messwerte zu erhalten
     2. die konfigurierte Verzögerung wird abgewartet 
@@ -208,10 +212,12 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
 **Das OLED Display:**
 
 Diese Firmware unterstützt OLED Display monochrom OLED 128x64 I2C 0.96".
-Das Display kann über das WebIf konfiguriert werden. Wenn das Display aktiviert wird, sind die PINS D1 (SDL) und D2 (SDA) belegt. Auf dem Display werden Sensoren, Aktoren und Induktion mit ihren aktuellen Werten dargestellt. Dabei bedeutet "S1 78 | A2 100 | I off" 
-    - Sensor 1 meldet eine Temperatur von 78°C
-    - Aktor 2 hat einen Powerlevel von 100%
-    - Induktion ist ausgeschaltet (oder nicht konfiguriert)
+Das Display kann über das WebIf konfiguriert werden. Wenn das Display aktiviert wird, sind die PINS D1 (SDL) und D2 (SDA) belegt. Auf dem Display werden Sensoren, Aktoren und Induktion mit ihren aktuellen Werten dargestellt. 
+Dabei bedeutet "S1 78 | A2 100 | I off" 
+ * Sensor 1 meldet eine Temperatur von 78°C
+ * Aktor 2 hat einen Powerlevel von 100%
+ * Induktion ist ausgeschaltet (oder nicht konfiguriert)
+
 Mit jeder Aktualisierung Display wandert die Anzeige auf den nächsten Sensor bzw. Aktor. Im Beispiel wäre das S2 und A3.
 
 Anschluss ESP8266 D1 Mini an AZ-Delivery 0.96 i2c 128x64 OLED Display (Verwendung aller Information auf eigene Gefahr!)
@@ -223,11 +229,12 @@ Anschluss ESP8266 D1 Mini an AZ-Delivery 0.96 i2c 128x64 OLED Display (Verwendun
 
 # Die MQTTDevice Platine
 
-Wichtiger Hinweis:
-Die Platine ist aus einem Hobby-Projekt entstanden. Eine fertig bestückte Platine wird nicht angeboten. Das Projekt verfolgt keinerlei kommerzielle Absichten. Die hier geteilten Informationen stellen einen Entwicklungszustand dar und dienen der Weiterentwicklung sowie der Überprüfung, Korrektur und Verbesserung. Inhalte aus externen Links (bspw Forum hobbybrauer) und Angaben zu externen Inhalten (bspw. Artikel unterschiedlicher Anbieter) unterliegen den jeweiligen Rechten der Inhaber. Externe Inhalte sind ausschließlich als informative Starthilfe anzusehen.  
+**Wichtiger Hinweis:**
 
-*Alle Informationen über die Platine sind rein informativ und können falsch sein.*
-*Verwendung dieser Informationen auf eigene Gefahr. Jegliche Haftung wird ausgeschlossen.*
+    Die Platine ist aus einem Hobby-Projekt entstanden. Eine fertig bestückte Platine wird nicht angeboten. Das Projekt verfolgt keinerlei kommerzielle Absichten. Die hier geteilten Informationen stellen einen Entwicklungszustand dar und dienen der Weiterentwicklung sowie der Überprüfung, Korrektur und Verbesserung. Inhalte aus externen Links (bspw Forum hobbybrauer) und Angaben zu externen Inhalten (bspw. Artikel unterschiedlicher Anbieter) unterliegen den jeweiligen Rechten der Inhaber. Externe Inhalte sind ausschließlich als informative Starthilfe anzusehen.  
+
+    *Alle Informationen über die Platine sind rein informativ und können falsch sein.*
+    *Verwendung dieser Informationen auf eigene Gefahr. Jegliche Haftung wird ausgeschlossen.*
 
 In diesem Projekt wurde eine Platine für das MQTTDevice entwickelt, um mit Klemmschraubblöcken eine einfache Anbindung an Sensoren, Aktoren und an das Induktionskochfeld GGM IDS2 zu bieten. Die Platine ist mit nur wenigen Bauteilen bestückt. Die Platine bietet folgende Vorteile:
 
@@ -263,7 +270,7 @@ Auf der Platine befinden sich 4 Steckbrücken (Jumper)
     2. Wenn der Jumper nicht gesetzt ist, benötigt der Wemos eine Stromzuführ über den 5V Anschluss
     Jumper J4 ist optional. Wird die GGM IDS2 nicht verwendet, kann die Steckbrück und Anschlussbuchse entfallen.
     
-    Wenn die Stromversorgung vom Induktionskochfeld bezogen wird (Jumper J4 gesetzt), darf keine Spannungsversorgung zusätzlich über den 5V Eingang angeschlossen werden.
+    *Wenn die Stromversorgung vom Induktionskochfeld bezogen wird (Jumper J4 gesetzt), darf keine Spannungsversorgung zusätzlich über den 5V Eingang angeschlossen werden.*
 
 
 **Das Platine Layout**
