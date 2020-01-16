@@ -526,3 +526,8 @@ void cbpiEventInduction(int parm) // Induction events
 {
   gEM.queueEvent(EventManager::kEventUser3, parm);
 }
+
+void timerNTPCallback(void *pArg) // Timer Objekt Temperatur mit Pointer
+{
+	tickNTP = true; // Bei true wird im nächsten loop readTemperature ausgeführt
+}

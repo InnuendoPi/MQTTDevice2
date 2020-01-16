@@ -69,6 +69,8 @@ void setTimer()
   os_timer_arm(&TimerDisp, DISP_UPDATE, true); // Zeitintervall Display in ms
   os_timer_setfn(&TimerTCP, timerTCPCallback, NULL);
   os_timer_arm(&TimerTCP, TCP_UPDATE, true); // Zeitintervall TCPServer in ms
+  os_timer_setfn(&TimerNTP, timerNTPCallback, NULL);
+  os_timer_arm(&TimerNTP, NTP_INTERVAL, true); // Zeitintervall TCPServer in ms
 }
 
 String decToHex(unsigned char decValue, unsigned char desiredStringLength)

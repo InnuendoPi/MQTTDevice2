@@ -240,12 +240,14 @@ os_timer_t TimerAct;
 os_timer_t TimerInd;
 os_timer_t TimerDisp;
 os_timer_t TimerTCP;
+os_timer_t TimerNTP;
 
 bool tickSen = false;
 bool tickAct = false;
 bool tickInd = false;
 bool tickDisp = false;
 bool tickTCP = false;
+bool tickNTP = false;
 
 void configModeCallback(WiFiManager *myWiFiManager)
 {

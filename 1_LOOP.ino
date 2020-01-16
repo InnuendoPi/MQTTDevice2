@@ -4,33 +4,37 @@ void loop()
   cbpiEventSystem(EM_WLAN); // Check WLAN
   cbpiEventSystem(EM_MQTT); // Check MQTT
   cbpiEventSystem(EM_MDNS); // MDNS handle
-  cbpiEventSystem(EM_NTP);  // NTP handle (NTP_INTERVAL)
-
-  if (tickSen)
+  
+  if (tickSen)              // Sensoren handle
   {
-    cbpiEventSensors(sensorsStatus); // Sensor handle
+    cbpiEventSensors(sensorsStatus);
     tickSen = false;
   }
-  if (tickAct)
+  if (tickAct)              // Aktoren handle
   {
-    cbpiEventActors(actorsStatus); // Actor handle
+    cbpiEventActors(actorsStatus);
     tickAct = false;
   }
-  if (tickInd)
+  if (tickInd)              // Induktionskochfeld handle
   {
-    cbpiEventInduction(inductionStatus); // Induction handle
+    cbpiEventInduction(inductionStatus);
     tickInd = false;
   }
 
-  if (tickDisp)
+  if (tickDisp)             // Display Update
   {
-    cbpiEventSystem(EM_DISPUP); // Display Update
+    cbpiEventSystem(EM_DISPUP);
     tickDisp = false;
   }
-  if (tickTCP)
+  if (tickTCP)              // TCP Server Update
   {
-    cbpiEventSystem(EM_TCP); // TCP Server Update
+    cbpiEventSystem(EM_TCP);
     tickTCP = false;
+  }
+  if (tickNTP)              // NTP Update
+  {
+    cbpiEventSystem(EM_NTP); 
+    tickNTP = false;
   }
   gEM.processAllEvents();
 }
