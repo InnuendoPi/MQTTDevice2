@@ -146,12 +146,12 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
 
 1. System
 
-    IP Adresse MQTT Server (CBPi):
+    #### IP Adresse MQTT Server (CBPi):
 
     Unter System wird der MQTT Broker eingetragen. In den allermeisten Fällen dürfte dies mosquitto auf dem CBPi sein.
     Wichtig ist, dass die Firmware MQTTDevice permanent versucht, mit dem MQTT Broker eine Verbindung aufzubauen. Wenn der MQTT Broker nicht verfügbar ist, beeinträchtigt das Geschwindigkeit vom Wemos. Der Wemos wirkt abhängig von der bereits konfiguraierten Anzahl an Sensoren und Aktoren träge bis zu sehr lahm. Beim Testen sollte daher der MQTT Broker online sein. 
 
-    mDNS:
+    #### mDNS:
 
     mDNS ist eine einfache Möglichkeit, um das MQTTDevice mit einem beliebigen Namen anzusprechen. In der Standardkonfiguration ist das MQTTDevice im Webbrowser über http://mqttdevice erreichbar.
     Zu beachten gilt, dass mDNS Namen im Netzwerk eindeutig sein müssen. 
@@ -168,26 +168,31 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
 
     Der Eventmanager behandelt Fehlverhalten. Das Event handling ist in der Standard Einstellung deaktiviert!
 
-    Was soll der Wemos machen, wenn
-    - die WLAN Verbindung zum MQTT Server verloren geht
-    - der MQTT Server offline geht
-    - ein Temperatursensor keine Daten mehr liefert
+    Was soll das MQTTDevice machen, wenn
+    - die WLAN Verbindung verloren geht
+    - der Kommunikation mit dem MQTT Server unterbrochen wird
+    - ein Sensor plötzlich keine Temperaturdaten liefert
     Ohne das Event handling macht der Wemos nichts automatisert. Der Zustand verbleibt unverändert.
 
-    Es gibt 4 Grundtypen von Ereignissen (Events), die automatisiert behandelt werden können: für Aktoren und für das Induktionkochfeld bei Sensorfehlern, sowie für Aktoren und das Induktionskochfeld bei WLAN und bei MQTT Fehlern. Für diese 4 Typen werden Verzögerungen für das Event handling konfiguriert. Während der Verzögerung verbleibt der Zustand unverändert.
+    Es gibt 4 Grundtypen von Ereignissen (Events), die automatisiert behandelt werden können: für Aktoren und für das Induktionkochfeld bei Sensorfehlern, sowie für Aktoren und das Induktionskochfeld bei WLAN und bei MQTT Fehlern. Für diese 4 Typen werden Verzögerungen für das Event handling konfiguriert. Während der Verzögerung verbleibt der Zustand unverändert. Nach der Verzögerung kann das MQTTDevice den Zustand von Aktoren und Induktionskochfeld ändern.
 
-    Zusätzlich kann jeder Sensor, jeder Aktor und das Induktionskochfeld separat für das Event handling aktiviert bzw. deaktiviert werden.
+    Zusätzlich kann jeder Sensor, jeder Aktor und das Induktionskochfeld separat für das Event handling aktiviert bzw. deaktiviert werden. Die Szenarien für die Verwendung vom Event handling sind vielfältig. Hier sind jeweils die Funktionen von Sensoren und Aktoren individuell zu unterscheiden. 2 Beispiele zur Erläuterung:
 
-    Beispiel 1:
+    #### Beispiel 1:
     Wenn der MQTT Broker unerwartet die Verbindung beendet, dann
-    - wird automatisch versucht die Verbindung wieder aufzubauen
-    - die konfigurierte Verzögerung wird abgewartet, bevor ein Aktor automatisch ausgeschaltet wird
-    - das Induktionsfeld kann auf eine niedrigere Leistung gesetzt werden (von 100% auf 20% -> Temperatur halten)
-    Beispiel 2:
-    Wenn ein Temeratursensor beim Brauen -127°C meldet, dann
-    - kann ein Aktor Rührwerk am Sudkessel weiterlaufen. Dieser Aktor kann für das Event handling deaktiviert werden.
-    - Das Induktionskochfeld kann automatisch von 100% Leistung auf 20% heruntergeschaltet werden
-    - ein Aktor Pumpe kann abgeschaltet werden
+    1. wird automatisch versucht die Verbindung wieder aufzubauen
+    2. die konfigurierte Verzögerung wird abgewartet, bevor ein Aktor automatisch ausgeschaltet wird
+    3. das Induktionsfeld kann auf eine niedrigere Leistung gesetzt werden (von 100% auf 20%) um die Temperatur zu halten
+    
+    #### Beispiel 2:
+    Wenn ein Temeratursensor beim Brauen einen Fehler meldet (bspw. "Unplugged" oder "-127°C"), dann
+    1. wird automatisch versucht, in den nächsten Zyklen brauchbare Messwerte zu erhalten
+    2. die konfigurierte Verzögerung wird abgewartet 
+    3. nach Ablauf der Verzögerung kann ein Aktor Rührwerk am Sudkessel weiterlaufen: Event handling deaktiviert
+    4. ein Aktor Heater (verbunden mit einem SSR) kann abgeschaltet werden: Event handling aktiviert
+    5. ein Aktor Pumpe kann abgeschaltet werden: Event handling aktiviert
+
+    Beispiel 2 bei komplett deaktiviertem Event handling würde bedeuten, dass CBPi an den Aktor Heater 100% Leistung zum Aufheizen sendet.   
 
     Die Reihenfolge beim Event handling ist grundsätzlich
     - WLAN Fehler
@@ -225,14 +230,15 @@ Die Platine ist aus einem Hobby-Projekt entstanden. Eine fertig bestückte Plati
 *Verwendung dieser Informationen auf eigene Gefahr. Jegliche Haftung wird ausgeschlossen.*
 
 In diesem Projekt wurde eine Platine für das MQTTDevice entwickelt, um mit Klemmschraubblöcken eine einfache Anbindung an Sensoren, Aktoren und an das Induktionskochfeld GGM IDS2 zu bieten. Die Platine ist mit nur wenigen Bauteilen bestückt. Die Platine bietet folgende Vorteile:
-    - der Wemos D1 mini steckt auf einem Sockel und kann jederzeit abgenommen werden
-    - alle GPIOs werden auf Schraubklemmen geführt
-    - ein LevelShifter sorgt für 5V Steuerspannung an den Schraubklemmen GPIOs (Logic Level Converter)
-    - die Stromversorgung vom Wemos kann bei der Verwendung einer GGM IDS2 direkt vom Induktionskochfeld genutzt werden
-    - die Temperatursensoren an D3 können direkt an die Schraubklemmen angeschlossen werden (R4k7 gegen 3V3 vorhanden)
-    - ein optionales OLED Display ist auf D1 (SDL) und D2 (SDA) angebunden
-    - PIN D4 kann wahlweise per Jumper an den Display Port oder über den LevelShifter an D4 geführt werden.
-    - PIN D8 ist ohne LevelShifter auf D8 (3V3) geführt 
+
+- der Wemos D1 mini steckt auf einem Sockel und kann jederzeit abgenommen werden
+- alle GPIOs werden auf Schraubklemmen geführt
+- ein LevelShifter sorgt für 5V Steuerspannung an den Schraubklemmen GPIOs (Logic Level Converter)
+- die Stromversorgung vom Wemos kann bei der Verwendung einer GGM IDS2 direkt vom Induktionskochfeld genutzt werden
+- die Temperatursensoren an D3 können direkt an die Schraubklemmen angeschlossen werden (R4k7 gegen 3V3 vorhanden)
+- ein optionales OLED Display ist auf D1 (SDL) und D2 (SDA) angebunden
+- PIN D4 kann wahlweise per Jumper an den Display Port oder über den LevelShifter an D4 geführt werden.
+- PIN D8 ist ohne LevelShifter auf D8 (3V3) geführt 
 
 **Einstellung der Jumper**
 ![Jumper](img/platine_jumper.jpg)
@@ -254,6 +260,7 @@ Auf der Platine befinden sich 4 Steckbrücken (Jumper)
 4. Jumper J4: 5V Stromanschluss von GGM IDS2
     1. Wenn der Jumper gebrückt ist, wird die Stromzufuhr 5V vom Induktionskochfeld (JST-HX Buchse) verwendet
     2. Wenn der Jumper nicht gesetzt ist, benötigt der Wemos eine Stromzuführ über den 5V Anschluss
+    Jumper J4 ist optional. Wird die GGM IDS2 nicht verwendet, kann die Steckbrück und Anschlussbuchse entfallen.
 
 
 **Platine Layout**
