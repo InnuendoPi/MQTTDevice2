@@ -351,15 +351,17 @@ Auf dem RaspberryPi:
 
 Beim CBPI muss ein Plugin hinzugefügt werden: cbpi-mqttPub https://github.com/InnuendoPi/cbpi-mqttPub
 Das Plugin basiert auf Manuels MQTT Basis Plugin und liest Daten von CBPi Kettles und deren aktuelle Zieltemperatur ein und stellt diese  auf dem MQTT Broker bereit. Bitte mit einem MQTTClient prüfen, ob die Daten vorhanden sind.
+
 ![MQTTPlugin](img/mqttplugin.jpg)
-Dargestellt werden 3 Kettles vom CBPi mit einer eindeutigen id (1,2 und 3).
+
+Dargestellt werden 3 Kettles vom CBPi mit einer eindeutigen id (1,2 und 3). Außerdem wird die aktuelle Zieltemperatur von dem jeweiligen Kettel angegeben.
 
 **Konfiguration am MQTTDevice**
 
 Im MQTTDevice müssen nun diese IDs den Sensoren, Aktoren und Induktion zugewiesen werden. 
 
 **Beispiel:**
-Bei dem im Bild dargestellten Kettles hat der Sudkessel mit dem Namen "Maische & Sud" die ID 1. Die ID 1 muss im MQTTDevice nun dem Induktionskochfeld und dem Temperatursensor vom Induktionskochfeld eingetragen werden. 
+Bei dem im Bild dargestellten Kettles hat der Sudkessel mit dem Namen "Maische & Sud" die ID 1. Die aktuelle Zieltemperatur für den Sudkessel "Maische & Sud" beträgt 0 Grad. Die ID 1 muss im MQTTDevice nun dem Induktionskochfeld und dem Temperatursensor vom Induktionskochfeld zugewiesen werden. 
 
 Unter den Einstellungen im Tab System muss die IP-Adresse vom TCP Server und der Port (9501) eingetragen und der TCP Server aktiviert werden. Der Wemos sollte nach der Aktivierung TCPServer neu gestartet werden.
 
@@ -369,7 +371,7 @@ Wenn die oben aufgeführten Schritte erfolgreich abgeschlossen sind, meldet sich
 
 ![Einrichtung TCPServer](img/tcpserver_konfig.jpg)
 
-Jetzt muss das MQTTDevice, genauer gesagt der Temperatursensor, im TCPServer kalibriert werden. Für die 3 Parameter wird 0 eingetragen und abgespeichert. Der Vorgang Kalibrieren muss für jeden Temperatursensor (IDs) durchgeführt werden. Die Kalibrieren ist eigentlich für die iSpindel gedacht. Das MQTTDevice verhält sich gegenüber dem TCPServer nur wie eine iSpindel. Die Kalibrierung muss durchgeführt werden, auch wenn die Kalibrierung keinerlei Auswirkung hat.
+Jetzt muss das MQTTDevice, genauer gesagt der Temperatursensor, im TCPServer kalibriert werden. Für die 3 Parameter zur Kalibrierung wird jeweils eine 0 (null)eingetragen und abgespeichert. Der Vorgang Kalibrieren muss für jeden Temperatursensor (IDs) durchgeführt werden. Die Kalibrieren ist für die iSpindel gedacht (Neigung, Winkel, Gravity). Das MQTTDevice verhält sich gegenüber dem TCPServer wie eine iSpindel. Die Kalibrierung muss durchgeführt werden, hat aber keinerlei sonstige Auswirkung. Die obligatorische Kalibrierung kann sich mit einer zukünftigen Version vom TCPServer verändern.
 
 **Start am Brautag**
 
