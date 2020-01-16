@@ -314,11 +314,67 @@ Die JST-HX Buchse und die Steckbrücke J4 für das Induktionskochfeld sind optio
 Die Firmware bietet eine Möglichkeit Daten mit dem TCP Server Tozzi auszutauschen, um eine graphische Darstellung von einem Brautag zu erstellen. Zur Konfiguration muss 
 - der TCP Server um eine MQTTDevice Seite erweitert werden
 - CBPi um ein Plugin erweitert werden
-- das MQTTDevice konfiguriert werden 
+- das MQTTDevice konfiguriert werden
+
+Die Anbindung an den TCP Server Tozzi ist optional und in der Standard Einstellung deaktiviert.
+
+![TCPServer](img/tcpserver.jpg)
 
 **Vorbereitung TCP Server**
 
+Die Konfiguration setzt einen funktionierenden TCPServer voraus. Eine entsprechende Anleitung findet sich im Forum und im Fork https://github.com/InnuendoPi/iSpindel-TCP-Server
+
+**Manuelle Installation**
+
+Auf dem RaspberryPi:
+
+1. Dienst stoppen: sudo service ispindle-srv stop
+2.  Verzeichnis umbenennen /home/pi/iSpindle-Srv in ori-iSpindle-Srv (Backup) (pi => username)
+3.  git clone https://github.com/InnuendoPi/iSpindel-TCP-Server iSpindle-Srv
+4.  Datei ori-iSpindle-Srv/web/config/common_db_config.php nach iSpindle-Srv/web/config/common_db_config.php kopieren (DB Zugriff)
+5.  MySQL_Update_mqttdevice.sql in phpmyadmin auf Datenbank iSpindle Tabelle Strings ausführen
+
+    Auf dem RaspberryPi folgende Befehle ausführen:
+
+	cd /home/pi/iSpindel-Srv
+	sudo mv iSpindle.py /usr/local/bin
+	sudo mv ispindle-srv /etc/init.d
+	sudo chmod 755 /usr/local/bin/iSpindle.py
+	sudo chmod 755 /etc/init.d/ispindle-srv
+	cd /etc/init.d
+	sudo systemctl daemon-reload
+
+6. Dienst starten sudo service ispindle-srv start oder sudo reboot
+
+
 **Installation CBPi Plugin**
+
+Beim CBPI muss ein Plugin hinzugefügt werden: cbpi-mqttPub https://github.com/InnuendoPi/cbpi-mqttPub
+Das Plugin basiert auf Manuels MQTT Basis Plugin und liest Daten von CBPi Kettles und deren aktuelle Zieltemperatur ein und stellt diese  auf dem MQTT Broker bereit. Bitte mit einem MQTTClient prüfen, ob die Daten vorhanden sind.
+![MQTTPlugin](img/mqttplugin.jpg)
+Dargestellt werden 3 Kettles vom CBPi mit einer eindeutigen id (1,2 und 3).
 
 **Konfiguration am MQTTDevice**
 
+Im MQTTDevice müssen nun diese IDs den Sensoren, Aktoren und Induktion zugewiesen werden. 
+
+**Beispiel:**
+Bei dem im Bild dargestellten Kettles hat der Sudkessel mit dem Namen "Maische & Sud" die ID 1. Die ID 1 muss im MQTTDevice nun dem Induktionskochfeld und dem Temperatursensor vom Induktionskochfeld eingetragen werden. 
+
+Unter den Einstellungen im Tab System muss die IP-Adresse vom TCP Server und der Port (9501) eingetragen und der TCP Server aktiviert werden. Der Wemos sollte nach der Aktivierung TCPServer neu gestartet werden.
+
+**Einrichtung am TCP Server**
+
+Wenn die oben aufgeführten Schritte erfolgreich abgeschlossen sind, meldet sich das MQTTDevice am TCPServer als neue RasPySindel:
+
+![Einrichtung TCPServer](img/tcpserver_konfig.jpg)
+
+Jetzt muss das MQTTDevice, genauer gesagt der Temperatursensor, im TCPServer kalibriert werden. Für die 3 Parameter wird 0 eingetragen und abgespeichert. Der Vorgang Kalibrieren muss für jeden Temperatursensor (IDs) durchgeführt werden. Die Kalibrieren ist eigentlich für die iSpindel gedacht. Das MQTTDevice verhält sich gegenüber dem TCPServer nur wie eine iSpindel. Die Kalibrierung muss durchgeführt werden, auch wenn die Kalibrierung keinerlei Auswirkung hat.
+
+**Start am Brautag**
+
+Um an einem Brautag nur "neue" Daten zu sehen, muss das sog. "Reset Flag" gesetzt werden:
+	http://<ip raspberrypi>/iSpindle/reset_now.php?name=<Sensorname>&days=12&recipe=<Rezeptname>
+Dabei sind die Vars ip raspberrypi, Sensorname und Rezeptname zu ersetzen.
+**Beispiel:**
+	http:// ... /iSpindle/reset_now.php?name=Temp_Induktion&days=1&recipe=Muenchner_Hell
