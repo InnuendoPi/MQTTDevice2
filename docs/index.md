@@ -298,6 +298,7 @@ Folgende Bautteile werden benötigt:
 *amazon, reichelt und voelkner sind rein informativ als Suchhilfe für allgemein bekannter Anbieter zu verstehen*
 
 ![LevelShifter](img/platine_levelshifter.jpg)
+
 Bei der Auswahl LevelShifter (Logic Level Converter) muss zwingend die Belgung beachtet werden. Der LevelShifter muss im Eingang Low Voltage (LV) diese Reihenfolge haben: 
 
     **LV1 - LV2 - LV3 - LV4 - LV (3V3) - Ground - LV5 - LV6 - LV7 - LV8**
@@ -311,9 +312,9 @@ Die JST-HX Buchse und die Steckbrücke J4 für das Induktionskochfeld sind optio
 # TCP Server
 
 Die Firmware bietet eine Möglichkeit Daten mit dem TCP Server Tozzi auszutauschen, um eine graphische Darstellung von einem Brautag zu erstellen. Zur Konfiguration muss 
-    - der TCP Server um eine MQTTDevice Seite erweitert werden
-    - CBPi um ein Plugin erweitert werden
-    - das MQTTDevice konfiguriert werden 
+- der TCP Server um eine MQTTDevice Seite erweitert werden
+- CBPi um ein Plugin erweitert werden
+- das MQTTDevice konfiguriert werden 
 
 **Vorbereitung TCP Server**
 
