@@ -308,6 +308,21 @@ Bei der Auswahl LevelShifter (Logic Level Converter) muss zwingend die Belgung b
 Der Widerstand R 4.7kOhm für die Temperatursensoren DS18B20 wird unter dem Wemos D1 mini platziert. Deshalb muss der Wemos gesockelt werden. Die Sockel bieten zudem den Vorteil, dass der Wemos jederzeit von der Platine genommen werden kann, bspw. zum Flashen oder zum Testen. Die DS18B20 werden an VCC mit 5V versorgt. Dies stellt eine stabile Versorgung auch bei längeren Zuleitungen sicher. Der Widerstand ist von Data (PIN D3) gegen 3V3.
 Die JST-HX Buchse und die Steckbrücke J4 für das Induktionskochfeld sind optional.
 
+**Anschluss Induktionskochfeld GGM IDS2**
+
+*Die folgende Beschreibung löscht die Garantieansprüche für das Induktionskochfeld*
+*Es ist ausschließlich das Induktionskochfeld vom Typ GGM IDS2 getestet worden* 
+*Verwendung dieser Anleitung auf eigene Gefahr!*
+
+Das Induktionskochfeld vom Typ GGM IDS2 kann mit der Platine verbunden werden. Die GGM IDS2 wird mit einem externen Bedienteil geliefert. Wenn das Bedienteil geöffnet wird, kann die Kabelverbindung vom Bedienteil zum Induktionskochfeld entnommen werden. Dafür muss lediglich das Kabel aus der Buchse im Bedienteil abgezogen werden.
+Die exakt gleiche Buchse (JST-HX) befindet sich auf der MQTTDevice Platine. 
+
+Die Anschlüsse müssen über das Web Interface wie folgt konfiguriert werden:
+- Weiß (Relais) ist fest verbunden mit PIN D7
+- Gelb (Command Channel) ist fest verbunden mit Pin D6
+- Blau (Backchannel) ist fest verbunden mit Pin D5
+
+Eine separate Stromversorgung ist für das MQTTDevice bei Verwendung der GGM IDS2 nicht erforderlich.
 
 # TCP Server
 
