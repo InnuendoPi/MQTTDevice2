@@ -2,7 +2,7 @@
 
 **Was ist ein MQTTDevice?**
 
-MQTTDevice ist ein Arduino Sketch für die Module ESP8266 Wemos D1 mini. Damit ist es möglich eine Kommunikation zwischen einem MQTT Broker und einem ESP8266 herzustellen, um Sensoren und Aktoren mit CraftbeerPi zu steuern.
+MQTTDevice ist ein Arduino Sketch für die Module ESP8266 Wemos D1 mini. Damit ist es möglich eine Kommunikation zwischen einem MQTT Broker und einem ESP8266 herzustellen, um Sensoren und Aktoren mit CraftbeerPi (CBPi) zu steuern.
 
 ![Startseite](img/startseite.jpg)
 
@@ -21,18 +21,19 @@ MQTTDevice ist ein Arduino Sketch für die Module ESP8266 Wemos D1 mini. Damit i
   * das Induktionskochfeld GGM IDS2 kann direkt gesteuert werden
 * OLED Display Integration
 * WebUpdate Firmware
-* Update Firmware und SPIFFS über Dateiupload
+* Update Firmware und SPIFFS über Datei Upload
 * Event handling
 * TCP Server Support (Tozzi Server)
 * Dateiexplorer
 
-Installation: https://hobbybrauer.de/forum/viewtopic.php?f=58&t=19036&p=309196#p309196
+Dieses Projekt wurde im hobbybrauer Forum gestartet und dient dem Informationsaustausch. 
+Forum: https://hobbybrauer.de/forum/viewtopic.php?f=58&t=19036&p=309196#p309196
 
 # Installation
 
 **Installation ohne den Quellcode zu compilieren**
 
-Mit Hilfe von esptool.exe (see https://github.com/igrr/esptool-ck/releases ) aus dem Ordner tools kann die Firmware auf das ESP Modul geladen werden. Das ESPTool ist für verschiedene Betriebssysteme verfügbar.
+Mit Hilfe von esptool.exe (https://github.com/igrr/esptool-ck/releases ) aus dem Ordner tools kann die Firmware auf das ESP Modul geladen werden. Das ESPTool ist für verschiedene Betriebssysteme verfügbar.
 ESPtool-ck Copyright (C) 2014 Christian Klippel ck@atelier-klippel.de. This code is licensed under GPL v2.
 
 Unter Win10 wird der USB Treiber CH341SER benötigt: http://www.wch.cn/download/CH341SER_ZIP.html
@@ -60,6 +61,8 @@ Beispiel für ein ESP8266 Modul vom Typ Wemos D1 mini mit 4MB Flash verbunden mi
 	    * Das ESP8266 Modul startet anschließend im Access Point Modus mit der IP Adresse 192.168.4.1
 
     	* Das ESP8266 Modul über einen Webbrowser mit dem WLAN verbinden
+
+        * Anschließend ist das MQTTDevice erreichbar über http://mqttdevice
 
 
 **Installation mit Quellcode**
@@ -95,110 +98,110 @@ Voraussetzungen: (2020.01)
 
 Die Firmware bietet zwei Möglichkeiten, um Updates sehr einfach einspielen zu können.
 
-Update durch Dateiupload
+1. Update durch Dateiupload
 
-Im Webbrowser die URL http://<IP Adresse Wemos>/update aufrufen
-Hier kann Firmware und das Filesystem SPIFFS aktualisiert werden. Wenn das Filesystem SPIFFS mit Dateiupload aktualisiert wird, wird die Konfigurationsdatei überschrieben. Siehe hierzu auch Backup und Restore.
+    Im Webbrowser die URL http://mqttdevice/update aufrufen.
+    Hier kann Firmware und das Filesystem SPIFFS aktualisiert werden. Wenn das Filesystem SPIFFS mit Dateiupload aktualisiert wird, wird die Konfigurationsdatei überschrieben. Siehe hierzu auch Backup und Restore.
 
-WebUpdate
+2. WebUpdate
 
-Im Webbrowser die URL http://<IP Adresse Wemos> aufrufen und die Funktion WebUpdate aufrufen.
-WebUpdate aktualisiert  die Firmware, die index Datei und Zertifikate. Durch WebUpdate wird die Konfigurationsdatei nicht überschrieben.
+    Im Webbrowser die URL http://mqttdevice aufrufen und die Funktion "WebUpdate" aufrufen.
+    WebUpdate aktualisiert die Firmware, die index Datei und Zertifikate. Durch WebUpdate wird die Konfigurationsdatei nicht überschrieben.
 
 **Backup and Restore der Konfiguration**
 
-Der Dateiexplorer ist erreichbar über den Webbrowser http://<IP Adresse Wemos>/edit 
+Der Dateiexplorer ist erreichbar über den Webbrowser http://mqttdevice/edit 
 
-Backup
+1. Backup
 
-Auf die Datei config.txt klicken und aus dem PopUp Download auswählen.
+    Auf die Datei config.txt klicken und aus dem PopUp Download auswählen.
 
-Restore
+2. Restore
 
-Auf Datei auswählen klicken, die config.txt auswählen und Upload auswählen
+    Auf Datei auswählen klicken, die config.txt auswählen und Upload auswählen
 
-config.txt editieren
+3. config.txt editieren
 
-Auf die Datei config.txt klicken und aus dem PopUp Edit auswählen.
-Nun kann im Hauptfenster die Datei editiert werden. Zum Abspeichern CTRL+S verwenden. Vorsicht!!!
+    Auf die Datei config.txt klicken und aus dem PopUp Edit auswählen.
+    Nun kann im Hauptfenster die Datei editiert werden. Zum Abspeichern CTRL+S verwenden. Vorsicht!!!
 
 # Verwenden der Firmware
 
 Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder das Löschen von Sensoren und Aktoren wird daher hier nicht beschrieben.
 
 
-Die Hauptfunktionen
+**Die Hauptfunktionen**
 
-* Hinzufügen, editieren und löschen von Sensoren
-* Auto reconnect MQTT
-* Auto reconnect WLAN
-* OLED Display optional konfigurieren
-* System Einstellungen vollständig veränderbar
-* Firmware und SPIFFS Updates über Dateiupload
-* Firmware WebUpdate
-* Filebrowser für einefaches Datei-Management (zB backup und restore config.json)
-* DS18B20 Temperatur Offset - einfaches kalibrieren der Sensoren
+    * Hinzufügen, editieren und löschen von Sensoren
+    * Auto reconnect MQTT
+    * Auto reconnect WLAN
+    * OLED Display optional konfigurieren
+    * System Einstellungen vollständig veränderbar
+    * Firmware und SPIFFS Updates über Dateiupload
+    * Firmware WebUpdate
+    * Filebrowser für einefaches Datei-Management (zB backup und restore config.json)
+    * DS18B20 Temperatur Offset - einfaches kalibrieren der Sensoren
 
 **Das Menü Enstellungen:**
 
 1. System
 
-IP Adresse MQTT Server (CBPi):
+    IP Adresse MQTT Server (CBPi):
 
-Unter System wird der MQTT Broker eingetragen. In den allermeisten Fällen dürfte dies mosquitto auf dem CBPi sein.
-Wichtig ist, dass die Firmware MQTTDevice permanent versucht, mit dem MQTT Broker eine Verbindung aufzubauen. Wenn der MQTT Broker nicht verfügbar ist, beeinträchtigt das Geschwindigkeit vom Wemos. Der Wemos wirkt abhängig von der bereits konfiguraierten Anzahl an Sensoren und Aktoren träge bis zu sehr lahm. Beim Testen sollte daher der MQTT Broker online sein. 
+    Unter System wird der MQTT Broker eingetragen. In den allermeisten Fällen dürfte dies mosquitto auf dem CBPi sein.
+    Wichtig ist, dass die Firmware MQTTDevice permanent versucht, mit dem MQTT Broker eine Verbindung aufzubauen. Wenn der MQTT Broker nicht verfügbar ist, beeinträchtigt das Geschwindigkeit vom Wemos. Der Wemos wirkt abhängig von der bereits konfiguraierten Anzahl an Sensoren und Aktoren träge bis zu sehr lahm. Beim Testen sollte daher der MQTT Broker online sein. 
 
-mDNS:
+    mDNS:
 
-mDNS ist eine gute Möglichkeit, um das MQTTDevice mit einem beliebigen Namen anzusprechen. In der Standardkonfiguration ist das MQTTDevice im Webbrowser über http://mqttdevice erreichbar.
-Zu beachten gilt, dass mDNS Namen im Netzwerk eindeutig sein müssen. 
+    mDNS ist eine einfache Möglichkeit, um das MQTTDevice mit einem beliebigen Namen anzusprechen. In der Standardkonfiguration ist das MQTTDevice im Webbrowser über http://mqttdevice erreichbar.
+    Zu beachten gilt, dass mDNS Namen im Netzwerk eindeutig sein müssen. 
 
 2. Intervalle
 
-Unter Intervalle werden die Zeitabstände konfiguriert, mit denen 
-    - wie häufig Sensoren abgefragt werden und die Daten zum CBPi gesendet werden
-    - wie häufig Befehle für Aktoren / Induktion vom CBPi abgeholt werden
-Mit diesen Intervallen kann die Performance vom Wemos verbessert werden. Die Standard Einstellung von 5 Sekunden ist in Umgebungen mit vielen Sensoren und vielen Aktoren zu häufig. Hier wäre eher 10 bis 30 Sekunden für den kleinen Wemos besser geeignet. Dies muss individuell ausprobiert werden.  
+    Unter Intervalle werden die Zeitabstände konfiguriert, mit denen 
+        - wie häufig Sensoren abgefragt werden und die Daten zum CBPi gesendet werden
+        - wie häufig Befehle für Aktoren / Induktion vom CBPi abgeholt werden
+    Mit diesen Intervallen kann die Performance vom Wemos verbessert werden. Die Standard Einstellung von 5 Sekunden ist in Umgebungen mit vielen Sensoren und vielen Aktoren zu häufig. Hier wäre eher 10 bis 30 Sekunden für den kleinen Wemos besser geeignet. Dies muss individuell ausprobiert werden.  
 
 
 3. Der Eventmanager
 
-Der Eventmanager behandelt Fehlverhalten. Wichtig zu Beginn: das Event handling ist in der Standard Einstellung deaktiviert!
+    Der Eventmanager behandelt Fehlverhalten. Das Event handling ist in der Standard Einstellung deaktiviert!
 
-Was soll der Wemos machen, wenn
+    Was soll der Wemos machen, wenn
     - die WLAN Verbindung zum MQTT Server verloren geht
     - der MQTT Server offline geht
     - ein Temperatursensor keine Daten mehr liefert
-Ohne das Event handling macht der Wemos nichts automatisert. Der Zustand verbleibt unverändert.
+    Ohne das Event handling macht der Wemos nichts automatisert. Der Zustand verbleibt unverändert.
 
-Es gibt 4 Grundtypen von Ereignissen (Events), die automatisiert behandelt werden können: für Aktoren und für das Induktionkochfeld bei Sensorfehlern, sowie für Aktoren und das Induktionskochfeld bei WLAN und bei MQTT Fehlern. Für diese 4 Typen werden Verzögerungen für das Event handling konfiguriert. Während der Verzögerung verbleibt der Zustand unverändert.
+    Es gibt 4 Grundtypen von Ereignissen (Events), die automatisiert behandelt werden können: für Aktoren und für das Induktionkochfeld bei Sensorfehlern, sowie für Aktoren und das Induktionskochfeld bei WLAN und bei MQTT Fehlern. Für diese 4 Typen werden Verzögerungen für das Event handling konfiguriert. Während der Verzögerung verbleibt der Zustand unverändert.
 
-Zusätzlich kann jeder Sensor, jeder Aktor und das Induktionskochfeld separat für das Event handling aktiviert bzw. deaktiviert werden.
+    Zusätzlich kann jeder Sensor, jeder Aktor und das Induktionskochfeld separat für das Event handling aktiviert bzw. deaktiviert werden.
 
-Beispiel 1:
-Wenn der MQTT Broker unerwartet die Verbindung beendet, dann
-- wird automatisch versucht die Verbindung wieder aufzubauen
-- die konfigurierte Verzögerung wird abgewartet, bevor ein Aktor automatisch ausgeschaltet wird
-- das Induktionsfeld kann auf eine niedrigere Leistung gesetzt werden (von 100% auf 20% -> Temperatur halten)
-Beispiel 2:
-Wenn ein Temeratursensor beim Brauen -127°C meldet, dann
-- kann ein Aktor Rührwerk am Sudkessel weiterlaufen. Dieser Aktor kann für das Event handling deaktiviert werden.
-- Das Induktionskochfeld kann automatisch von 100% Leistung auf 20% heruntergeschaltet werden
-- ein Aktor Pumpe kann abgeschaltet werden
-etc.
+    Beispiel 1:
+    Wenn der MQTT Broker unerwartet die Verbindung beendet, dann
+    - wird automatisch versucht die Verbindung wieder aufzubauen
+    - die konfigurierte Verzögerung wird abgewartet, bevor ein Aktor automatisch ausgeschaltet wird
+    - das Induktionsfeld kann auf eine niedrigere Leistung gesetzt werden (von 100% auf 20% -> Temperatur halten)
+    Beispiel 2:
+    Wenn ein Temeratursensor beim Brauen -127°C meldet, dann
+    - kann ein Aktor Rührwerk am Sudkessel weiterlaufen. Dieser Aktor kann für das Event handling deaktiviert werden.
+    - Das Induktionskochfeld kann automatisch von 100% Leistung auf 20% heruntergeschaltet werden
+    - ein Aktor Pumpe kann abgeschaltet werden
 
-Die Reihenfolge beim Event handling ist grundsätzlich
+    Die Reihenfolge beim Event handling ist grundsätzlich
     - WLAN Fehler
     - MQTT Fehler
     - Sensor Fehler
 
 4. Restore
 
-Über das Menü Restore kann der Wemos gelöscht werden. Zur Auswahl stehen
+    Über das Menü Restore kann der Wemos gelöscht werden. Zur Auswahl stehen
     - WLAN Einstellungen löschen
     - Alle Einstellungen löschen (WLAN und Konfiguration)
 
 **Das OLED Display:**
+
 Diese Firmware unterstützt OLED Display monochrom OLED 128x64 I2C 0.96".
 Das Display kann über das WebIf konfiguriert werden. Wenn das Display aktiviert wird, sind die PINS D1 (SDL) und D2 (SDA) belegt. Auf dem Display werden Sensoren, Aktoren und Induktion mit ihren aktuellen Werten dargestellt. Dabei bedeutet "S1 78 | A2 100 | I off" 
     - Sensor 1 meldet eine Temperatur von 78°C
@@ -216,15 +219,42 @@ Anschluss ESP8266 D1 Mini an AZ-Delivery 0.96 i2c 128x64 OLED Display (Verwendun
 # Die MQTTDevice Platine
 
 Wichtiger Hinweis:
-Alle Informationen über die Platine sind rein informativ und können falsch sein. 
-Verwendung dieser Informationen auf eigene Gefahr. Jegliche Haftung wird ausgeschlossen.
+Die Platine ist aus einem Hobby-Projekt entstanden. Eine fertig bestückte Platine wird nicht angeboten. Die hier geteilten Informationen stellen einen Entwicklungszustand dar und dienen der Weiterentwicklung sowie der Überprüfung. 
+
+*Alle Informationen über die Platine sind rein informativ und können falsch sein.*
+*Verwendung dieser Informationen auf eigene Gefahr. Jegliche Haftung wird ausgeschlossen.*
 
 In diesem Projekt wurde eine Platine für das MQTTDevice entwickelt, um mit Klemmschraubblöcken eine einfache Anbindung an Sensoren, Aktoren und an das Induktionskochfeld GGM IDS2 zu bieten. Die Platine ist mit nur wenigen Bauteilen bestückt. Die Platine bietet folgende Vorteile:
     - der Wemos D1 mini steckt auf einem Sockel und kann jederzeit abgenommen werden
     - alle GPIOs werden auf Schraubklemmen geführt
-    - ein LevelShifter sorgt für 5V (statt 3V3) als Ausgangsspannung
+    - ein LevelShifter sorgt für 5V Steuerspannung an den Schraubklemmen GPIOs (Logic Level Converter)
     - die Stromversorgung vom Wemos kann bei der Verwendung einer GGM IDS2 direkt vom Induktionskochfeld genutzt werden
-    - die Temperatursensoren können direkt an die Schraubklemmen angeschlossen werden (R4k7 gegen 3V3 vorhanden)
+    - die Temperatursensoren an D3 können direkt an die Schraubklemmen angeschlossen werden (R4k7 gegen 3V3 vorhanden)
+    - ein optionales OLED Display ist auf D1 (SDL) und D2 (SDA) angebunden
+    - PIN D4 kann wahlweise per Jumper an den Display Port oder über den LevelShifter an D4 geführt werden.
+    - PIN D8 ist ohne LevelShifter auf D8 (3V3) geführt 
+
+**Einstellung der Jumper**
+![Jumper](img/platine_jumper.jpg)
+
+Auf der Platine befinden sich 4 Steckbrücken (Jumper)
+
+1. Jumper J1: PIN D1
+    1. In der Stellung 1-2 wird D1 zum Anschluss Display geführt (SDL)
+    2. In der Stellung 2-3 wird D1 über den LevelShifter zum Anschluss D1 geführt
+
+2. Jumper J2: PIN D2
+    1. In der Stellung 1-2 wird D2 zum Anschluss Display geführt (SDA)
+    2. In der Stellung 2-3 wird D2 über den LevelShifter zum Anschluss D2 geführt
+
+3. Jumper J3: PIN D4
+    1. In der Stellung 1-2 wird D4 zum Anschluss Display als D4 ggfs. für ein TFT geführt
+    2. In der Stellung 2-3 wird D4 über den LevelShifter zum Anschluss D4 geführt
+
+4. Jumper J4: 5V Stromanschluss von GGM IDS2
+    1. Wenn der Jumper gebrückt ist, wird die Stromzufuhr 5V vom Induktionskochfeld (JST-HX Buchse) verwendet
+    2. Wenn der Jumper nicht gesetzt ist, benötigt der Wemos eine Stromzuführ über den 5V Anschluss
+
 
 **Platine Layout**
 
@@ -234,7 +264,32 @@ Im Ordner Info befinden sich EasyEDA Dateien, mit deren Hilfe die Platine erstel
 
 **Platine Stückliste**
 
+Folgende Bautteile werden benötigt:
+
+    1x Schraubklemmblock 2pol Rastermaß 2,54    (Bsp voelkner S84366)
+    3x Schraubklemmblock 3pol Rastermaß 2,54
+    2x Schraubklemmblock 5pol Rastermaß 2,54
+    2x Schraubklemmblock 8pol Rastermaß 2,54
+    1x JST-HX Buchse gewinkelt Rastermaß 2,54   (Bsp voelkner D17526)
+    1x Stiftleiste einreihig Rastermaß 2,54     (Bsp Reichelt SL 1X36G 2,54)
+    4x Steckbrücken (Jumper) Rastermaß 2,54     (Bsp Reichelt JUMPER 2,54 SW)
+    1x Widerstand 4,7kOhm                       (Bsp Reichelt YAG 4FTE52-4K7)
+    1x D1 mini NodeMcu ESP8266-12E mit Sockel   (Bsp Amazon ASIN B01N9RXGHY)
+    1x LevelShifter 8 Kanal 5V 3.3V             (Bsp amazon ASIN B01MZ76GN5)
+
+*Die Beispiele von amazon, reichelt und voelkner sind rein informativ als Suchhilfe zu verstehen*
+
+![LevelShifter](img/platine_levelshifter.jpg)
+Bei der Auswahl LevelShifter (Logic Level Converter) muss die Belgung beachtet werden. Der LevelShifter muss im Eingang Low Voltage (LV) diese Reihenfolge haben: 
+
+    **LV1 - LV2 - LV3 - LV4 - LV (3V3) - Ground - LV5 - LV6 - LV7 - LV8**
+
+
 **Platine Hinweise zum Aufbau**
+
+Der Widerstand R 4.7kOhm für die Temperatursensoren DS18B20 wird unter dem Wemos D1 mini platziert. Deshalb muss der Wemos gesockelt werden. Die Sockel bieten zudem den Vorteil, dass der Wemos jederzeit von der Platine genommen werden kann, bspw. zum Flashen oder zum Testen. Die DS18B20 werden an VCC mit 5V versorgt. Dies stellt eine stabile Versorgung auch bei längeren Zuleitungen sicher. Der Widerstand ist von Data (PIN D3) gegen 3V3.
+Die JST-HX Buchse und die Steckbrücke J4 für das Induktionskochfeld sind optional.
+
 
 # TCP Server
 
