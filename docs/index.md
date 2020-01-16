@@ -224,21 +224,22 @@ Anschluss ESP8266 D1 Mini an AZ-Delivery 0.96 i2c 128x64 OLED Display (Verwendun
 # Die MQTTDevice Platine
 
 Wichtiger Hinweis:
-Die Platine ist aus einem Hobby-Projekt entstanden. Eine fertig bestückte Platine wird nicht angeboten. Die hier geteilten Informationen stellen einen Entwicklungszustand dar und dienen der Weiterentwicklung sowie der Überprüfung. 
+Die Platine ist aus einem Hobby-Projekt entstanden. Eine fertig bestückte Platine wird nicht angeboten. Das Projekt verfolgt keinerlei kommerzielle Absichten. Die hier geteilten Informationen stellen einen Entwicklungszustand dar und dienen der Weiterentwicklung sowie der Überprüfung, Korrektur und Verbesserung. Inhalte aus externen Links (bspw Forum hobbybrauer) und Angaben zu externen Inhalten (bspw. Artikel unterschiedlicher Anbieter) unterliegen den jeweiligen Rechten der Inhaber. Externe Inhalte sind ausschließlich als informative Starthilfe anzusehen.  
 
 *Alle Informationen über die Platine sind rein informativ und können falsch sein.*
 *Verwendung dieser Informationen auf eigene Gefahr. Jegliche Haftung wird ausgeschlossen.*
 
 In diesem Projekt wurde eine Platine für das MQTTDevice entwickelt, um mit Klemmschraubblöcken eine einfache Anbindung an Sensoren, Aktoren und an das Induktionskochfeld GGM IDS2 zu bieten. Die Platine ist mit nur wenigen Bauteilen bestückt. Die Platine bietet folgende Vorteile:
 
-- der Wemos D1 mini steckt auf einem Sockel und kann jederzeit abgenommen werden
-- alle GPIOs werden auf Schraubklemmen geführt
-- ein LevelShifter sorgt für 5V Steuerspannung an den Schraubklemmen GPIOs (Logic Level Converter)
-- die Stromversorgung vom Wemos kann bei der Verwendung einer GGM IDS2 direkt vom Induktionskochfeld genutzt werden
-- die Temperatursensoren an D3 können direkt an die Schraubklemmen angeschlossen werden (R4k7 gegen 3V3 vorhanden)
-- ein optionales OLED Display ist auf D1 (SDL) und D2 (SDA) angebunden
-- PIN D4 kann wahlweise per Jumper an den Display Port oder über den LevelShifter an D4 geführt werden.
-- PIN D8 ist ohne LevelShifter auf D8 (3V3) geführt 
+- der Wemos D1 mini steckt auf einem Sockel und kann jederzeit abgenommen werden.
+- alle GPIOs werden auf Schraubklemmen geführt.
+- ein LevelShifter sorgt für 5V Steuerspannung an den Schraubklemmen GPIOs (Logic Level Converter).
+- die Stromversorgung vom Wemos kann bei der Verwendung einer GGM IDS2 direkt vom Induktionskochfeld genutzt werden.
+- Temperatursensoren DS18B20 fest an D3 können direkt an die Schraubklemmen angeschlossen werden.
+- ein optionales OLED Display kann über den Jumper J1 und J2 über D1 (SDL) und D2 (SDA J2) angebunden werden.
+- PIN D4 kann wahlweise per Jumper J3 an den Display Port oder über den LevelShifter an D4 geführt werden.
+- PIN D8 ist ohne LevelShifter auf D8 (3V3) geführt.
+- Spannungsversorgung 5V über Schraubklemme 
 
 **Einstellung der Jumper**
 ![Jumper](img/platine_jumper.jpg)
@@ -261,13 +262,16 @@ Auf der Platine befinden sich 4 Steckbrücken (Jumper)
     1. Wenn der Jumper gebrückt ist, wird die Stromzufuhr 5V vom Induktionskochfeld (JST-HX Buchse) verwendet
     2. Wenn der Jumper nicht gesetzt ist, benötigt der Wemos eine Stromzuführ über den 5V Anschluss
     Jumper J4 ist optional. Wird die GGM IDS2 nicht verwendet, kann die Steckbrück und Anschlussbuchse entfallen.
+    
+    Wenn die Stromversorgung vom Induktionskochfeld bezogen wird (Jumper J4 gesetzt), darf keine Spannungsversorgung zusätzlich über den 5V Eingang angeschlossen werden.
 
 
-**Platine Layout**
+**Das Platine Layout**
 
 ![Platine](img/platine.jpg)
 
-Im Ordner Info befinden sich EasyEDA Dateien, mit deren Hilfe die Platine erstellt werden kann. Ebenfalls im Ordner Info befinden sich STL Dateien für einen 3D Druck MQTTDevice Gehäuse.
+Im Ordner Info befindet sich eine EasyEDA Datei, mit deren Hilfe die Platine erstellt werden kann. Ebenfalls im Ordner Info befinden sich STL Dateien für einen 3D Druck MQTTDevice Gehäuse.
+Korrekturen, Verbesserungen und Weiterentwicklungen bitte teilen.
 
 **Platine Stückliste**
 
@@ -278,19 +282,18 @@ Folgende Bautteile werden benötigt:
     2x Schraubklemmblock 5pol Rastermaß 2,54
     2x Schraubklemmblock 8pol Rastermaß 2,54
     1x JST-HX Buchse gewinkelt Rastermaß 2,54   (Bsp voelkner D17526)
-    1x Stiftleiste einreihig Rastermaß 2,54     (Bsp Reichelt SL 1X36G 2,54)
-    4x Steckbrücken (Jumper) Rastermaß 2,54     (Bsp Reichelt JUMPER 2,54 SW)
-    1x Widerstand 4,7kOhm                       (Bsp Reichelt YAG 4FTE52-4K7)
-    1x D1 mini NodeMcu ESP8266-12E mit Sockel   (Bsp Amazon ASIN B01N9RXGHY)
+    1x Stiftleiste einreihig Rastermaß 2,54     (Bsp reichelt SL 1X36G 2,54)
+    4x Steckbrücken (Jumper) Rastermaß 2,54     (Bsp reichelt JUMPER 2,54 SW)
+    1x Widerstand 4,7kOhm                       (Bsp reichelt YAG 4FTE52-4K7)
+    1x D1 mini NodeMcu ESP8266-12E mit Sockel   (Bsp amazon ASIN B01N9RXGHY)
     1x LevelShifter 8 Kanal 5V 3.3V             (Bsp amazon ASIN B01MZ76GN5)
 
-*Die Beispiele von amazon, reichelt und voelkner sind rein informativ als Suchhilfe zu verstehen*
+*amazon, reichelt und voelkner sind rein informativ als Suchhilfe für allgemein bekannter Anbieter zu verstehen*
 
 ![LevelShifter](img/platine_levelshifter.jpg)
-Bei der Auswahl LevelShifter (Logic Level Converter) muss die Belgung beachtet werden. Der LevelShifter muss im Eingang Low Voltage (LV) diese Reihenfolge haben: 
+Bei der Auswahl LevelShifter (Logic Level Converter) muss zwingend die Belgung beachtet werden. Der LevelShifter muss im Eingang Low Voltage (LV) diese Reihenfolge haben: 
 
     **LV1 - LV2 - LV3 - LV4 - LV (3V3) - Ground - LV5 - LV6 - LV7 - LV8**
-
 
 **Platine Hinweise zum Aufbau**
 
