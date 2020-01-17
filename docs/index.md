@@ -236,6 +236,8 @@ Die Platine ist aus einem Hobby-Projekt entstanden. Eine fertig bestückte Plati
 *Alle Informationen über die Platine sind rein informativ und können falsch sein.*
 *Verwendung dieser Informationen auf eigene Gefahr. Jegliche Haftung wird ausgeschlossen.*
 
+![Platine-bestückt1](img/platine-best1.jpg) ![Platine-bestückt2](img/platine-best2.jpg)
+
 In diesem Projekt wurde eine Platine für das MQTTDevice entwickelt, um mit Klemmschraubblöcken eine einfache Anbindung an Sensoren, Aktoren und an das Induktionskochfeld GGM IDS2 zu bieten. Die Platine ist mit nur wenigen Bauteilen bestückt. Die Platine bietet folgende Vorteile:
 
 - der Wemos D1 mini steckt auf einem Sockel und kann jederzeit abgenommen werden.
@@ -314,7 +316,7 @@ Die JST-HX Buchse und die Steckbrücke J4 für das Induktionskochfeld sind optio
 *Es ist ausschließlich das Induktionskochfeld vom Typ GGM IDS2 getestet worden* 
 *Verwendung dieser Anleitung auf eigene Gefahr!*
 
-Das Induktionskochfeld vom Typ GGM IDS2 kann mit der Platine verbunden werden. Die GGM IDS2 wird mit einem externen Bedienteil geliefert. Wenn das Bedienteil geöffnet wird, kann die Kabelverbindung vom Bedienteil zum Induktionskochfeld entnommen werden. Dafür muss lediglich das Kabel aus der Buchse im Bedienteil abgezogen werden.
+Das Induktionskochfeld vom Typ GGM IDS2 kann **optional** mit der Platine verbunden werden. Die GGM IDS2 wird mit einem externen Bedienteil geliefert. Wenn das Bedienteil geöffnet wird, kann die Kabelverbindung vom Bedienteil zum Induktionskochfeld entnommen werden. Dafür muss lediglich das Kabel aus der Buchse im Bedienteil abgezogen werden.
 Die exakt gleiche Buchse (JST-HX) befindet sich auf der MQTTDevice Platine. 
 
 Die Anschlüsse müssen über das Web Interface wie folgt konfiguriert werden:

@@ -42,7 +42,7 @@ void listenerSystem(int event, int parm) // System event listener
     {
       DEBUG_MSG("%s", "MQTT auto reconnect successful. Subscribing..\n");
       cbpiEventSystem(EM_MQTTSUB); // MQTT subscribe
-      cbpiEventSystem(EM_MQTTRES);
+      cbpiEventSystem(EM_MQTTRES); // MQTT restore
       break;
     }
     if (retriesMQTT <= maxRetriesMQTT)
