@@ -31,10 +31,11 @@ void loop()
     cbpiEventSystem(EM_TCP);
     tickTCP = false;
   }
-  if (tickNTP)              // NTP Update
-  {
-    cbpiEventSystem(EM_NTP); 
-    tickNTP = false;
-  }
+  // Ersetzt durch ticker
+  // if (tickNTP)              // NTP Update
+  // {
+  //   cbpiEventSystem(EM_NTP); 
+  //   tickNTP = false;
+  // }
   gEM.processAllEvents();
 }

@@ -179,29 +179,43 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
     Ohne das Event handling macht der Wemos nichts automatisert. Der Zustand verbleibt unverändert.
 
     Es gibt 4 Grundtypen von Ereignissen (Events), die automatisiert behandelt werden können: für Aktoren und für das Induktionkochfeld bei Sensorfehlern, sowie für Aktoren und das Induktionskochfeld bei WLAN und bei MQTT Fehlern. Für diese 4 Typen werden Verzögerungen für das Event handling konfiguriert. Während der Verzögerung verbleibt der Zustand unverändert. Nach der Verzögerung kann das MQTTDevice den Zustand von Aktoren und Induktionskochfeld ändern.
+    Die Verzögerungen werden unter Einstellungen -> EventManager konfiguriert:
 
-    Zusätzlich kann jeder Sensor, jeder Aktor und das Induktionskochfeld separat für das Event handling aktiviert bzw. deaktiviert werden. Die Szenarien für die Verwendung vom Event handling sind vielfältig. Hier sind jeweils die Funktionen von Sensoren und Aktoren individuell zu unterscheiden. 2 Beispiele zur Erläuterung:
+    1. Verzögerung für Aktoren bevor ein Sensor ein Event auslöst.
+    2. Verzögerung für das Induktionskochfeld bevor ein Sensor ein Event auslöst.
+    3. Verzögerung bei MQTT Fehlern.
+    4. Verzögerung bei WLAN Fehlern.
+
+    Die Standard Einstellung für diese 4 Parameter ist 120 Sekunden Verzögerung.
+
+    Das WLAN und MQTT Event handling kann grundsätzlich aktiviert oder für alle Aktoren und Induktionskochfeld deaktiviert werden. Wird das WLAN und MQTT Event handling aktiviert, muss in den Einstellungen der Aktoren und für das Induktionskochfeld zusätzlich das Event handling aktiviert werden. So kann jedes Gerät individuell konfiguriert werden.
+
+    Auch jeder Sensor hat eine Eigenschaft Event handling. Wird für einen Sensor das Event handling aktiviert, so kann dieser Sensor bei einer Sensorstörung die Event Behandlung starten. Ein Sensor, der für das Event handling deaktiviert ist, kann dementsprechend keine Events auslösen.
+    
+    Die Szenarien für die Verwendung vom Event handling sind sehr vielfältig. Hier sind jeweils die Funktionen von Sensoren und Aktoren individuell zu unterscheiden. Zwei Beispiele zur Erläuterung:
 
     **Beispiel 1:**
     Wenn der MQTT Broker unerwartet die Verbindung beendet, dann
-    1. wird automatisch versucht die Verbindung wieder aufzubauen
+    1. wird automatisch versucht die Verbindung wieder aufzubauen, völlig unabhängig von den Einstellungen Event handling.
     2. die konfigurierte Verzögerung wird abgewartet, bevor ein Aktor automatisch ausgeschaltet wird
-    3. das Induktionsfeld kann auf eine niedrigere Leistung gesetzt werden (von 100% auf 20%) um die Temperatur zu halten
+    3. das Induktionsfeld kann auf eine niedrigere Leistung gesetzt werden (von 100% auf 20%), um die Temperatur zu halten
     
     **Beispiel 2:**
-    Wenn ein Temeratursensor beim Brauen einen Fehler meldet (bspw. "Unplugged" oder "-127°C"), dann
-    1. wird automatisch versucht, in den nächsten Zyklen brauchbare Messwerte zu erhalten
-    2. die konfigurierte Verzögerung wird abgewartet 
-    3. nach Ablauf der Verzögerung kann ein Aktor Rührwerk am Sudkessel weiterlaufen: Event handling deaktiviert
-    4. ein Aktor Heater (verbunden mit einem SSR) kann abgeschaltet werden: Event handling aktiviert
-    5. ein Aktor Pumpe kann abgeschaltet werden: Event handling aktiviert
+    Wenn ein Temeratursensor beim Brauen einen Fehler meldet, bspw. der STecker löst sich und der Sensor meldet "Unplugged", dann
+    1. wird automatisch versucht, in den nächsten Zyklen brauchbare Messwerte vom Sensor zu erhalten. 
+    2. die konfigurierte Verzögerung wird abgewartet. 
+    3. nach Ablauf der Verzögerung kann ein Aktor Rührwerk am Sudkessel weiterlaufen: das Event handling für diesen Aktor ist deaktiviert.
+    4. ein Aktor Heater (verbunden mit einem SSR) kann abgeschaltet werden: das Event handling für diesen Aktor ist aktiviert.
+    5. ein Aktor Pumpe kann abgeschaltet werden: das Event handling für den Aktor Pumpe ist aktiviert.
 
-    Beispiel 2 bei komplett deaktiviertem Event handling würde bedeuten, dass CBPi an den Aktor Heater 100% Leistung zum Aufheizen sendet.   
+    Beispiel 2 bei komplett deaktiviertem Event handling würde bedeuten, dass CBPi an den Aktor Heater 100% Leistung zum Aufheizen sendet.  
 
     Die Reihenfolge beim Event handling ist grundsätzlich
     - WLAN Fehler
     - MQTT Fehler
     - Sensor Fehler
+
+    Rückwärts betrachtet kann das Event Sensor Fehler nur dann eintreten, wenn die Kommunikation mit dem MQTT Broker fehlerfrei ist. Ein Event MQTT Fehler kann nur eintreten, wenn eine WLAN Verbindung hergestellt ist.
 
 4. Restore
 

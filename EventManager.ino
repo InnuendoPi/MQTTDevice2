@@ -16,25 +16,22 @@ void listenerSystem(int event, int parm) // System event listener
     WiFi.begin();
     if (WiFi.status() == WL_CONNECTED)
     {
-      retriesWLAN = 1;
       wlan_state = true;
       oledDisplay.wlanOK = true;
       break;
     }
-    DEBUG_MSG("EM WLAN: WLAN Fehler %d ... versuche neu zu verbinden\n", retriesWLAN);
-    if (retriesWLAN == maxRetriesWLAN)
+    DEBUG_MSG("%s", "EM WLAN: WLAN Fehler ... versuche neu zu verbinden\n");
+    if (millis() > (wlanconnectlasttry + wait_on_error_wlan)) // Wait bevor Event handling
     {
-      // reconnect fails after maxtries and delay
-      DEBUG_MSG("EM WLAN: WLAN Verbindung verloren! max retries: %d StopOnWLANError: %d WLAN state: %d\n", retriesWLAN, StopOnWLANError, wlan_state);
       if (StopOnWLANError && wlan_state)
       {
+        DEBUG_MSG("EM WLAN: WLAN Verbindung verloren! StopOnWLANError: %d WLAN state: %d\n", StopOnWLANError, wlan_state);
         wlan_state = false;
         mqtt_state = false; // MQTT in error state - required to restore values
         cbpiEventActors(EM_ACTER);
         cbpiEventInduction(EM_INDER);
       }
     }
-    retriesWLAN++;
     break;
   case EM_MQTTER: // MQTT Error -> handling
     oledDisplay.mqttOK = false;
@@ -45,19 +42,16 @@ void listenerSystem(int event, int parm) // System event listener
       cbpiEventSystem(EM_MQTTRES); // MQTT restore
       break;
     }
-    if (retriesMQTT <= maxRetriesMQTT)
-      DEBUG_MSG(" #%d/%d ... versuche zu verbinden\n", retriesMQTT, maxRetriesMQTT);
-    if (retriesMQTT == maxRetriesMQTT)
+    if (millis() > (mqttconnectlasttry + wait_on_error_mqtt))
     {
-      DEBUG_MSG("EM MQTTER: MQTT Broker %s nicht erreichbar! Max retries %d StopOnMQTTError: %d mqtt_state: %d\n", mqtthost, maxRetriesMQTT, StopOnMQTTError, mqtt_state);
       if (StopOnMQTTError && mqtt_state)
       {
+        DEBUG_MSG("EM MQTTER: MQTT Broker %s nicht erreichbar! StopOnMQTTError: %d mqtt_state: %d\n", mqtthost, StopOnMQTTError, mqtt_state);
         cbpiEventActors(EM_ACTER);
         cbpiEventInduction(EM_INDER);
         mqtt_state = false; // MQTT in error state
       }
     }
-    retriesMQTT++;
     break;
   // 10-19 System triggered events
   case EM_MQTTRES: // restore saved values after reconnect MQTT (10)
@@ -65,9 +59,6 @@ void listenerSystem(int event, int parm) // System event listener
     {
       wlan_state = true;
       mqtt_state = true;
-      retriesWLAN = 1;
-      retriesMQTT = 1;
-
       for (int i = 0; i < numberOfActors; i++)
       {
         if (actors[i].switchable && !actors[i].actor_state)
@@ -104,51 +95,45 @@ void listenerSystem(int event, int parm) // System event listener
     if (WiFi.status() == WL_CONNECTED)
     {
       oledDisplay.wlanOK = true;
-      retriesWLAN = 1;
+      if (TimerWLAN.active())
+        TimerWLAN.detach();
     }
-    else if (millis() > (wlanconnectlasttry + wait_on_error_wlan))
+    else if (!TimerWLAN.active())
     {
+      TimerWLAN.attach(tickerWLAN, tickerWLANER);
+      wlanconnectlasttry = millis();
       switch (WiFi.status())
       {
       case 0: // WL_IDLE_STATUS
-        if (retriesWLAN <= maxRetriesWLAN)
-          DEBUG_MSG("WiFi status: Fehler rc: %d WL_IDLE_STATUS");
+        DEBUG_MSG("WiFi status: Fehler rc: %d WL_IDLE_STATUS");
         break;
       case 1: // WL_NO_SSID_AVAIL
-        if (retriesWLAN <= maxRetriesWLAN)
-          DEBUG_MSG("WiFi status: Fehler rc: %d WL_NO_SSID_AVAIL");
+        DEBUG_MSG("WiFi status: Fehler rc: %d WL_NO_SSID_AVAIL");
         break;
       case 2: // WL_SCAN_COMPLETED
-        if (retriesWLAN <= maxRetriesWLAN)
-          DEBUG_MSG("WiFi status: Fehler rc: %d WL_SCAN_COMPLETED");
+        DEBUG_MSG("WiFi status: Fehler rc: %d WL_SCAN_COMPLETED");
         break;
       case 3: // WL_CONNECTED
-        if (retriesWLAN <= maxRetriesWLAN)
-          DEBUG_MSG("WiFi status: Fehler rc: %d WL_CONNECTED");
+        DEBUG_MSG("WiFi status: Fehler rc: %d WL_CONNECTED");
         break;
       case 4: // WL_CONNECT_FAILED
-        if (retriesWLAN <= maxRetriesWLAN)
-          DEBUG_MSG("WiFi status: Fehler rc: %d WL_CONNECT_FAILED");
+        DEBUG_MSG("WiFi status: Fehler rc: %d WL_CONNECT_FAILED");
         cbpiEventSystem(EM_WLANER);
         break;
       case 5: // WL_CONNECTION_LOST
-        if (retriesWLAN <= maxRetriesWLAN)
-          DEBUG_MSG("WiFi status: Fehler rc: %d WL_CONNECTION_LOST");
+        DEBUG_MSG("WiFi status: Fehler rc: %d WL_CONNECTION_LOST");
         cbpiEventSystem(EM_WLANER);
         break;
       case 6: // WL_DISCONNECTED
-        if (retriesWLAN <= maxRetriesWLAN)
-          DEBUG_MSG("WiFi status: Fehler rc: %d WL_DISCONNECTED");
+        DEBUG_MSG("WiFi status: Fehler rc: %d WL_DISCONNECTED");
         cbpiEventSystem(EM_WLANER);
         break;
       case 255: // WL_NO_SHIELD
-        if (retriesWLAN <= maxRetriesWLAN)
-          DEBUG_MSG("WiFi status: Fehler rc: %d WL_NO_SHIELD");
+        DEBUG_MSG("WiFi status: Fehler rc: %d WL_NO_SHIELD");
         break;
       default:
         break;
       }
-      wlanconnectlasttry = millis();
     }
     break;
   case EM_MQTT: // check MQTT (22)
@@ -158,64 +143,55 @@ void listenerSystem(int event, int parm) // System event listener
     {
       oledDisplay.mqttOK = true;
       mqtt_state = true;
-      retriesMQTT = 1;
-      mqttconnectlasttry = 0;
       pubsubClient.loop();
+      if (TimerMQTT.active())
+        TimerMQTT.detach();
     }
     else if (!pubsubClient.connected())
     {
-      if (millis() > (mqttconnectlasttry + wait_on_error_mqtt))
+      if (!TimerMQTT.active())
       {
+        TimerMQTT.attach(tickerMQTT, tickerMQTTER);
+        mqttconnectlasttry = millis();
         switch (pubsubClient.state())
         {
         case -4: // MQTT_CONNECTION_TIMEOUT - the server didn't respond within the keepalive time
-          if (retriesMQTT <= maxRetriesMQTT)
-            DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECTION_TIMEOUT", pubsubClient.state());
+          DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECTION_TIMEOUT", pubsubClient.state());
           cbpiEventSystem(EM_MQTTER);
           break;
         case -3: // MQTT_CONNECTION_LOST - the network connection was broken
-          if (retriesMQTT <= maxRetriesMQTT)
-            DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECTION_LOST", pubsubClient.state());
+          DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECTION_LOST", pubsubClient.state());
           cbpiEventSystem(EM_MQTTER);
           break;
         case -2: // MQTT_CONNECT_FAILED - the network connection failed
-          if (retriesMQTT <= maxRetriesMQTT)
-            DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECT_FAILED", pubsubClient.state());
+          DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECT_FAILED", pubsubClient.state());
           cbpiEventSystem(EM_MQTTER);
           break;
         case -1: // MQTT_DISCONNECTED - the client is disconnected cleanly
-          if (retriesMQTT <= maxRetriesMQTT)
-            DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_DISCONNECTED", pubsubClient.state());
+          DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_DISCONNECTED", pubsubClient.state());
           cbpiEventSystem(EM_MQTTER);
           break;
         case 0: // MQTT_CONNECTED - the client is connected
-          // kann hier nicht vorkommen: MQTT connected
           pubsubClient.loop();
           break;
         case 1: // MQTT_CONNECT_BAD_PROTOCOL - the server doesn't support the requested version of MQTT
-          if (retriesMQTT <= maxRetriesMQTT)
-            DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECT_BAD_PROTOCOL", pubsubClient.state());
+          DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECT_BAD_PROTOCOL", pubsubClient.state());
           break;
         case 2: // MQTT_CONNECT_BAD_CLIENT_ID - the server rejected the client identifier
-          if (retriesMQTT <= maxRetriesMQTT)
-            DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECT_BAD_CLIENT_ID", pubsubClient.state());
+          DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECT_BAD_CLIENT_ID", pubsubClient.state());
           break;
         case 3: // MQTT_CONNECT_UNAVAILABLE - the server was unable to accept the connection
-          if (retriesMQTT <= maxRetriesMQTT)
-            DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECT_UNAVAILABLE", pubsubClient.state());
+          DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECT_UNAVAILABLE", pubsubClient.state());
           break;
         case 4: // MQTT_CONNECT_BAD_CREDENTIALS - the username/password were rejected
-          if (retriesMQTT <= maxRetriesMQTT)
-            DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECT_BAD_CREDENTIALS", pubsubClient.state());
+          DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECT_BAD_CREDENTIALS", pubsubClient.state());
           break;
         case 5: // MQTT_CONNECT_UNAUTHORIZED - the client was not authorized to connect
-          if (retriesMQTT <= maxRetriesMQTT)
-            DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECT_UNAUTHORIZED", pubsubClient.state());
+          DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECT_UNAUTHORIZED", pubsubClient.state());
           break;
         default:
           break;
         }
-        mqttconnectlasttry = millis();
       }
     }
     break;
@@ -250,7 +226,8 @@ void listenerSystem(int event, int parm) // System event listener
       }
       oledDisplay.mqttOK = true; // Display MQTT
       mqtt_state = true;         // MQTT state ok
-      retriesMQTT = 1;           // Reset retries
+      if (TimerMQTT.active())    // wenn das Ticker Objekt aktiv ist muss es detached werden!
+        TimerMQTT.detach();
     }
     break;
   case EM_MDNS: // check MDSN (24)
@@ -261,9 +238,8 @@ void listenerSystem(int event, int parm) // System event listener
     timeClient.begin();
     millis2wait(PAUSE1SEC);
     timeClient.update();
-    //formatZeit();
     break;
-  case EM_NTP: // NTP Update (25)
+  case EM_NTP: // NTP Update (25) -> In Ticker Objekt ausgelagert!
     timeClient.update();
     break;
   case EM_MDNSET: // MDNS setup (26)
@@ -525,7 +501,7 @@ void cbpiEventInduction(int parm) // Induction events
   gEM.queueEvent(EventManager::kEventUser3, parm);
 }
 
-void timerNTPCallback(void *pArg) // Timer Objekt Temperatur mit Pointer
-{
-  tickNTP = true; // Bei true wird im nächsten loop readTemperature ausgeführt
-}
+// void timerNTPCallback(void *pArg) // Timer Objekt Temperatur mit Pointer
+// {
+//   tickNTP = true; // Bei true wird im nächsten loop readTemperature ausgeführt
+// }

@@ -34,6 +34,8 @@
 #include <WiFiClientSecure.h>
 #include <WiFiClientSecureBearSSL.h>
 #include <NTPClient.h>
+#include <Ticker.h>
+
 //#include <stdarg.h>
 #include <CertStoreBearSSL.h>
 
@@ -172,26 +174,23 @@ int TCP_UPDATE = 60000; //  TCP server Update interval
 #define EM_ACTOFF 11 // Actor error
 #define EM_INDOFF 11 // Induction error
 
-// WLAN and MQTT reconnect parameters
-bool StopOnWLANError = false;         // Use webif to configure: switch on/off event handling actors and induvtion on WLAN error
-bool StopOnMQTTError = false;         // Use webif to configure: switch on/off event handling actors and induvtion on MQTT error
-int retriesWLAN = 1;                  // Counter WLAN reconnects
-int retriesMQTT = 1;                  // Counter MQTT reconnects
-unsigned long mqttconnectlasttry = 0; // Timestamp MQTT
-unsigned long wlanconnectlasttry = 0; // Timestamp WLAN
-bool mqtt_state = true;               // Error state MQTT
-bool wlan_state = true;               // Error state WLAN
+// Event handling 
+bool StopOnWLANError = false;         // Event handling für WLAN Fehler
+bool StopOnMQTTError = false;         // Event handling für MQTT Fehler
+unsigned long mqttconnectlasttry = 0; // Zeitstempel bei Fehler MQTT
+unsigned long wlanconnectlasttry = 0; // Zeitstempel bei Fehler WLAN
+bool mqtt_state = true;               // Status MQTT
+bool wlan_state = true;               // Status WLAN
 
-#define maxRetriesWLAN 5        // Max retries before errer event
-#define maxRetriesMQTT 5        // Max retries before error event
-int wait_on_error_mqtt = 25000; // How long should device wait between tries to reconnect WLAN      - approx in ms
-int wait_on_error_wlan = 25000; // How long should device wait between tries to reconnect WLAN      - approx in ms
-// Sensor reconnect parameters
+// Zeitintervall für Reconnects WLAN und MQTT
+#define tickerWLAN 20        // für Ticker Objekt WLAN in Sekunden!
+#define tickerMQTT 20        // für Ticker Objekt MQTT in Sekunden!
+
+// Standard Verzögerungen für das Event handling
+int wait_on_error_mqtt = 120000; // How long should device wait between tries to reconnect WLAN      - approx in ms
+int wait_on_error_wlan = 120000; // How long should device wait between tries to reconnect WLAN      - approx in ms
 int wait_on_Sensor_error_actor = 120000;     // How long should actors wait between tries to reconnect sensor    - approx in ms
 int wait_on_Sensor_error_induction = 120000; // How long should induction wait between tries to reconnect sensor - approx in ms
-
-bool StopActorsOnError = false;    // Use webif to configure: switch on/off event handling actors on sensor error after wait_on_Sensor_error_actor ms
-bool StopInductionOnError = false; // Use webif to configure: switch on/off event handling Induction on sensor error after wait_on_Sensor_error_induction ms
 
 // Start
 bool startMDNS = true; // Standard mDNS Name ist ESP8266- mit mqtt_chip_key
@@ -199,11 +198,6 @@ char nameMDNS[16] = "MQTTDevice";
 bool startTCP = false;
 bool shouldSaveConfig = false; // WiFiManager
 
-// unsigned long lastToggledSen = 0;  // Timestamp sensor event
-// unsigned long lastToggledAct = 0;  // Timestamp actors event
-// unsigned long lastToggledInd = 0;  // Timestamp induction event
-// unsigned long lastToggledDisp = 0; // Timestamp display event
-// unsigned long lastToggledTCP = 0;  // Timestamp system event
 unsigned long lastSenAct = 0;      // Timestap actors on sensor error
 unsigned long lastSenInd = 0;      // Timestamp induction on sensor error
 
@@ -240,7 +234,7 @@ os_timer_t TimerAct;
 os_timer_t TimerInd;
 os_timer_t TimerDisp;
 os_timer_t TimerTCP;
-os_timer_t TimerNTP;
+Ticker TimerMQTT, TimerWLAN, TimerNTP;
 
 bool tickSen = false;
 bool tickAct = false;

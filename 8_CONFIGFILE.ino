@@ -167,8 +167,8 @@ bool loadConfig()
   if (miscObj.containsKey("delay_mqtt"))
     wait_on_error_mqtt = miscObj["delay_mqtt"];
 
-  DEBUG_MSG("Wait on sensor error actors: %d\n", wait_on_Sensor_error_actor);
-  DEBUG_MSG("Wait on sensor error induction: %d\n", wait_on_Sensor_error_induction);
+  DEBUG_MSG("Wait on sensor error actors: %d sec\n", wait_on_Sensor_error_actor/1000);
+  DEBUG_MSG("Wait on sensor error induction: %d sec\n", wait_on_Sensor_error_induction/1000);
 
   if (miscObj["enable_mqtt"] == "1")
   {
@@ -386,8 +386,8 @@ bool saveConfig()
 
   miscObj["del_sen_act"] = wait_on_Sensor_error_actor;
   miscObj["del_sen_ind"] = wait_on_Sensor_error_induction;
-  DEBUG_MSG("Wait on sensor error actors: %d\n", wait_on_Sensor_error_actor);
-  DEBUG_MSG("Wait on sensor error induction: %d\n", wait_on_Sensor_error_induction);
+  DEBUG_MSG("Wait on sensor error actors: %d sec\n", wait_on_Sensor_error_actor/1000);
+  DEBUG_MSG("Wait on sensor error induction: %d sec\n", wait_on_Sensor_error_induction/1000);
   miscObj["delay_mqtt"] = wait_on_error_mqtt;
   if (StopOnMQTTError)
   {

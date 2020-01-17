@@ -19,5 +19,6 @@ Wichtiger Hinweis 2: Zum Flashen der Firmware die Einstellung Flash size anpasse
 - Fixed:    NTP Zeit
 - Fixed:    MQTT reconnect
 - Reworked: Aufruf der handles für Sensoren, Aktoren und Induktion auf Timer Objekte umgestellt
+- Add:      Ticker Objekte für NTP und Reconnect WLAN/MQTT
 
 Dokumentation: https://innuendopi.github.io/MQTTDevice2/
