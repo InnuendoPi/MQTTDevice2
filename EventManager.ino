@@ -216,7 +216,7 @@ void listenerSystem(int event, int parm) // System event listener
 
       if (startTCP)
       {
-        for (int i = 1; i < 10; i++)
+        for (int i = 1; i < numberOfSensorsMax; i++)
         {
           if (tcpServer[i].kettle_id != "0")
           {
