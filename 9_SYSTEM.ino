@@ -69,11 +69,11 @@ void setTimer()
   os_timer_arm(&TimerDisp, DISP_UPDATE, true); // Zeitintervall Display in ms
   os_timer_setfn(&TimerTCP, timerTCPCallback, NULL);
   os_timer_arm(&TimerTCP, TCP_UPDATE, true); // Zeitintervall TCPServer in ms
-  // os_timer_setfn(&TimerNTP, timerNTPCallback, NULL);
-  // os_timer_arm(&TimerNTP, NTP_INTERVAL, true); // Zeitintervall TCPServer in ms
-  TimerNTP.attach(NTP_INTERVAL, tickerNTP );
+  // Ticker NTP
+  TickerNTP.attach(NTP_INTERVAL, tickerNTP );
 }
 
+// Hilfsfunktionen Ticker Objekte (müssen void sein)
 void tickerMQTTER() // Ticker helper function calling Event MQTT Error
 {
   cbpiEventSystem(EM_MQTTER);

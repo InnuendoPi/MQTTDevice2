@@ -11,8 +11,6 @@ class induction
   unsigned char inputBuffer[33];
   bool isError = false;
   unsigned char error = 0;
-
-  //int storePower = 0;
   long powerSampletime = 20000;
   unsigned long powerLast;
   long powerHigh = powerSampletime; // Dauer des "HIGH"-Anteils im Schaltzyklus
@@ -278,8 +276,6 @@ public:
       {
         newPower = 0; /* Nicht < 0 */
       }
-      //DBG_PRINT("Setting Power to ");
-      //DBG_PRINTLN(newPower);
       power = newPower;
 
       timeTurnedoff = 0;
@@ -590,6 +586,6 @@ void handleSetIndu()
 
 void timerIndCallback(void *pArg) // Timer Objekt Temperatur mit Pointer
 {
-	if (inductionCooker.isEnabled)
-    tickInd = true; // Bei true wird im nächsten loop readTemperature ausgeführt
+  if (inductionCooker.isEnabled)
+    timInd = true; // Bei true wird im nächsten loop readTemperature ausgeführt
 }

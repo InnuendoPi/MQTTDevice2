@@ -72,8 +72,7 @@ PubSubClient pubsubClient(espClient);
 MDNSResponder mdns;
 ESP8266HTTPUpdateServer httpUpdate;
 
-// Induktion
-/*  Signallaufzeiten */
+// Induktion Signallaufzeiten
 const int SIGNAL_HIGH = 5120;
 const int SIGNAL_HIGH_TOL = 1500;
 const int SIGNAL_LOW = 1280;
@@ -228,20 +227,21 @@ bool useDisplay = false;
 #define SDA D2
 #define numberOfAddress 2
 const int address[numberOfAddress] = {0x3C, 0x3D};
-//Timer
+
+// Timer Objekte
 os_timer_t TimerSen;
 os_timer_t TimerAct;
 os_timer_t TimerInd;
 os_timer_t TimerDisp;
 os_timer_t TimerTCP;
-Ticker TimerMQTT, TimerWLAN, TimerNTP;
+// Ticker Objekte
+Ticker TickerMQTT, TickerWLAN, TickerNTP;
 
-bool tickSen = false;
-bool tickAct = false;
-bool tickInd = false;
-bool tickDisp = false;
-bool tickTCP = false;
-bool tickNTP = false;
+bool timSen = false;
+bool timAct = false;
+bool timInd = false;
+bool timDisp = false;
+bool timTCP = false;
 
 void configModeCallback(WiFiManager *myWiFiManager)
 {

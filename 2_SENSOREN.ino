@@ -5,10 +5,10 @@ public:
   unsigned char sens_address[8]; // 1-Wire Adresse
   String sens_name;              // Name für Anzeige auf Website
   float sens_value = -127.0;     // Aktueller Wert
-  bool sens_isConnected;         // check if Sensor is connected
-  float sens_offset = 0.0;       // Offset
-  bool sens_sw = false;          // Switchable
-  bool sens_state = true;        // Error state sensor
+  bool sens_isConnected;         // ist der Sensor verbunden
+  float sens_offset = 0.0;       // Offset - Temp kalibrieren
+  bool sens_sw = false;          // Events aktivieren
+  bool sens_state = true;        // Fehlerstatus ensor
   int sens_err = 0;
   String kettle_id = "0";
 
@@ -30,14 +30,14 @@ public:
 
     if (!sens_isConnected && sens_address[0] != 0xFF && sens_address[0] != 0x00) // double check on !sens_isConnected. Billig Tempfühler ist manchmal für 1-2 loops nicht connected. 0xFF default address. 0x00 virtual test device (adress 00 00 00 00 00)
     {
-      millis2wait(PAUSEDS18);                               // wait for approx 750ms before recheck connection
-      sens_isConnected = DS18B20.isConnected(sens_address); // attempt to determine if the device at the given address is connected to the bus
+      millis2wait(PAUSEDS18);                               // Wartezeit ca 750ms bevor Lesen vom Sensor wiederholt wird (Init Zeit)
+      sens_isConnected = DS18B20.isConnected(sens_address); // hat der Sensor ene Adresse und ist am Bus verbunden?
       sens_isConnected ? sens_value = DS18B20.getTempC(sens_address) : sens_value = -127.0;
     }
 
     if (sens_value == 85.0)
-    {                         // can be real 85 degrees or reset default temp or an error value eg cable too long
-      millis2wait(PAUSEDS18); // wait for approx 750ms before request temp again
+    {                         // 85 Grad ist Standard Temp Default Reset. Wenn das Kabel zu lang ist, kommt als Fehler 85 Grad
+      millis2wait(PAUSEDS18); // Wartezeit 750ms vor einer erneuten Sensorabfrage
       DS18B20.requestTemperatures();
     }
     sensorsStatus = 0;
@@ -130,10 +130,10 @@ public:
       pubsubClient.publish(sens_mqtttopic, jsonMessage);
     }
   }
-  char buf[5];
+  char buf[5]; // TEST!
   char *getValueString()
   {
-    //    char buf[5];
+    //    char buf[5]; // TEST!
     dtostrf(sens_value, 2, 1, buf);
     return buf;
   }
@@ -146,7 +146,7 @@ public:
   }
 };
 
-/* Initialisierung des Arrays */
+// Initialisierung des Arrays -> max 6 Sensoren
 TemperatureSensor sensors[numberOfSensorsMax] = {
     TemperatureSensor("", "", "", 0.0, "", "0"),
     TemperatureSensor("", "", "", 0.0, "", "0"),
@@ -155,7 +155,7 @@ TemperatureSensor sensors[numberOfSensorsMax] = {
     TemperatureSensor("", "", "", 0.0, "", "0"),
     TemperatureSensor("", "", "", 0.0, "", "0")};
 
-/* Funktion für Loop */
+// Funktion für Loop im Timer Objekt
 void handleSensors()
 {
   int max_status = 0;
@@ -394,5 +394,5 @@ SendMessage:
 
 void timerSenCallback(void *pArg) // Timer Objekt Temperatur mit Pointer
 {
-  tickSen = true; // Bei true wird im nächsten loop readTemperature ausgeführt
+  timSen = true; // Bei true wird im nächsten loop readTemperature ausgeführt
 }

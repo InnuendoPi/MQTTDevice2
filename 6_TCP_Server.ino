@@ -166,5 +166,5 @@ void setTCPPowerInd(const String &id, const int &power)
 
 void timerTCPCallback(void *pArg) // Timer Objekt Temperatur mit Pointer
 {
-	tickTCP = true; // Bei true wird im nächsten loop readTemperature ausgeführt
+	timTCP = true; // Bei true wird im nächsten loop readTemperature ausgeführt
 }

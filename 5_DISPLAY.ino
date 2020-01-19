@@ -365,5 +365,5 @@ void showDispSTA() // Show AP mode
 void timerDispCallback(void *pArg) // Timer Objekt Temperatur mit Pointer
 {
   if (oledDisplay.dispEnabled)
-    tickDisp = true; // Bei true wird im nächsten loop readTemperature ausgeführt
+    timDisp = true; // Bei true wird im nächsten loop readTemperature ausgeführt
 }

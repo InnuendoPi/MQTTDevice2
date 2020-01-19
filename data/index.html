@@ -587,7 +587,6 @@
           inductionRender += "Induktionskochfeld<span class='badge";
 		  inductionRender += " badge-dark'> deaktiviert";
 		  inductionRender += " </span> </li>";
-		  //inductionRender += "Induction Cooker disabled </li>";
         }
         $('#inductionCooker').html(inductionRender);
       });
@@ -605,8 +604,7 @@
           }
         }
         else {
-          //displayRender += "Display deaktiviert ";
-		  displayRender += " badge-dark'> deaktiviert";
+		      displayRender += " badge-dark'> deaktiviert";
         }
         displayRender += " </span> </li>";
         $('#oledDisplay').html(displayRender);
@@ -793,8 +791,8 @@
     });
 
     $('#sensor_modal').on('show.bs.modal', function (event) {
-      var button = $(event.relatedTarget) // Button that triggered the modal
-      var sensorid = button.data('value') // Extract info from data-* attributes
+      var button = $(event.relatedTarget)
+      var sensorid = button.data('value')
       var sensorname;
       var sensorscript;
       var sensoroffset;
@@ -903,7 +901,7 @@
     });
 
     $('#induction_modal').on('show.bs.modal', function (event) {
-      var button = $(event.relatedTarget) // Button that triggered the modal
+      var button = $(event.relatedTarget)
       var mqtttopic;
       var isEnabled;
       var pin_white;
@@ -968,7 +966,6 @@
       $('#modal_induction_pinyellow').load('/reqIndu?req=pins&id=1')
       $('#modal_induction_pinblue').load('/reqIndu?req=pins&id=2')
 
-
       var modal = $(this)
       modal.find('#modal_induction_script').val(mqtttopic)
       modal.find('#modal_induction_delay').val(delay)
@@ -1006,7 +1003,7 @@
     });
 
     $('#display_modal').on('show.bs.modal', function (event) {
-      var button = $(event.relatedTarget) // Button that triggered the modal
+      var button = $(event.relatedTarget)
       var isEnabled;
       var address;
       var updisp;
@@ -1063,7 +1060,7 @@
     });
 
     $('#misc_modal').on('show.bs.modal', function (event) {
-      var button = $(event.relatedTarget) // Button that triggered the modal
+      var button = $(event.relatedTarget)
       var mqttaddress;
       var mdns;
       var mdns_name;
@@ -1433,5 +1430,4 @@
 
   </script>
 </body>
-
 </html>

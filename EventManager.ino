@@ -95,12 +95,12 @@ void listenerSystem(int event, int parm) // System event listener
     if (WiFi.status() == WL_CONNECTED)
     {
       oledDisplay.wlanOK = true;
-      if (TimerWLAN.active())
-        TimerWLAN.detach();
+      if (TickerWLAN.active())
+        TickerWLAN.detach();
     }
-    else if (!TimerWLAN.active())
+    else if (!TickerWLAN.active())
     {
-      TimerWLAN.attach(tickerWLAN, tickerWLANER);
+      TickerWLAN.attach(tickerWLAN, tickerWLANER);
       wlanconnectlasttry = millis();
       switch (WiFi.status())
       {
@@ -144,14 +144,14 @@ void listenerSystem(int event, int parm) // System event listener
       oledDisplay.mqttOK = true;
       mqtt_state = true;
       pubsubClient.loop();
-      if (TimerMQTT.active())
-        TimerMQTT.detach();
+      if (TickerMQTT.active())
+        TickerMQTT.detach();
     }
     else if (!pubsubClient.connected())
     {
-      if (!TimerMQTT.active())
+      if (!TickerMQTT.active())
       {
-        TimerMQTT.attach(tickerMQTT, tickerMQTTER);
+        TickerMQTT.attach(tickerMQTT, tickerMQTTER);
         mqttconnectlasttry = millis();
         switch (pubsubClient.state())
         {
@@ -226,8 +226,8 @@ void listenerSystem(int event, int parm) // System event listener
       }
       oledDisplay.mqttOK = true; // Display MQTT
       mqtt_state = true;         // MQTT state ok
-      if (TimerMQTT.active())    // wenn das Ticker Objekt aktiv ist muss es detached werden!
-        TimerMQTT.detach();
+      if (TickerMQTT.active())    // wenn das Ticker Objekt aktiv ist muss es detached werden!
+        TickerMQTT.detach();
     }
     break;
   case EM_MDNS: // check MDSN (24)
@@ -501,7 +501,3 @@ void cbpiEventInduction(int parm) // Induction events
   gEM.queueEvent(EventManager::kEventUser3, parm);
 }
 
-// void timerNTPCallback(void *pArg) // Timer Objekt Temperatur mit Pointer
-// {
-//   tickNTP = true; // Bei true wird im nächsten loop readTemperature ausgeführt
-// }

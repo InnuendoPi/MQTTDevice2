@@ -183,7 +183,7 @@ public:
   }
 };
 
-/* Initialisierung des Arrays */
+// Initialisierung des Arrays max 6
 Actor actors[numberOfActorsMax] = {
     Actor("", "", "", "", "", "0"),
     Actor("", "", "", "", "", "0"),
@@ -192,7 +192,7 @@ Actor actors[numberOfActorsMax] = {
     Actor("", "", "", "", "", "0"),
     Actor("", "", "", "", "", "0")};
 
-/* Funktionen für Loop */
+// Funktionen für Loop im Timer Objekt
 void handleActors()
 {
   for (int i = 0; i < numberOfActors; i++)
@@ -347,7 +347,7 @@ void handleDelActor()
 
   for (int i = id; i < numberOfActors; i++)
   {
-    if (i == (numberOfActorsMax-1) ) // 5 - Array von 0 bis (numberOfActorsMax-1)
+    if (i == (numberOfActorsMax - 1)) // 5 - Array von 0 bis (numberOfActorsMax-1)
     {
       actors[i].change("", "", "", "", "", "");
     }
@@ -427,5 +427,5 @@ Ende:
 
 void timerActCallback(void *pArg) // Timer Objekt Temperatur mit Pointer
 {
-	tickAct = true; // Bei true wird im nächsten loop readTemperature ausgeführt
+  timAct = true; // Bei true wird im nächsten loop readTemperature ausgeführt
 }

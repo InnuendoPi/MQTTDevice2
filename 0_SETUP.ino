@@ -3,7 +3,7 @@ void setup()
   Serial.begin(115200);
   while (!Serial)
   {
-    yield(); // wait for serial port to connect. Needed for native USB port only
+    yield(); // Warte auf seriellen Monitor. Needed for native USB port only
   }
 // Debug Ausgaben prüfen
 #ifdef DEBUG_ESP_PORT
@@ -12,7 +12,7 @@ void setup()
 
   Serial.println();
   Serial.println();
-  // Set device name
+  // Setze Namen für das MQTTDevice
   snprintf(mqtt_clientid, 16, "ESP8266-%08X", mqtt_chip_key);
   Serial.printf("*** SYSINFO: Starte MQTTDevice %s\n", mqtt_clientid);
 
@@ -126,15 +126,15 @@ void setupServer()
   server.on("/startHTTPUpdate", startHTTPUpdate); // Firmware ebUpdate
 
   // FSBrowser initialisieren
-  server.on("/list", HTTP_GET, handleFileList); // list directory
-  server.on("/edit", HTTP_GET, []() {           // load editor
+  server.on("/list", HTTP_GET, handleFileList); // Verzeichnisinhalt
+  server.on("/edit", HTTP_GET, []() {           // Lade Editor
     if (!handleFileRead("/edit.htm"))
     {
       server.send(404, "text/plain", "FileNotFound");
     }
   });
-  server.on("/edit", HTTP_PUT, handleFileCreate);    // create file
-  server.on("/edit", HTTP_DELETE, handleFileDelete); // delete file
+  server.on("/edit", HTTP_PUT, handleFileCreate);    // Datei erstellen
+  server.on("/edit", HTTP_DELETE, handleFileDelete); // Datei löschen
   server.on("/edit", HTTP_POST, []() {
     server.send(200, "text/plain", "");
   },
