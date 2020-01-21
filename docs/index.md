@@ -32,6 +32,7 @@ Forum: <https://hobbybrauer.de/forum/viewtopic.php?f=58&t=19036&p=309196#p309196
 # Installation
 
 **Installation ohne den Quellcode zu compilieren**
+
 Mit Hilfe von esptool.exe (<https://github.com/igrr/esptool-ck/releases> ) aus dem Ordner tools kann die Firmware auf das ESP Modul geladen werden. Das ESPTool ist für verschiedene Betriebssysteme verfügbar.
 ESPtool-ck Copyright (C) 2014 Christian Klippel ck@atelier-klippel.de. This code is licensed under GPL v2.
 
@@ -39,21 +40,22 @@ Unter Win10 wird der USB Treiber CH341SER benötigt: <http://www.wch.cn/download
 
 Beispiel für ein ESP8266 Modul vom Typ Wemos D1 mini mit 4MB Flash verbunden mit COM3
 
-* Download von github entpacken (komplett)
+* Von github das Archiv Firmware aus dem Ordner Tools herunterladen und irgendeinem Ordner entpacken
 
-  * Im Ordner tools das Archiv tools.zip entpacken. Enthalten sind das esptool und das Skript Flashen.cmd
+  * Das Archiv enthält das esptool zum Flashen, das Skript Flashen.cmd und die zwei Firmware Dateien
 
-  * Eingabeaufforderung öffnen
+  * Doppelklick auf die Datei Flashen.cmd.
 
-    * in den Order .../MQTTDevice2/tools wechseln und das Skript Flashen.cmd ausführen
-    Das Skript löscht alle Daten aus dem Speicher und spielt die Firmware und das Filesystem SPIFFS auf.
+  Fertig!
 
-    alternativ manuell mit esptool:
+  Sollte COM3 nicht der richtige Anschluss sein, muss im Skript Flashen.cmd an zwei Stellen COM3 durch den richtigen Anschluss ersetzt werden.
 
-  * Wemos D1 mini löschen:
+  Alternativ manuell mit esptool:
+
+  * Wemos D1 mini löschen: (Beispiel wieder an COM3)
         esptool.exe -cp COM3 -cd nodemcu -ce
         * Flashen:
-        esptool.exe -cp COM3 -cd nodemcu -ca 0x000000 -cf ..\build\MQTTDevice2.ino.bin -ca 0x200000 -cf ..\build\MQTTDevice2.spiffs.bin
+        esptool.exe -cp COM3 -cd nodemcu -ca 0x000000 -cf MQTTDevice2.ino.bin -ca 0x200000 -cf MQTTDevice2.spiffs.bin
 
     * Das ESP8266 Modul resetten
 
@@ -64,6 +66,7 @@ Beispiel für ein ESP8266 Modul vom Typ Wemos D1 mini mit 4MB Flash verbunden mi
         * Anschließend ist das MQTTDevice erreichbar über <http://mqttdevice>
 
 **Installation mit Quellcode**
+
 Voraussetzungen: (2020.01)
 
 * Arduino IDE 1.8.10
@@ -87,11 +90,13 @@ Voraussetzungen: (2020.01)
     * PubSubClient by Nick O'Leary Version 2.7.0
     * WiFiManager by tzapu Version 0.15.0
     * EventManager
+    * die Bibliothek InnuTicker (im Repository enthalten)
 
     Die Firmware muss mit der Einstellung Flash size 4MB (FS: 2MB OTA:~1019kB) aufgespielt werden.
     Debug Ausgaben werden in der IDE über "Debug Port" aktiviert. In der Standard Einstellung (bin Dateien) hat die Firmware nach dem Start keine Ausgaben auf dem seriellen Monitor.
 
 **Updates**
+
 Die Firmware bietet zwei Möglichkeiten, um Updates sehr einfach einspielen zu können.
 
 1. Update durch Dateiupload
@@ -105,6 +110,7 @@ Die Firmware bietet zwei Möglichkeiten, um Updates sehr einfach einspielen zu k
     WebUpdate aktualisiert die Firmware, die index Datei und Zertifikate. Durch WebUpdate wird die Konfigurationsdatei nicht überschrieben.
 
 **Backup and Restore der Konfiguration**
+
 Der Dateiexplorer ist erreichbar über den Webbrowser <http://mqttdevice/edit>
 
 1. Backup
@@ -121,6 +127,7 @@ Der Dateiexplorer ist erreichbar über den Webbrowser <http://mqttdevice/edit>
     Nun kann im Hauptfenster die Datei editiert werden. Zum Abspeichern CTRL+S verwenden. Vorsicht!!!
 
 # Verwenden der Firmware
+
 Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder das Löschen von Sensoren und Aktoren wird daher hier nicht beschrieben.
 
 **Die Hauptfunktionen**
@@ -257,6 +264,7 @@ In diesem Projekt wurde eine Platine für das MQTTDevice entwickelt, um mit Klem
 * Spannungsversorgung 5V über Schraubklemme
 
 **Einstellung der Jumper**
+
 ![Jumper](img/platine_jumper.jpg)
 
 Auf der Platine befinden sich 4 Steckbrücken (Jumper)
@@ -315,7 +323,7 @@ Bei der Auswahl LevelShifter (Logic Level Converter) muss zwingend die Belgung b
 Der Widerstand R 4.7kOhm für die Temperatursensoren DS18B20 wird unter dem Wemos D1 mini platziert. Deshalb muss der Wemos gesockelt werden. Die Sockel bieten zudem den Vorteil, dass der Wemos jederzeit von der Platine genommen werden kann, bspw. zum Flashen oder zum Testen. Die DS18B20 werden an VCC mit 5V versorgt. Dies stellt eine stabile Versorgung auch bei längeren Zuleitungen sicher. Der Widerstand ist von Data (PIN D3) gegen 3V3.
 Die JST-HX Buchse und die Steckbrücke J4 für das Induktionskochfeld sind optional.
 
-**Anschluss Induktionskochfeld GGM IDS2**
+## Anschluss Induktionskochfeld GGM IDS2
 
 *Die folgende Beschreibung löscht die Garantieansprüche für das Induktionskochfeld*
 *Es ist ausschließlich das Induktionskochfeld vom Typ GGM IDS2 getestet worden*
@@ -331,6 +339,8 @@ Die Anschlüsse müssen über das Web Interface wie folgt konfiguriert werden:
 * Blau (Backchannel) ist fest verbunden mit Pin D5
 
 Eine separate Stromversorgung ist für das MQTTDevice bei Verwendung der GGM IDS2 nicht erforderlich.
+
+---
 
 # TCP Server
 
@@ -348,7 +358,7 @@ Die Anbindung an den TCP Server Tozzi ist optional und in der Standard Einstellu
 
 Die Konfiguration setzt einen funktionierenden TCPServer voraus. Eine entsprechende Anleitung findet sich im Forum und im Fork <https://github.com/InnuendoPi/iSpindel-TCP-Server>
 
-**Manuelle Installation**
+## Manuelle Installation
 
 Auf dem RaspberryPi:
 
@@ -369,7 +379,7 @@ Auf dem RaspberryPi:
 
 6. Dienst starten sudo service ispindle-srv start oder sudo reboot
 
-**Installation CBPi Plugin**
+## Installation CBPi Plugin
 
 Beim CBPI muss ein Plugin hinzugefügt werden: cbpi-mqttPub <https://github.com/InnuendoPi/cbpi-mqttPub>
 Das Plugin basiert auf Manuels MQTT Basis Plugin und liest Daten von CBPi Kettles und deren aktuelle Zieltemperatur ein und stellt diese  auf dem MQTT Broker bereit. Bitte mit einem MQTTClient prüfen, ob die Daten vorhanden sind.
@@ -403,6 +413,7 @@ Dabei sind die Platzhalter ip.tcpserver, Sensorname und Rezeptname zu ersetzen.
 <http://192.168.178.10/iSpindle/reset_now.php?name=Temp_Induktion&days=1&recipe=Muenchner_Hell>
 
 ---
+
 # Diskussion
 
 Die Firmware und die Platine im Projekt MQTTDevice sind im Hobbybrauer Forum entstanden. Disskussionen rund um Fehler, Probleme, Hilfestellung, Feature-Wünsche etc. sollen ausschließlich im Forum stattfinden.
