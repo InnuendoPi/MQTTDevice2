@@ -317,6 +317,9 @@ void handleRequestSensors()
   {
     JsonObject sensorsObj = doc.createNestedObject();
     sensorsObj["name"] = sensors[i].sens_name;
+    String str = sensors[i].sens_name;
+    str.replace(" ", "%20"); // Erstze Leerzeichen für URL Charts
+    sensorsObj["namehtml"] = str;
     sensorsObj["offset"] = sensors[i].sens_offset;
     sensorsObj["sw"] = sensors[i].getSwitchable();
     sensorsObj["state"] = sensors[i].sens_state;
@@ -390,9 +393,4 @@ void handleRequestSensor()
   saveConfig();
 SendMessage:
   server.send(200, "text/plain", message);
-}
-
-void timerSenCallback(void *pArg) // Timer Objekt Temperatur mit Pointer
-{
-  timSen = true; // Bei true wird im nächsten loop readTemperature ausgeführt
 }

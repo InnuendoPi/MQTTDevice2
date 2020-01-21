@@ -1,10 +1,6 @@
 void setup()
 {
   Serial.begin(115200);
-  while (!Serial)
-  {
-    yield(); // Warte auf seriellen Monitor. Needed for native USB port only
-  }
 // Debug Ausgaben prüfen
 #ifdef DEBUG_ESP_PORT
   Serial.setDebugOutput(true);
@@ -32,19 +28,23 @@ void setup()
   WiFi.setAutoConnect(true);
   WiFi.setAutoReconnect(true);
 
-  if (shouldSaveConfig)
-  {
-    strcpy(mqtthost, cstm_mqtthost.getValue());
-    saveConfig();
-  }
   // Lade Dateisystem
   if (SPIFFS.begin())
   {
+    Serial.print("*** SYSINFO Starte Setup SPIFFS Free Heap: ");
+    Serial.println(ESP.getFreeHeap());
+
     // Prüfe WebUpdate
     updateSys();
 
-    // Erstelle Timer Objekte
-    setTimer();
+    // Erstelle Ticker Objekte
+    setTicker();
+
+    if (shouldSaveConfig) // WiFiManager
+    {
+      strcpy(mqtthost, cstm_mqtthost.getValue());
+      saveConfig();
+    }
 
     if (SPIFFS.exists("/config.txt")) // Lade Konfiguration
       loadConfig();
@@ -59,8 +59,6 @@ void setup()
   gEM.addListener(EventManager::kEventUser1, listenerSensors);
   gEM.addListener(EventManager::kEventUser2, listenerActors);
   gEM.addListener(EventManager::kEventUser3, listenerInduction);
-
-  aktIP = WiFi.localIP();
 
   // Starte Webserver
   setupServer();
@@ -82,16 +80,17 @@ void setup()
   else
   {
     Serial.print("*** SYSINFO: ESP8266 IP Addresse: ");
-    Serial.println(aktIP.toString());
+    Serial.println(WiFi.localIP().toString());
   }
 
   // Starte OLED Display
   dispStartScreen();
 
   // Starte MQTT
-  cbpiEventSystem(EM_MQTTCON);
-  cbpiEventSystem(EM_MQTTSUB);
-  cbpiEventSystem(EM_LOG);
+  cbpiEventSystem(EM_MQTTCON); // MQTT Verbindung
+  cbpiEventSystem(EM_MQTTSUB); // MQTT Subscribe
+  // Starte Log (WebUpdate)
+  cbpiEventSystem(EM_LOG); // Not yet ready!
 
   // Verarbeite alle Events Setup
   gEM.processAllEvents();

@@ -17,7 +17,6 @@ bool loadConfig()
     return false;
   }
 
-  //StaticJsonDocument<2048> doc; //1400
   DynamicJsonDocument doc(2500);
   DeserializationError error = deserializeJson(doc, configFile);
   if (error)
@@ -59,13 +58,11 @@ bool loadConfig()
 
   if (numberOfSensors > numberOfSensorsMax)
     numberOfSensors = numberOfSensorsMax;
-  //  for (int i = 0; i < numberOfSensorsMax; i++)
   i = 0;
   for (JsonObject sensorsObj : sensorsArray)
   {
     if (i < numberOfSensors)
     {
-      //JsonObject sensorsObj = sensorsArray[i];
       String sensorsAddress = sensorsObj["ADDRESS"];
       String sensorsScript = sensorsObj["SCRIPT"];
       String sensorsName = sensorsObj["NAME"];
@@ -86,7 +83,7 @@ bool loadConfig()
   }
 
   if (numberOfSensors == 0)
-    DEBUG_MSG("Sensors: %ds\n", numberOfSensors);
+    DEBUG_MSG("Sensors: %d\n", numberOfSensors);
 
   DEBUG_MSG("%s\n", "--------------------");
 
@@ -141,15 +138,15 @@ bool loadConfig()
     oledDisplay.dispEnabled = true;
     oledDisplay.change(address, oledDisplay.dispEnabled);
     DEBUG_MSG("OLED display: %d Address: %s Update: %d\n", oledDisplay.dispEnabled, dispAddress.c_str(), (DISP_UPDATE / 1000));
-    os_timer_disarm(&TimerDisp);
-    os_timer_arm(&TimerDisp, DISP_UPDATE, true);
+    TickerDisp.config(DISP_UPDATE, 0);
+    TickerDisp.start();
   }
   else
   {
     useDisplay = false;
     oledDisplay.dispEnabled = false;
     DEBUG_MSG("OLED Display: %d\n", oledDisplay.dispEnabled);
-    os_timer_disarm(&TimerDisp);
+    TickerDisp.stop();
   }
 
   DEBUG_MSG("%s\n", "--------------------");
@@ -167,8 +164,8 @@ bool loadConfig()
   if (miscObj.containsKey("delay_mqtt"))
     wait_on_error_mqtt = miscObj["delay_mqtt"];
 
-  DEBUG_MSG("Wait on sensor error actors: %d sec\n", wait_on_Sensor_error_actor/1000);
-  DEBUG_MSG("Wait on sensor error induction: %d sec\n", wait_on_Sensor_error_induction/1000);
+  DEBUG_MSG("Wait on sensor error actors: %d sec\n", wait_on_Sensor_error_actor / 1000);
+  DEBUG_MSG("Wait on sensor error induction: %d sec\n", wait_on_Sensor_error_induction / 1000);
 
   if (miscObj["enable_mqtt"] == "1")
   {
@@ -214,13 +211,17 @@ bool loadConfig()
     ACT_UPDATE = miscObj["upact"];
   if (miscObj.containsKey("upind"))
     IND_UPDATE = miscObj["upind"];
-  os_timer_disarm(&TimerAct);
-  os_timer_arm(&TimerAct, ACT_UPDATE, true);
-  os_timer_disarm(&TimerInd);
+
+  TickerSen.config(SEN_UPDATE, 0);
+  TickerAct.config(ACT_UPDATE, 0);
+  TickerInd.config(IND_UPDATE, 0);
+
+  if (numberOfSensors > 0)
+    TickerSen.start();
+  if (numberOfActors > 0)
+    TickerAct.start();
   if (inductionCooker.isEnabled)
-    os_timer_arm(&TimerInd, IND_UPDATE, true);
-  os_timer_disarm(&TimerSen);
-  os_timer_arm(&TimerSen, SEN_UPDATE, true);
+    TickerInd.start();
 
   DEBUG_MSG("Sensors update intervall: %d sec\n", (SEN_UPDATE / 1000));
   DEBUG_MSG("Actors update intervall: %d sec\n", (ACT_UPDATE / 1000));
@@ -262,12 +263,14 @@ bool loadConfig()
   int memoryUsed = doc.memoryUsage();
   DEBUG_MSG("JSON memory usage: %d\n", memoryUsed);
 
-  os_timer_disarm(&TimerTCP);
   if (startTCP)
   {
     setTCPConfig();
-    os_timer_arm(&TimerTCP, TCP_UPDATE, true);
+    TickerTCP.config(TCP_UPDATE, 0);
+    TickerTCP.start();
   }
+  else
+    TickerTCP.stop();
   return true;
 }
 
@@ -288,7 +291,6 @@ void saveConfigCallback()
 bool saveConfig()
 {
   DEBUG_MSG("%s\n", "------ saveConfig started ------");
-  //StaticJsonDocument<2048> doc; // 1400
   DynamicJsonDocument doc(2500);
 
   // Write Actors
@@ -331,6 +333,7 @@ bool saveConfig()
   JsonArray indArray = doc.createNestedArray("induction");
   if (inductionCooker.isEnabled)
   {
+    inductionStatus = 1;
     JsonObject indObj = indArray.createNestedObject();
     indObj["PINWHITE"] = PinToString(inductionCooker.PIN_WHITE);
     indObj["PINYELLOW"] = PinToString(inductionCooker.PIN_YELLOW);
@@ -343,8 +346,10 @@ bool saveConfig()
     DEBUG_MSG("Induction: %d MQTT: %s Relais (WHITE): %s Command channel (YELLOW): %s Backchannel (BLUE): %s Delay after power off %d Power level on error: %d ID: %s\n", inductionCooker.isEnabled, inductionCooker.mqtttopic.c_str(), PinToString(inductionCooker.PIN_WHITE).c_str(), PinToString(inductionCooker.PIN_YELLOW).c_str(), PinToString(inductionCooker.PIN_INTERRUPT).c_str(), (inductionCooker.delayAfteroff / 1000), inductionCooker.powerLevelOnError, inductionCooker.kettle_id.c_str());
   }
   else
+  {
+    inductionStatus = 0;
     DEBUG_MSG("Induction: %d\n", inductionCooker.isEnabled);
-
+  }
   DEBUG_MSG("%s\n", "--------------------");
 
   // Write Display
@@ -368,14 +373,14 @@ bool saveConfig()
       useDisplay = false;
     }
     DEBUG_MSG("OLED display: %d Address: %s Update: %d\n", oledDisplay.dispEnabled, String(decToHex(oledDisplay.address, 2)).c_str(), (DISP_UPDATE / 1000));
-    os_timer_disarm(&TimerDisp);
-    os_timer_arm(&TimerDisp, DISP_UPDATE, true);
+    TickerDisp.config(DISP_UPDATE, 0);
+    TickerDisp.start();
   }
   else
   {
     display.ssd1306_command(SSD1306_DISPLAYOFF);
     DEBUG_MSG("OLED display: %d\n", oledDisplay.dispEnabled);
-    os_timer_disarm(&TimerDisp);
+    TickerDisp.stop();
   }
 
   DEBUG_MSG("%s\n", "--------------------");
@@ -386,8 +391,8 @@ bool saveConfig()
 
   miscObj["del_sen_act"] = wait_on_Sensor_error_actor;
   miscObj["del_sen_ind"] = wait_on_Sensor_error_induction;
-  DEBUG_MSG("Wait on sensor error actors: %d sec\n", wait_on_Sensor_error_actor/1000);
-  DEBUG_MSG("Wait on sensor error induction: %d sec\n", wait_on_Sensor_error_induction/1000);
+  DEBUG_MSG("Wait on sensor error actors: %d sec\n", wait_on_Sensor_error_actor / 1000);
+  DEBUG_MSG("Wait on sensor error induction: %d sec\n", wait_on_Sensor_error_induction / 1000);
   miscObj["delay_mqtt"] = wait_on_error_mqtt;
   if (StopOnMQTTError)
   {
@@ -432,17 +437,25 @@ bool saveConfig()
     miscObj["tcp"] = "0";
     DEBUG_MSG("TCP Server: %d\n", startTCP);
   }
-  miscObj["MQTTHOST"] = mqtthost;  
+  miscObj["MQTTHOST"] = mqtthost;
   miscObj["upsen"] = SEN_UPDATE;
   miscObj["upact"] = ACT_UPDATE;
   miscObj["upind"] = IND_UPDATE;
-  os_timer_disarm(&TimerAct);
-  os_timer_arm(&TimerAct, ACT_UPDATE, true);
-  os_timer_disarm(&TimerInd);
+
+  TickerSen.config(SEN_UPDATE, 0);
+  TickerAct.config(ACT_UPDATE, 0);
+  TickerInd.config(IND_UPDATE, 0);
+
+  if (numberOfSensors > 0)
+    TickerSen.start();
+  else
+    TickerSen.stop();
+  if (numberOfActors > 0)
+    TickerAct.start();
+  else
+    TickerAct.stop();
   if (inductionCooker.isEnabled)
-    os_timer_arm(&TimerInd, IND_UPDATE, true);
-  os_timer_disarm(&TimerSen);
-  os_timer_arm(&TimerSen, SEN_UPDATE, true);
+    TickerInd.start();
 
   DEBUG_MSG("Sensor update interval %d sec\n", (SEN_UPDATE / 1000));
   DEBUG_MSG("Actors update interval %d sec\n", (ACT_UPDATE / 1000));
@@ -471,16 +484,17 @@ bool saveConfig()
   serializeJson(doc, configFile);
   configFile.close();
   DEBUG_MSG("%s\n", "------ saveConfig finished ------");
-  aktIP = WiFi.localIP();
   String Network = WiFi.SSID();
-  DEBUG_MSG("ESP8266 device IP Address: %s\n", aktIP.toString().c_str());
+  DEBUG_MSG("ESP8266 device IP Address: %s\n", WiFi.localIP().toString().c_str());
   DEBUG_MSG("Configured WLAN SSID: %s\n", Network.c_str());
   DEBUG_MSG("%s\n", "---------------------------------");
-  os_timer_disarm(&TimerTCP);
   if (startTCP)
   {
     setTCPConfig();
-    os_timer_arm(&TimerTCP, TCP_UPDATE, true);
+    TickerTCP.config(TCP_UPDATE, 0);
+    TickerTCP.start();
   }
+  else
+    TickerTCP.stop();
   return true;
 }

@@ -163,8 +163,3 @@ void setTCPPowerInd(const String &id, const int &power)
 {
     tcpServer[id.toInt()].powerlevel = power;
 }
-
-void timerTCPCallback(void *pArg) // Timer Objekt Temperatur mit Pointer
-{
-	timTCP = true; // Bei true wird im nächsten loop readTemperature ausgeführt
-}

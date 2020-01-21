@@ -424,8 +424,3 @@ bool isPin(unsigned char pinbyte)
 Ende:
   return returnValue;
 }
-
-void timerActCallback(void *pArg) // Timer Objekt Temperatur mit Pointer
-{
-  timAct = true; // Bei true wird im nächsten loop readTemperature ausgeführt
-}

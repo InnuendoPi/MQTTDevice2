@@ -56,39 +56,20 @@ bool isValidDigit(const String &str)
   return true;
 }
 
-void setTimer()
+void setTicker()
 {
-  // Timer für Loop
-  os_timer_setfn(&TimerSen, timerSenCallback, NULL);
-  os_timer_arm(&TimerSen, SEN_UPDATE, true); // Zeitintervall Temperatursensoren in ms
-  os_timer_setfn(&TimerAct, timerActCallback, NULL);
-  os_timer_arm(&TimerAct, ACT_UPDATE, true); // Zeitintervall Aktoren in ms
-  os_timer_setfn(&TimerInd, timerIndCallback, NULL);
-  os_timer_arm(&TimerInd, IND_UPDATE, true); // Zeitintervall Induktion in ms
-  os_timer_setfn(&TimerDisp, timerDispCallback, NULL);
-  os_timer_arm(&TimerDisp, DISP_UPDATE, true); // Zeitintervall Display in ms
-  os_timer_setfn(&TimerTCP, timerTCPCallback, NULL);
-  os_timer_arm(&TimerTCP, TCP_UPDATE, true); // Zeitintervall TCPServer in ms
-  // Ticker NTP
-  TickerNTP.attach(NTP_INTERVAL, tickerNTP );
+  // Ticker Objekte
+  TickerSen.config(tickerSenCallback, SEN_UPDATE, 0);
+  TickerAct.config(tickerActCallback, ACT_UPDATE, 0);
+  TickerInd.config(tickerIndCallback, IND_UPDATE, 0);
+  TickerDisp.config(tickerDispCallback, DISP_UPDATE, 0);
+  TickerTCP.config(tickerTCPCallback, TCP_UPDATE, 0);
+  TickerMQTT.config(tickerMQTTCallback, tickerMQTT, 0);
+  TickerWLAN.config(tickerWLANCallback, tickerWLAN, 0);
+  TickerNTP.config(tickerNTPCallback, NTP_INTERVAL, 0);
+  TickerMQTT.stop();
+  TickerWLAN.stop();
 }
-
-// Hilfsfunktionen Ticker Objekte (müssen void sein)
-void tickerMQTTER() // Ticker helper function calling Event MQTT Error
-{
-  cbpiEventSystem(EM_MQTTER);
-}
-
-void tickerWLANER() // Ticker helper function calling Event WLAN Error
-{
-  cbpiEventSystem(EM_WLANER);
-}
-
-void tickerNTP() // Ticker helper function calling Event WLAN Error
-{
-  timeClient.update();
-}
-
 
 String decToHex(unsigned char decValue, unsigned char desiredStringLength)
 {

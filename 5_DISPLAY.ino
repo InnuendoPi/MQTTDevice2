@@ -24,7 +24,7 @@ public:
     {
       showDispClear();
       showDispTime(timeClient.getFormattedTime());
-      showDispIP(aktIP.toString());
+      showDispIP(WiFi.localIP().toString());
       showDispWlan();
       showDispMqtt();
       showDispLines();
@@ -66,6 +66,7 @@ void turnDisplay()
     {
       display.ssd1306_command(SSD1306_DISPLAYOFF);
       oledDisplay.dispEnabled = 0;
+      TickerDisp.stop();
     }
   }
   else
@@ -74,6 +75,7 @@ void turnDisplay()
     {
       display.ssd1306_command(SSD1306_DISPLAYON);
       oledDisplay.dispEnabled = 1;
+      TickerDisp.start();
     }
   }
 }
@@ -182,8 +184,10 @@ void handleSetDisp()
       if (newdup > 0)
       {
         DISP_UPDATE = newdup * 1000;
-        os_timer_disarm(&TimerDisp);
-        os_timer_arm(&TimerDisp, DISP_UPDATE, useDisplay);
+        // os_timer_disarm(&TimerDisp);
+        // os_timer_arm(&TimerDisp, DISP_UPDATE, useDisplay);
+        TickerDisp.stop();
+        TickerDisp.config(TCP_UPDATE, 0);
       }
     }
     yield();
@@ -198,6 +202,7 @@ void dispStartScreen() // Show Startscreen
   {
     if (oledDisplay.dispEnabled == 1 && oledDisplay.address != 0)
     {
+      TickerDisp.start();
       showDispClear();
       showDispCbpi();
       showDispSTA();
@@ -362,8 +367,8 @@ void showDispSTA() // Show AP mode
   display.display();
 }
 
-void timerDispCallback(void *pArg) // Timer Objekt Temperatur mit Pointer
-{
-  if (oledDisplay.dispEnabled)
-    timDisp = true; // Bei true wird im nächsten loop readTemperature ausgeführt
-}
+// void timerDispCallback(void *pArg) // Timer Objekt Temperatur mit Pointer
+// {
+//   if (oledDisplay.dispEnabled)
+//     timDisp = true; // Bei true wird im nächsten loop readTemperature ausgeführt
+// }

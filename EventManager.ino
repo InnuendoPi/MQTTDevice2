@@ -21,7 +21,7 @@ void listenerSystem(int event, int parm) // System event listener
       break;
     }
     DEBUG_MSG("%s", "EM WLAN: WLAN Fehler ... versuche neu zu verbinden\n");
-    if (millis() > (wlanconnectlasttry + wait_on_error_wlan)) // Wait bevor Event handling
+    if (millis() - wlanconnectlasttry >= wait_on_error_wlan) // Wait bevor Event handling
     {
       if (StopOnWLANError && wlan_state)
       {
@@ -42,7 +42,7 @@ void listenerSystem(int event, int parm) // System event listener
       cbpiEventSystem(EM_MQTTRES); // MQTT restore
       break;
     }
-    if (millis() > (mqttconnectlasttry + wait_on_error_mqtt))
+    if (millis() - mqttconnectlasttry >= wait_on_error_mqtt)
     {
       if (StopOnMQTTError && mqtt_state)
       {
@@ -95,45 +95,17 @@ void listenerSystem(int event, int parm) // System event listener
     if (WiFi.status() == WL_CONNECTED)
     {
       oledDisplay.wlanOK = true;
-      if (TickerWLAN.active())
-        TickerWLAN.detach();
+      if (TickerWLAN.state() == RUNNING)
+        TickerWLAN.stop();
     }
-    else if (!TickerWLAN.active())
+    else
     {
-      TickerWLAN.attach(tickerWLAN, tickerWLANER);
-      wlanconnectlasttry = millis();
-      switch (WiFi.status())
+      if (TickerWLAN.state() != RUNNING)
       {
-      case 0: // WL_IDLE_STATUS
-        DEBUG_MSG("WiFi status: Fehler rc: %d WL_IDLE_STATUS");
-        break;
-      case 1: // WL_NO_SSID_AVAIL
-        DEBUG_MSG("WiFi status: Fehler rc: %d WL_NO_SSID_AVAIL");
-        break;
-      case 2: // WL_SCAN_COMPLETED
-        DEBUG_MSG("WiFi status: Fehler rc: %d WL_SCAN_COMPLETED");
-        break;
-      case 3: // WL_CONNECTED
-        DEBUG_MSG("WiFi status: Fehler rc: %d WL_CONNECTED");
-        break;
-      case 4: // WL_CONNECT_FAILED
-        DEBUG_MSG("WiFi status: Fehler rc: %d WL_CONNECT_FAILED");
-        cbpiEventSystem(EM_WLANER);
-        break;
-      case 5: // WL_CONNECTION_LOST
-        DEBUG_MSG("WiFi status: Fehler rc: %d WL_CONNECTION_LOST");
-        cbpiEventSystem(EM_WLANER);
-        break;
-      case 6: // WL_DISCONNECTED
-        DEBUG_MSG("WiFi status: Fehler rc: %d WL_DISCONNECTED");
-        cbpiEventSystem(EM_WLANER);
-        break;
-      case 255: // WL_NO_SHIELD
-        DEBUG_MSG("WiFi status: Fehler rc: %d WL_NO_SHIELD");
-        break;
-      default:
-        break;
+        TickerWLAN.resume();
+        wlanconnectlasttry = millis();
       }
+      TickerWLAN.update();
     }
     break;
   case EM_MQTT: // check MQTT (22)
@@ -144,55 +116,17 @@ void listenerSystem(int event, int parm) // System event listener
       oledDisplay.mqttOK = true;
       mqtt_state = true;
       pubsubClient.loop();
-      if (TickerMQTT.active())
-        TickerMQTT.detach();
+      if (TickerMQTT.state() == RUNNING)
+        TickerMQTT.stop();
     }
-    else if (!pubsubClient.connected())
+    else //if (!pubsubClient.connected())
     {
-      if (!TickerMQTT.active())
+      if (TickerMQTT.state() != RUNNING)
       {
-        TickerMQTT.attach(tickerMQTT, tickerMQTTER);
+        TickerMQTT.resume();
         mqttconnectlasttry = millis();
-        switch (pubsubClient.state())
-        {
-        case -4: // MQTT_CONNECTION_TIMEOUT - the server didn't respond within the keepalive time
-          DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECTION_TIMEOUT", pubsubClient.state());
-          cbpiEventSystem(EM_MQTTER);
-          break;
-        case -3: // MQTT_CONNECTION_LOST - the network connection was broken
-          DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECTION_LOST", pubsubClient.state());
-          cbpiEventSystem(EM_MQTTER);
-          break;
-        case -2: // MQTT_CONNECT_FAILED - the network connection failed
-          DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECT_FAILED", pubsubClient.state());
-          cbpiEventSystem(EM_MQTTER);
-          break;
-        case -1: // MQTT_DISCONNECTED - the client is disconnected cleanly
-          DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_DISCONNECTED", pubsubClient.state());
-          cbpiEventSystem(EM_MQTTER);
-          break;
-        case 0: // MQTT_CONNECTED - the client is connected
-          pubsubClient.loop();
-          break;
-        case 1: // MQTT_CONNECT_BAD_PROTOCOL - the server doesn't support the requested version of MQTT
-          DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECT_BAD_PROTOCOL", pubsubClient.state());
-          break;
-        case 2: // MQTT_CONNECT_BAD_CLIENT_ID - the server rejected the client identifier
-          DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECT_BAD_CLIENT_ID", pubsubClient.state());
-          break;
-        case 3: // MQTT_CONNECT_UNAVAILABLE - the server was unable to accept the connection
-          DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECT_UNAVAILABLE", pubsubClient.state());
-          break;
-        case 4: // MQTT_CONNECT_BAD_CREDENTIALS - the username/password were rejected
-          DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECT_BAD_CREDENTIALS", pubsubClient.state());
-          break;
-        case 5: // MQTT_CONNECT_UNAUTHORIZED - the client was not authorized to connect
-          DEBUG_MSG("EM MQTT: Fehler rc=%d MQTT_CONNECT_UNAUTHORIZED", pubsubClient.state());
-          break;
-        default:
-          break;
-        }
       }
+      TickerMQTT.update();
     }
     break;
   case EM_MQTTCON:                     // MQTT connect (27)
@@ -226,8 +160,8 @@ void listenerSystem(int event, int parm) // System event listener
       }
       oledDisplay.mqttOK = true; // Display MQTT
       mqtt_state = true;         // MQTT state ok
-      if (TickerMQTT.active())    // wenn das Ticker Objekt aktiv ist muss es detached werden!
-        TickerMQTT.detach();
+      if (TickerMQTT.state() == RUNNING)
+        TickerMQTT.stop();
     }
     break;
   case EM_MDNS: // check MDSN (24)
@@ -238,6 +172,7 @@ void listenerSystem(int event, int parm) // System event listener
     timeClient.begin();
     millis2wait(PAUSE1SEC);
     timeClient.update();
+    TickerNTP.start();
     break;
   case EM_NTP: // NTP Update (25) -> In Ticker Objekt ausgelagert!
     timeClient.update();
@@ -259,7 +194,7 @@ void listenerSystem(int event, int parm) // System event listener
     publishTCP();
     break;
   case EM_LOG:
-    if (SPIFFS.exists("/log1.txt"))
+    if (SPIFFS.exists("/log1.txt")) // WebUpdate Zertifikate
     {
       fsUploadFile = SPIFFS.open("/log1.txt", "r");
       String line;
@@ -271,7 +206,7 @@ void listenerSystem(int event, int parm) // System event listener
       DEBUG_MSG("*** SYSINFO: Update Zertifikate Anzahl Versuche %s\n", line.c_str());
       SPIFFS.remove("/log1.txt");
     }
-    if (SPIFFS.exists("/log2.txt"))
+    if (SPIFFS.exists("/log2.txt")) // WebUpdate Index
     {
       fsUploadFile = SPIFFS.open("/log2.txt", "r");
       String line;
@@ -283,9 +218,9 @@ void listenerSystem(int event, int parm) // System event listener
       DEBUG_MSG("*** SYSINFO: Update Index Anzahl Versuche %s\n", line.c_str());
       SPIFFS.remove("/log2.txt");
     }
-    if (SPIFFS.exists("/log3.txt"))
+    if (SPIFFS.exists("/log3.txt")) // WebUpdate Firmware
     {
-      fsUploadFile = SPIFFS.open("/log1.txt", "r");
+      fsUploadFile = SPIFFS.open("/log3.txt", "r");
       String line;
       while (fsUploadFile.available())
       {
@@ -385,9 +320,10 @@ void listenerSensors(int event, int parm) // Sensor event listener
             lastSenInd = millis(); // Timestamp on error
             DEBUG_MSG("EM SENER: Erstelle Zeitstempel für Induktion wegen Sensor Fehler: %l Wait on error induction: %d\n", lastSenInd, wait_on_Sensor_error_induction / 1000);
           }
-          if (millis() > lastSenAct + wait_on_Sensor_error_actor) // Wait for approx WAIT_ON_ERROR/1000 seconds
+          if (millis() - lastSenAct >= wait_on_Sensor_error_actor) // Wait bevor Event handling
             cbpiEventActors(EM_ACTER);
-          if (millis() > lastSenInd + wait_on_Sensor_error_induction) // Wait for approx WAIT_ON_ERROR/1000 seconds
+
+          if (millis() - lastSenInd >= wait_on_Sensor_error_induction) // Wait bevor Event handling
           {
             if (inductionCooker.isInduon && inductionCooker.powerLevelOnError < 100 && inductionCooker.induction_state)
               cbpiEventInduction(EM_INDER);
@@ -500,4 +436,3 @@ void cbpiEventInduction(int parm) // Induction events
 {
   gEM.queueEvent(EventManager::kEventUser3, parm);
 }
-

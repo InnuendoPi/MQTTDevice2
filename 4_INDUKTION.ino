@@ -584,8 +584,8 @@ void handleSetIndu()
   saveConfig();
 }
 
-void timerIndCallback(void *pArg) // Timer Objekt Temperatur mit Pointer
-{
-  if (inductionCooker.isEnabled)
-    timInd = true; // Bei true wird im nächsten loop readTemperature ausgeführt
-}
+// void timerIndCallback(void *pArg) // Timer Objekt Temperatur mit Pointer
+// {
+//   if (inductionCooker.isEnabled)
+//     timInd = true; // Bei true wird im nächsten loop readTemperature ausgeführt
+// }

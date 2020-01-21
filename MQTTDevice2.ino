@@ -1,19 +1,17 @@
-/*
-   Name:		MQTTDevice
-   Erstellt:	2020
-   Author:	    Innuendo
+
+//    Name:		MQTTDevice
+//    Erstellt:	2020
+//    Author:	    Innuendo
    
-   Sketch für ESP8266
-   Kommunikation via MQTT mit CraftBeerPi v3
+//    Sketch für ESP8266
+//    Kommunikation via MQTT mit CraftBeerPi v3
 
-   Unterstützung für DS18B20 Sensoren
-   Unterstützung für GPIO Aktoren
-   Unterstützung für GGM Induktionskochfeld
-   Unterstützung für "PWM" Steuerung mit GPIO (Heizstab)
+//    Unterstützung für DS18B20 Sensoren
+//    Unterstützung für GPIO Aktoren
+//    Unterstützung für GGM IDS2 Induktionskochfeld
+//    Unterstützung für Web Update
+//    Unterstützung für OLED Display 126x64 I2C (D1+D2)
 
-   Unterstützung für Web Update
-   Unterstützung für OLED Display 126x64 I2C (D1+D2)
-*/
 
 #include <OneWire.h>           // OneWire Bus Kommunikation
 #include <DallasTemperature.h> // Vereinfachte Benutzung der DS18B20 Sensoren
@@ -34,9 +32,7 @@
 #include <WiFiClientSecure.h>
 #include <WiFiClientSecureBearSSL.h>
 #include <NTPClient.h>
-#include <Ticker.h>
-
-//#include <stdarg.h>
+#include "InnuTicker.h"
 #include <CertStoreBearSSL.h>
 
 extern "C"
@@ -53,7 +49,7 @@ extern "C"
 // Version
 #define Version "2.0"
 
-// Defines Pause
+// Definiere Pausen
 #define PAUSE1SEC 1000
 #define PAUSE2SEC 2000
 #define PAUSEDS18 750
@@ -81,7 +77,7 @@ const int SIGNAL_START = 25;
 const int SIGNAL_START_TOL = 10;
 const int SIGNAL_WAIT = 10;
 const int SIGNAL_WAIT_TOL = 5;
-#define DEF_DELAY_IND 120000 //default delay after power off induction
+#define DEF_DELAY_IND 120000 // Standard Nachlaufzeit nach dem Ausschalten Induktionskochfeld
 
 /*  Binäre Signale für Induktionsplatte */
 int CMD[6][33] = {
@@ -116,39 +112,29 @@ unsigned char addressesFound[numberOfSensorsMax][8];
 unsigned char numberOfSensorsFound = 0;
 unsigned char numberOfActors = 0; // Gesamtzahl der Aktoren
 #define numberOfActorsMax 6       // Maximale Anzahl an Aktoren
-// MQTT Server
-char mqtthost[16];
-// Set device name
-int mqtt_chip_key = ESP.getChipId();
-char mqtt_clientid[16]; // AP-Mode und Gerätename
+char mqtthost[16];                // MQTT Server
+int mqtt_chip_key = ESP.getChipId(); // Device Name
+char mqtt_clientid[16];             // AP-Mode und Gerätename
 
 // Zeitserver Einstellungen
 #define NTP_OFFSET 60 * 60                // NTP in Sekunden
-#define NTP_INTERVAL 60 * 1000            // NTP in ms
+#define NTP_INTERVAL 60 * 60 * 1000       // NTP in ms
 #define NTP_ADDRESS "europe.pool.ntp.org" // NTP change this to whatever pool is closest (see ntp.org)
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, NTP_ADDRESS, NTP_OFFSET, NTP_INTERVAL);
 
 // EventManager
-EventManager gEM; //  Eventmanager
-IPAddress aktIP;  //  Workaround IP changed
+EventManager gEM; //  Eventmanager Objekt Queues
 
-int SEN_UPDATE = 5000;  //  sensors update delay loop
-int ACT_UPDATE = 5000;  //  actors update delay loop
-int IND_UPDATE = 5000;  //  induction update delay loop
-int DISP_UPDATE = 5000; //  NTP and display update
-int TCP_UPDATE = 60000; //  TCP server Update interval
-
-// Eventmanager
-// System error events
+// System Fehler Events
 #define EM_WLANER 1
 #define EM_MQTTER 2
 
-// System triggered events
+// System Events
 #define EM_MQTTRES 10
 #define EM_REBOOT 11
 
-// System run & set events
+// Loop Events
 #define EM_WLAN 20
 #define EM_OTA 21
 #define EM_MQTT 22
@@ -162,36 +148,54 @@ int TCP_UPDATE = 60000; //  TCP server Update interval
 #define EM_TCP 33
 #define EM_LOG 35
 
-// Sensor, actor and induction
+// Event für Sensoren, Aktor und Induktion
 #define EM_OK 0      // Normal mode
 #define EM_CRCER 1   // Sensor CRC failed
 #define EM_DEVER 2   // Sensor device error
 #define EM_UNPL 3    // Sensor unplugged
 #define EM_SENER 4   // Sensor all errors
-#define EM_ACTER 10  // Actor error
-#define EM_INDER 10  // Induction error
-#define EM_ACTOFF 11 // Actor error
-#define EM_INDOFF 11 // Induction error
+#define EM_ACTER 10  // Bei Fehler Behandlung von Aktoren
+#define EM_INDER 10  // Bei Fehler Behandlung Induktion 
+#define EM_ACTOFF 11 // Aktor ausschalten
+#define EM_INDOFF 11 // Induktion ausschalten
 
-// Event handling 
+// Event handling Status Variablen
 bool StopOnWLANError = false;         // Event handling für WLAN Fehler
 bool StopOnMQTTError = false;         // Event handling für MQTT Fehler
-unsigned long mqttconnectlasttry = 0; // Zeitstempel bei Fehler MQTT
-unsigned long wlanconnectlasttry = 0; // Zeitstempel bei Fehler WLAN
+unsigned long mqttconnectlasttry; // Zeitstempel bei Fehler MQTT
+unsigned long wlanconnectlasttry; // Zeitstempel bei Fehler WLAN
 bool mqtt_state = true;               // Status MQTT
 bool wlan_state = true;               // Status WLAN
 
-// Zeitintervall für Reconnects WLAN und MQTT
-#define tickerWLAN 20        // für Ticker Objekt WLAN in Sekunden!
-#define tickerMQTT 20        // für Ticker Objekt MQTT in Sekunden!
+// Event handling Zeitintervall für Reconnects WLAN und MQTT
+#define tickerWLAN 20000        // für Ticker Objekt WLAN in ms
+#define tickerMQTT 20000        // für Ticker Objekt MQTT in ms
 
-// Standard Verzögerungen für das Event handling
-int wait_on_error_mqtt = 120000; // How long should device wait between tries to reconnect WLAN      - approx in ms
-int wait_on_error_wlan = 120000; // How long should device wait between tries to reconnect WLAN      - approx in ms
-int wait_on_Sensor_error_actor = 120000;     // How long should actors wait between tries to reconnect sensor    - approx in ms
-int wait_on_Sensor_error_induction = 120000; // How long should induction wait between tries to reconnect sensor - approx in ms
+// Event handling Standard Verzögerungen
+unsigned long  wait_on_error_mqtt = 120000; // How long should device wait between tries to reconnect WLAN      - approx in ms
+unsigned long  wait_on_error_wlan = 120000; // How long should device wait between tries to reconnect WLAN      - approx in ms
+unsigned long  wait_on_Sensor_error_actor = 120000;     // How long should actors wait between tries to reconnect sensor    - approx in ms
+unsigned long  wait_on_Sensor_error_induction = 120000; // How long should induction wait between tries to reconnect sensor - approx in ms
 
-// Start
+// Ticker Objekte
+InnuTicker TickerSen;
+InnuTicker TickerAct;
+InnuTicker TickerInd;
+InnuTicker TickerDisp;
+InnuTicker TickerTCP;
+InnuTicker TickerMQTT;
+InnuTicker TickerWLAN;
+InnuTicker TickerNTP;
+
+// Update Intervalle für Ticker Objekte
+int SEN_UPDATE = 5000;  //  sensors update delay loop
+int ACT_UPDATE = 5000;  //  actors update delay loop
+int IND_UPDATE = 5000;  //  induction update delay loop
+int DISP_UPDATE = 5000; //  NTP and display update
+int TCP_UPDATE = 60000; //  TCP server Update interval
+
+
+// Systemstart
 bool startMDNS = true; // Standard mDNS Name ist ESP8266- mit mqtt_chip_key
 char nameMDNS[16] = "MQTTDevice";
 bool startTCP = false;
@@ -204,7 +208,7 @@ int sensorsStatus = 0;
 int actorsStatus = 0;
 int inductionStatus = 0;
 
-// TCP Server
+// TCP Server (optional)
 int tcpPort = 9501; // TCP server Port
 char tcpHost[16];   // TCP server IP
 
@@ -218,30 +222,15 @@ File fsUploadFile; // a File object to temporarily store the received file
 #include <Adafruit_SSD1306.h>
 #define SCREEN_WIDTH 128       // OLED display width, in pixels
 #define SCREEN_HEIGHT 64       // OLED display height, in pixels
-#define DISP_DEF_ADDRESS 0x3C  // Only used on init setup!
-#define OLED_RESET LED_BUILTIN //4
+#define DISP_DEF_ADDRESS 0x3C  // OLED Display Adresse 3C oder 3D
+#define OLED_RESET LED_BUILTIN // D4
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
-#include "icons.h"
+#include "icons.h"              // Icons CraftbeerPi, WLAN und MQTT
 bool useDisplay = false;
 #define SDL D1
 #define SDA D2
 #define numberOfAddress 2
 const int address[numberOfAddress] = {0x3C, 0x3D};
-
-// Timer Objekte
-os_timer_t TimerSen;
-os_timer_t TimerAct;
-os_timer_t TimerInd;
-os_timer_t TimerDisp;
-os_timer_t TimerTCP;
-// Ticker Objekte
-Ticker TickerMQTT, TickerWLAN, TickerNTP;
-
-bool timSen = false;
-bool timAct = false;
-bool timInd = false;
-bool timDisp = false;
-bool timTCP = false;
 
 void configModeCallback(WiFiManager *myWiFiManager)
 {
