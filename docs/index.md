@@ -31,7 +31,7 @@ Forum: <https://hobbybrauer.de/forum/viewtopic.php?f=58&t=19036&p=309196#p309196
 
 # Installation
 
-**Installation ohne den Quellcode zu compilieren**
+**Installation ohne den Quellcode zu compilieren:**
 
 Mit Hilfe von esptool.exe (<https://github.com/igrr/esptool-ck/releases> ) aus dem Ordner tools kann die Firmware auf das ESP Modul geladen werden. Das ESPTool ist für verschiedene Betriebssysteme verfügbar.
 ESPtool-ck Copyright (C) 2014 Christian Klippel ck@atelier-klippel.de. This code is licensed under GPL v2.
@@ -64,8 +64,9 @@ Beispiel für ein ESP8266 Modul vom Typ Wemos D1 mini mit 4MB Flash verbunden mi
         * Das ESP8266 Modul über einen Webbrowser mit dem WLAN verbinden
 
         * Anschließend ist das MQTTDevice erreichbar über <http://mqttdevice>
+        je nach Netzwerkumgebung kann es 20-30 Sekunden dauern, bis der mDNS Name aufgelöst wird
 
-**Installation mit Quellcode**
+**Installation mit Quellcode:**
 
 Voraussetzungen: (2020.01)
 
@@ -95,7 +96,7 @@ Voraussetzungen: (2020.01)
     Die Firmware muss mit der Einstellung Flash size 4MB (FS: 2MB OTA:~1019kB) aufgespielt werden.
     Debug Ausgaben werden in der IDE über "Debug Port" aktiviert. In der Standard Einstellung (bin Dateien) hat die Firmware nach dem Start keine Ausgaben auf dem seriellen Monitor.
 
-**Updates**
+**Updates:**
 
 Die Firmware bietet zwei Möglichkeiten, um Updates sehr einfach einspielen zu können.
 
@@ -109,7 +110,7 @@ Die Firmware bietet zwei Möglichkeiten, um Updates sehr einfach einspielen zu k
     Im Webbrowser die URL <http://mqttdevice> aufrufen und die Funktion "WebUpdate" aufrufen.
     WebUpdate aktualisiert die Firmware, die index Datei und Zertifikate. Durch WebUpdate wird die Konfigurationsdatei nicht überschrieben.
 
-**Backup and Restore der Konfiguration**
+**Backup and Restore der Konfiguration:**
 
 Der Dateiexplorer ist erreichbar über den Webbrowser <http://mqttdevice/edit>
 
@@ -121,16 +122,12 @@ Der Dateiexplorer ist erreichbar über den Webbrowser <http://mqttdevice/edit>
 
     Auf Datei auswählen klicken, die config.txt auswählen und Upload auswählen
 
-3. config.txt editieren
-
-    Auf die Datei config.txt klicken und aus dem PopUp Edit auswählen.
-    Nun kann im Hauptfenster die Datei editiert werden. Zum Abspeichern CTRL+S verwenden. Vorsicht!!!
-
 # Verwenden der Firmware
 
 Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder das Löschen von Sensoren und Aktoren wird daher hier nicht beschrieben.
 
-**Die Hauptfunktionen**
+**Die Hauptfunktionen:**
+
     * Hinzufügen, editieren und löschen von Sensoren
     * Auto reconnect MQTT
     * Auto reconnect WLAN
@@ -168,7 +165,7 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
 
 3. Der Eventmanager
 
-    Der Eventmanager behandelt Fehlverhalten. Das Event handling ist in der Standard Einstellung deaktiviert!
+    Der Eventmanager behandelt Ereignisse und Fehlverhalten. Das Behandeln von Fehlverhalten (Event handling) ist in der Standard Einstellung deaktiviert!
 
     Was soll das MQTTDevice machen, wenn
     * die WLAN Verbindung verloren geht
@@ -184,11 +181,11 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
     3. Verzögerung bei MQTT Fehlern.
     4. Verzögerung bei WLAN Fehlern.
 
-    Die Standard Einstellung für diese 4 Parameter ist 120 Sekunden Verzögerung.
+    Die Standard Verzögerung für diese 4 Ereignisse beträgt 120 Sekunden.
 
     Das WLAN und MQTT Event handling kann grundsätzlich aktiviert oder für alle Aktoren und Induktionskochfeld deaktiviert werden. Wird das WLAN und MQTT Event handling aktiviert, muss in den Einstellungen der Aktoren und für das Induktionskochfeld zusätzlich das Event handling aktiviert werden. So kann jedes Gerät individuell konfiguriert werden.
 
-    Auch jeder Sensor hat eine Eigenschaft Event handling. Wird für einen Sensor das Event handling aktiviert, so kann dieser Sensor bei einer Sensorstörung die Event Behandlung starten. Ein Sensor, der für das Event handling deaktiviert ist, kann dementsprechend keine Events auslösen.
+    Auch jeder Sensor hat eine Eigenschaft Event handling. Wird für einen Sensor das Event handling aktiviert, so kann dieser Sensor bei einer Sensorstörung die Event Behandlung auslösen. Ein Sensor, der für das Event handling deaktiviert ist, kann dementsprechend keine Event Behandlung auslösen.
 
     Die Szenarien für die Verwendung vom Event handling sind sehr vielfältig. Hier sind jeweils die Funktionen von Sensoren und Aktoren individuell zu unterscheiden. Zwei Beispiele zur Erläuterung:
 
@@ -199,7 +196,7 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
     3. das Induktionsfeld kann auf eine niedrigere Leistung gesetzt werden (von 100% auf 20%), um die Temperatur zu halten
 
     **Beispiel 2:**
-    Wenn ein Temeratursensor beim Brauen einen Fehler meldet, bspw. der STecker löst sich und der Sensor meldet "Unplugged", dann
+    Wenn ein Temeratursensor beim Brauen einen Fehler meldet, bspw. der Stecker löst sich und der Sensor meldet "Unplugged", dann
     1. wird automatisch versucht, in den nächsten Zyklen brauchbare Messwerte vom Sensor zu erhalten.
     2. die konfigurierte Verzögerung wird abgewartet.
     3. nach Ablauf der Verzögerung kann ein Aktor Rührwerk am Sudkessel weiterlaufen: das Event handling für diesen Aktor ist deaktiviert.
@@ -213,7 +210,7 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
     * MQTT Fehler
     * Sensor Fehler
 
-    Rückwärts betrachtet kann das Event Sensor Fehler nur dann eintreten, wenn die Kommunikation mit dem MQTT Broker fehlerfrei ist. Ein Event MQTT Fehler kann nur eintreten, wenn eine WLAN Verbindung hergestellt ist.
+    Rückwärts betrachtet kann das Event Sensor Fehler nur dann eintreten, wenn die Kommunikation mit dem MQTT Broker fehlerfrei ist. Ein Event MQTT Fehler kann nur ausgelöst werden, wenn eine WLAN Verbindung hergestellt ist.
 
 4. Restore
 
@@ -263,7 +260,7 @@ In diesem Projekt wurde eine Platine für das MQTTDevice entwickelt, um mit Klem
 * PIN D8 ist ohne LevelShifter auf D8 (3V3) geführt.
 * Spannungsversorgung 5V über Schraubklemme
 
-**Einstellung der Jumper**
+**Einstellung der Jumper:**
 
 ![Jumper](img/platine_jumper.jpg)
 
@@ -287,15 +284,16 @@ Auf der Platine befinden sich 4 Steckbrücken (Jumper)
     Jumper J4 ist optional. Wird die GGM IDS2 nicht verwendet, kann die Steckbrück und Anschlussbuchse entfallen.
 
     *Wenn die Stromversorgung vom Induktionskochfeld bezogen wird (Jumper J4 gesetzt), darf keine Spannungsversorgung zusätzlich über den 5V Eingang angeschlossen werden.*
+    *GPIO0, GPIO2 und GPIO15 bilden den Boot Mode für den Wemos D1 Mini ab. GPIO15 ist nicht über den LevelShifter verbunden und muss für den Flash Boot Mode auf Low stehen. GPIO0 und GPIO2 sind beim Flash Boot auf High*
 
-**Das Platine Layout**
+**Das Platine Layout:**
 
 ![Platine](img/platine.jpg)
 
 Im Ordner Info befindet sich eine EasyEDA Datei, mit deren Hilfe die Platine erstellt werden kann. Ebenfalls im Ordner Info befinden sich STL Dateien für einen 3D Druck MQTTDevice Gehäuse.
 Korrekturen, Verbesserungen und Weiterentwicklungen bitte teilen.
 
-**Platine Stückliste**
+**Platine Stückliste:**
 
 Folgende Bautteile werden benötigt:
 
@@ -318,7 +316,7 @@ Bei der Auswahl LevelShifter (Logic Level Converter) muss zwingend die Belgung b
 
     **LV1 - LV2 - LV3 - LV4 - LV (3V3) - Ground - LV5 - LV6 - LV7 - LV8**
 
-**Platine Hinweise zum Aufbau**
+**Platine Hinweise zum Aufbau:**
 
 Der Widerstand R 4.7kOhm für die Temperatursensoren DS18B20 wird unter dem Wemos D1 mini platziert. Deshalb muss der Wemos gesockelt werden. Die Sockel bieten zudem den Vorteil, dass der Wemos jederzeit von der Platine genommen werden kann, bspw. zum Flashen oder zum Testen. Die DS18B20 werden an VCC mit 5V versorgt. Dies stellt eine stabile Versorgung auch bei längeren Zuleitungen sicher. Der Widerstand ist von Data (PIN D3) gegen 3V3.
 Die JST-HX Buchse und die Steckbrücke J4 für das Induktionskochfeld sind optional.
@@ -340,11 +338,21 @@ Die Anschlüsse müssen über das Web Interface wie folgt konfiguriert werden:
 
 Eine separate Stromversorgung ist für das MQTTDevice bei Verwendung der GGM IDS2 nicht erforderlich.
 
+## Gehäuse
+
+Das Gehäuse für die MQTTDevice Platine befindet sich mit Stand 02.2020 noch in der Design-Phase.
+
+![Gehäuse1](img/gehäuse1.jpg)
+![Gehäuse2](img/gehäuse2.jpg)
+![Grundplatte](img/grundplatte.jpg)
+
+Die benötigten Dateien 3D Druck werden im Ordner Info hnterlegt.
+
 ---
 
 # TCP Server
 
-Die Firmware bietet eine Möglichkeit Daten mit dem TCP Server Tozzi auszutauschen, um eine graphische Darstellung von einem Brautag zu erstellen. Zur Konfiguration muss
+Die Firmware bietet eine Möglichkeit Daten mit dem TCP Server iSpindel (Tozzi Server) auszutauschen, um eine graphische Darstellung von einem Brautag zu erstellen. Zur Konfiguration muss
 
 * der TCP Server um eine MQTTDevice Seite erweitert werden
 * CBPi um ein Plugin erweitert werden
@@ -413,9 +421,3 @@ Dabei sind die Platzhalter ip.tcpserver, Sensorname und Rezeptname zu ersetzen.
 <http://192.168.178.10/iSpindle/reset_now.php?name=Temp_Induktion&days=1&recipe=Muenchner_Hell>
 
 ---
-
-# Diskussion
-
-Die Firmware und die Platine im Projekt MQTTDevice sind im Hobbybrauer Forum entstanden. Disskussionen rund um Fehler, Probleme, Hilfestellung, Feature-Wünsche etc. sollen ausschließlich im Forum stattfinden.
-
-Innu

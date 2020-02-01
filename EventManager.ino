@@ -170,9 +170,7 @@ void listenerSystem(int event, int parm) // System event listener
     break;
   case EM_SETNTP: // NTP Update (25)
     timeClient.begin();
-    millis2wait(PAUSE1SEC);
     timeClient.update();
-    TickerNTP.start();
     break;
   case EM_NTP: // NTP Update (25) -> In Ticker Objekt ausgelagert!
     timeClient.update();
@@ -181,7 +179,7 @@ void listenerSystem(int event, int parm) // System event listener
     if (startMDNS && nameMDNS[0] != '\0' && WiFi.status() == WL_CONNECTED)
     {
       if (mdns.begin(nameMDNS))
-        Serial.printf("*** SYSINFO: mDNS %s mit IP %s verbunden\n", nameMDNS, WiFi.localIP().toString().c_str());
+        Serial.printf("*** SYSINFO: mDNS Name %s mit IP %s verbunden\n", nameMDNS, WiFi.localIP().toString().c_str());
       else
         Serial.println("*** SYSINFO: mMDNS Fehler beim Start");
     }

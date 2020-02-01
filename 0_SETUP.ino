@@ -31,8 +31,7 @@ void setup()
   // Lade Dateisystem
   if (SPIFFS.begin())
   {
-    Serial.print("*** SYSINFO Starte Setup SPIFFS Free Heap: ");
-    Serial.println(ESP.getFreeHeap());
+    DEBUG_MSG("*** SYSINFO Starte Setup SPIFFS Free Heap: %d\n", ESP.getFreeHeap());
 
     // Prüfe WebUpdate
     updateSys();
@@ -54,6 +53,10 @@ void setup()
   else
     Serial.println("*** SYSINFO: Fehler - Dateisystem SPIFFS konnte nicht eingebunden werden!");
 
+  // Starte NTP
+  cbpiEventSystem(EM_SETNTP);
+  TickerNTP.start();
+  
   // Lege Event Queues an
   gEM.addListener(EventManager::kEventUser0, listenerSystem);
   gEM.addListener(EventManager::kEventUser1, listenerSensors);
@@ -62,8 +65,6 @@ void setup()
 
   // Starte Webserver
   setupServer();
-  // Starte NTP
-  cbpiEventSystem(EM_SETNTP);
   // Pinbelegung
   pins_used[ONE_WIRE_BUS] = true;
   if (useDisplay)
@@ -94,6 +95,7 @@ void setup()
 
   // Verarbeite alle Events Setup
   gEM.processAllEvents();
+  
   Serial.printf("*** SYSINFO: %s\n", timeClient.getFormattedTime().c_str());
 }
 
