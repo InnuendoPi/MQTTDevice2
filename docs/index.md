@@ -64,11 +64,10 @@ Beispiel für ein ESP8266 Modul vom Typ Wemos D1 mini mit 4MB Flash verbunden mi
         * Das ESP8266 Modul über einen Webbrowser mit dem WLAN verbinden
 
         * Anschließend ist das MQTTDevice erreichbar über <http://mqttdevice>
-        je nach Netzwerkumgebung kann es 20-30 Sekunden dauern, bis der mDNS Name aufgelöst wird
 
 **Installation mit Quellcode:**
 
-Voraussetzungen: (2020.01)
+Voraussetzungen: (2020.02)
 
 * Arduino IDE 1.8.10
 * Optional Microsoft VSCode + Arduino + ESP8266FS
@@ -91,7 +90,7 @@ Voraussetzungen: (2020.01)
     * PubSubClient by Nick O'Leary Version 2.7.0
     * WiFiManager by tzapu Version 0.15.0
     * EventManager
-    * die Bibliothek InnuTicker (im Repository enthalten)
+    * InnuTicker (im Repository enthalten)
 
     Die Firmware muss mit der Einstellung Flash size 4MB (FS: 2MB OTA:~1019kB) aufgespielt werden.
     Debug Ausgaben werden in der IDE über "Debug Port" aktiviert. In der Standard Einstellung (bin Dateien) hat die Firmware nach dem Start keine Ausgaben auf dem seriellen Monitor.
@@ -103,7 +102,7 @@ Die Firmware bietet zwei Möglichkeiten, um Updates sehr einfach einspielen zu k
 1. Update durch Dateiupload
 
     Im Webbrowser die URL <http://mqttdevice/update> aufrufen.
-    Hier kann Firmware und das Filesystem SPIFFS aktualisiert werden. Wenn das Filesystem SPIFFS mit Dateiupload aktualisiert wird, wird die Konfigurationsdatei überschrieben. Siehe hierzu auch Backup und Restore.
+    Hier kann Firmware und das Filesystem SPIFFS aktualisiert werden. Wenn das Filesystem SPIFFS mit Dateiupload aktualisiert wird, wird die Konfigurationsdatei überschrieben. Siehe Backup und Restore.
 
 2. WebUpdate
 
@@ -150,7 +149,7 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
     **mDNS:**
 
     mDNS ist eine einfache Möglichkeit, um das MQTTDevice mit einem beliebigen Namen anzusprechen. In der Standardkonfiguration ist das MQTTDevice im Webbrowser über <http://mqttdevice> erreichbar.
-    Zu beachten gilt, dass mDNS Namen im Netzwerk eindeutig sein müssen.
+    Zu beachten ist, dass mDNS Namen im Netzwerk eindeutig sein müssen.
 
     **TCPServer IP, Port und Update Intervall**
 
@@ -158,10 +157,11 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
 
 2. Intervalle
 
-    Unter Intervalle werden die Zeitabstände konfiguriert, mit denen
-        - wie häufig Sensoren abgefragt werden und die Daten zum CBPi gesendet werden
-        - wie häufig Befehle für Aktoren / Induktion vom CBPi abgeholt werden
-    Mit diesen Intervallen kann die Performance vom Wemos verbessert werden. Die Standard Einstellung von 5 Sekunden ist in Umgebungen mit vielen Sensoren und vielen Aktoren zu häufig. Hier wäre eher 10 bis 30 Sekunden für den kleinen Wemos besser geeignet. Dies muss individuell ausprobiert werden.  
+    Unter Intervalle werden die Zeitabstände konfiguriert, mit denen festgelegt wird
+    * wie häufig Sensoren abgefragt werden und die Daten zum CBPi gesendet werden
+    * wie häufig Befehle für Aktoren / Induktion vom CBPi abgeholt werden
+    
+    Mit diesen Intervallen kann die Performance vom Wemos verbessert werden. Die Standard Einstellung von 5 Sekunden für Umgebungen mit wenigen Sensoren und Aktoren geeignet. In Umgebungen mit vielen Sensoren und Aktoren wäre ein Intervall von 10 bis 30 Sekunden für den kleinen Wemos besser geeignet. Dies muss individuell ausprobiert werden.  
 
 3. Der Eventmanager
 
@@ -171,6 +171,7 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
     * die WLAN Verbindung verloren geht
     * der Kommunikation mit dem MQTT Server unterbrochen wird
     * in Sensor plötzlich keine Temperaturdaten liefert
+    
     Ohne das Event handling macht der Wemos nichts automatisert. Der Zustand verbleibt unverändert.
 
     Es gibt 4 Grundtypen von Ereignissen (Events), die automatisiert behandelt werden können: für Aktoren und für das Induktionkochfeld bei Sensorfehlern, sowie für Aktoren und das Induktionskochfeld bei WLAN und bei MQTT Fehlern. Für diese 4 Typen werden Verzögerungen für das Event handling konfiguriert. Während der Verzögerung verbleibt der Zustand unverändert. Nach der Verzögerung kann das MQTTDevice den Zustand von Aktoren und Induktionskochfeld ändern.
@@ -221,6 +222,9 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
 **Das OLED Display:**
 
 Diese Firmware unterstützt OLED Display monochrom OLED 128x64 I2C 0.96".
+
+![Oled](img/oled.jpg)
+
 Das Display kann über das WebIf konfiguriert werden. Wenn das Display aktiviert wird, sind die PINS D1 (SDL) und D2 (SDA) belegt. Auf dem Display werden Sensoren, Aktoren und Induktion mit ihren aktuellen Werten dargestellt.
 Dabei bedeutet "S1 78 | A2 100 | I off"
 
@@ -324,8 +328,7 @@ Die JST-HX Buchse und die Steckbrücke J4 für das Induktionskochfeld sind optio
 ## Anschluss Induktionskochfeld GGM IDS2
 
 *Die folgende Beschreibung löscht die Garantieansprüche für das Induktionskochfeld*
-*Es ist ausschließlich das Induktionskochfeld vom Typ GGM IDS2 getestet worden*
-*Verwendung dieser Anleitung auf eigene Gefahr!*
+*Verwendung dieser Anleitung auf eigene Gefahr*
 
 Das Induktionskochfeld vom Typ GGM IDS2 kann **optional** mit der Platine verbunden werden. Die GGM IDS2 wird mit einem externen Bedienteil geliefert. Wenn das Bedienteil geöffnet wird, kann die Kabelverbindung vom Bedienteil zum Induktionskochfeld entnommen werden. Dafür muss lediglich das Kabel aus der Buchse im Bedienteil abgezogen werden.
 Die exakt gleiche Buchse (JST-HX) befindet sich auf der MQTTDevice Platine.
@@ -351,6 +354,8 @@ Die benötigten Dateien 3D Druck werden im Ordner Info hnterlegt.
 ---
 
 # TCP Server
+
+*Hinweis: die Anbindung an den "Tozzi Server" basiert auf einer Version aus 10.2019. Die aktuelle Weiterentwicklung in diesem Projekt wurde noch nicht getestet.*
 
 Die Firmware bietet eine Möglichkeit Daten mit dem TCP Server iSpindel (Tozzi Server) auszutauschen, um eine graphische Darstellung von einem Brautag zu erstellen. Zur Konfiguration muss
 
