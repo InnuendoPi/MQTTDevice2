@@ -40,7 +40,7 @@ Unter Win10 wird der USB Treiber CH341SER benötigt: <http://www.wch.cn/download
 
 Beispiel für ein ESP8266 Modul vom Typ Wemos D1 mini mit 4MB Flash verbunden mit COM3
 
-* Von github das Archiv Firmware aus dem Ordner Tools herunterladen und irgendeinem Ordner entpacken
+* Von github das Archiv Firmware.zip aus dem Ordner Tools herunterladen und irgendeinem Ordner entpacken
 
   * Das Archiv enthält das esptool zum Flashen, das Skript Flashen.cmd und die zwei Firmware Dateien
 
@@ -48,7 +48,7 @@ Beispiel für ein ESP8266 Modul vom Typ Wemos D1 mini mit 4MB Flash verbunden mi
 
   Fertig!
 
-  Sollte COM3 nicht der richtige Anschluss sein, muss im Skript Flashen.cmd an zwei Stellen COM3 durch den richtigen Anschluss ersetzt werden.
+  Sollte COM3 nicht der richtige Anschluss für den Wemos D1 mini sein, muss im Skript Flashen.cmd an zwei Stellen COM3 durch den richtigen Anschluss ersetzt werden.
 
   Alternativ manuell mit esptool:
 
