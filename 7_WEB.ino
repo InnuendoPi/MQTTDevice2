@@ -251,7 +251,13 @@ void handleRequestMisc()
   }
   if (request == "firmware")
   {
-    message = "MQTTDevice V";
+    if (startMDNS)
+    {
+      message = nameMDNS;
+      message += " V";
+    }
+    else
+      message = "MQTTDevice V ";
     message += Version;
     goto SendMessage;
   }
@@ -295,7 +301,10 @@ void handleSetMisc()
     if (server.argName(i) == "MQTTHOST")
       server.arg(i).toCharArray(mqtthost, 16);
     if (server.argName(i) == "mdns_name")
+    {
       server.arg(i).toCharArray(nameMDNS, 16);
+      checkChars(nameMDNS);
+    }
     if (server.argName(i) == "mdns")
     {
       if (server.arg(i) == "1")
@@ -311,7 +320,10 @@ void handleSetMisc()
         StopOnMQTTError = false;
     }
     if (server.argName(i) == "delay_mqtt")
-      wait_on_error_mqtt = server.arg(i).toInt() * 1000;
+      if (isValidInt(server.arg(i)))
+      {
+        wait_on_error_mqtt = server.arg(i).toInt() * 1000;
+      }
     if (server.argName(i) == "enable_wlan")
     {
       if (server.arg(i) == "1")
@@ -320,11 +332,20 @@ void handleSetMisc()
         StopOnWLANError = false;
     }
     if (server.argName(i) == "delay_wlan")
-      wait_on_error_wlan = server.arg(i).toInt() * 1000;
+      if (isValidInt(server.arg(i)))
+      {
+        wait_on_error_wlan = server.arg(i).toInt() * 1000;
+      }
     if (server.argName(i) == "del_sen_act")
-      wait_on_Sensor_error_actor = server.arg(i).toInt() * 1000;
+      if (isValidInt(server.arg(i)))
+      {
+        wait_on_Sensor_error_actor = server.arg(i).toInt() * 1000;
+      }
     if (server.argName(i) == "del_sen_ind")
-      wait_on_Sensor_error_induction = server.arg(i).toInt() * 1000;
+      if (isValidInt(server.arg(i)))
+      {
+        wait_on_Sensor_error_induction = server.arg(i).toInt() * 1000;
+      }
     if (server.argName(i) == "tcp")
     {
       if (server.arg(i) == "1")
@@ -338,33 +359,48 @@ void handleSetMisc()
     }
     if (server.argName(i) == "tcpport")
     {
-      int newPort = server.arg(i).toInt();
-      if (newPort > 0)
-        tcpPort = newPort;
+      if (isValidInt(server.arg(i)))
+      {
+        int newPort = server.arg(i).toInt();
+        if (newPort > 0)
+          tcpPort = newPort;
+      }
     }
     if (server.argName(i) == "upsen")
     {
-      int newsup = server.arg(i).toInt();
-      if (newsup > 0)
-        SEN_UPDATE = newsup * 1000;
+      if (isValidInt(server.arg(i)))
+      {
+        int newsup = server.arg(i).toInt();
+        if (newsup > 0)
+          SEN_UPDATE = newsup * 1000;
+      }
     }
     if (server.argName(i) == "upact")
     {
-      int newaup = server.arg(i).toInt();
-      if (newaup > 0)
-        ACT_UPDATE = newaup * 1000;
+      if (isValidInt(server.arg(i)))
+      {
+        int newaup = server.arg(i).toInt();
+        if (newaup > 0)
+          ACT_UPDATE = newaup * 1000;
+      }
     }
     if (server.argName(i) == "upind")
     {
-      int newiup = server.arg(i).toInt();
-      if (newiup > 0)
-        IND_UPDATE = newiup * 1000;
+      if (isValidInt(server.arg(i)))
+      {
+        int newiup = server.arg(i).toInt();
+        if (newiup > 0)
+          IND_UPDATE = newiup * 1000;
+      }
     }
     if (server.argName(i) == "uptcp")
     {
-      int newtcp = server.arg(i).toInt();
-      if (newtcp > 0)
-        TCP_UPDATE = newtcp * 1000;
+      if (isValidInt(server.arg(i)))
+      {
+        int newtcp = server.arg(i).toInt();
+        if (newtcp > 0)
+          TCP_UPDATE = newtcp * 1000;
+      }
     }
     yield();
   }

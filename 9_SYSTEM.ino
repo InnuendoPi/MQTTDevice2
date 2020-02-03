@@ -56,6 +56,24 @@ bool isValidDigit(const String &str)
   return true;
 }
 
+void checkChars(char *input)
+{
+  char *output = input;
+  int j = 0;
+  for (int i = 0; i < strlen(input); i++)
+  {
+    if (input[i] != ' ' && input[i] != '\n' && input[i] != '\r') // Suche nach Leerzeichen und CR LF
+      output[j] = input[i];
+    else
+      j--;
+
+    j++;
+  }
+  output[j] = '\0';
+  *input = *output;
+  return;
+}
+
 void setTicker()
 {
   // Ticker Objekte
