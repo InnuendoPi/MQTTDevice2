@@ -15,8 +15,7 @@ public:
   int counter_act = 0;
 
   oled()
-  {
-  }
+  {}
 
   void dispUpdate()
   {
@@ -40,11 +39,8 @@ public:
     if (is_enabled == 1 && dispAddress != 0)
     {
       address = dispAddress;
-      //display.begin(SSD1306_SWITCHCAPVCC, address, true);
-      //display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
       display.begin(SSD1306_SWITCHCAPVCC, address);
       display.ssd1306_command(SSD1306_DISPLAYON);
-      //display.setFont();
       display.clearDisplay();
       display.display();
       dispEnabled = is_enabled;
@@ -105,9 +101,7 @@ void handleRequestDisp()
   {
     message = "0";
     if (oledDisplay.dispEnabled)
-    {
       message = "1";
-    }
     goto SendMessage;
   }
   if (request == "address")
@@ -184,10 +178,7 @@ void handleSetDisp()
       if (newdup > 0)
       {
         DISP_UPDATE = newdup * 1000;
-        // os_timer_disarm(&TimerDisp);
-        // os_timer_arm(&TimerDisp, DISP_UPDATE, useDisplay);
-        TickerDisp.stop();
-        TickerDisp.config(TCP_UPDATE, 0);
+        TickerDisp.config(DISP_UPDATE, 0);
       }
     }
     yield();
@@ -207,12 +198,10 @@ void dispStartScreen() // Show Startscreen
       showDispCbpi();
       showDispSTA();
       showDispDisplay();
-      //lastToggledDisp = millis();
     }
   }
 }
 
-/* ######### Display functions ######### */
 void showDispClear() // Clear Display
 {
   display.clearDisplay();
@@ -239,16 +228,12 @@ void showDispVal(const int value) // Display a Int value
 void showDispWlan() // Show WLAN icon
 {
   if (oledDisplay.wlanOK)
-  {
     display.drawBitmap(77, 3, wlan_logo, 20, 20, WHITE);
-  }
 }
 void showDispMqtt() // SHow MQTT icon
 {
   if (oledDisplay.mqttOK)
-  {
     display.drawBitmap(102, 3, mqtt_logo, 20, 20, WHITE);
-  }
 }
 void showDispCbpi() // SHow CBPI icon
 {
@@ -366,9 +351,3 @@ void showDispSTA() // Show AP mode
   display.print(WiFi.localIP().toString());
   display.display();
 }
-
-// void timerDispCallback(void *pArg) // Timer Objekt Temperatur mit Pointer
-// {
-//   if (oledDisplay.dispEnabled)
-//     timDisp = true; // Bei true wird im nächsten loop readTemperature ausgeführt
-// }

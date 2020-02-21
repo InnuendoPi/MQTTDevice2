@@ -39,12 +39,10 @@ bool loadConfig()
       String actorName = actorObj["NAME"];
       String actorInv = actorObj["INV"];
       String actorSwitch = actorObj["SW"];
-      String actorKettle_id = "0";
-      if (actorObj.containsKey("kettle_id"))
-        actorKettle_id = actorObj["kettle_id"].as<String>();
+      String actorGrafana = actorObj["GRAF"];
 
-      actors[i].change(actorPin, actorScript, actorName, actorInv, actorSwitch, actorKettle_id);
-      DEBUG_MSG("Actor #: %d Name: %s MQTT: %s PIN: %s INV: %s SW: %s ID: %s\n", (i + 1), actorName.c_str(), actorScript.c_str(), actorPin.c_str(), actorInv.c_str(), actorSwitch.c_str(), actorKettle_id.c_str());
+      actors[i].change(actorPin, actorScript, actorName, actorInv, actorSwitch, actorGrafana);
+      DEBUG_MSG("Actor #: %d Name: %s MQTT: %s PIN: %s INV: %s SW: %s GRAF: %s\n", (i + 1), actorName.c_str(), actorScript.c_str(), actorPin.c_str(), actorInv.c_str(), actorSwitch.c_str(), actorGrafana.c_str());
       i++;
     }
   }
@@ -67,19 +65,16 @@ bool loadConfig()
       String sensorsScript = sensorsObj["SCRIPT"];
       String sensorsName = sensorsObj["NAME"];
       String sensorsSwitch = sensorsObj["SW"];
-      String sensorsKettle_id = "0";
-      if (sensorsObj.containsKey("kettle_id"))
-        sensorsKettle_id = sensorsObj["kettle_id"].as<String>();
       float sensorsOffset = 0.0;
       if (sensorsObj.containsKey("OFFSET"))
         sensorsOffset = sensorsObj["OFFSET"];
 
-      sensors[i].change(sensorsAddress, sensorsScript, sensorsName, sensorsOffset, sensorsSwitch, sensorsKettle_id);
-      DEBUG_MSG("Sensor #: %d Name: %s Address: %s MQTT: %s Offset: %f SW: %s ID: %s \n", (i + 1), sensorsName.c_str(), sensorsAddress.c_str(), sensorsScript.c_str(), sensorsOffset, sensorsSwitch.c_str(), sensorsKettle_id.c_str());
+      sensors[i].change(sensorsAddress, sensorsScript, sensorsName, sensorsOffset, sensorsSwitch);
+      DEBUG_MSG("Sensor #: %d Name: %s Address: %s MQTT: %s Offset: %f SW: %s\n", (i + 1), sensorsName.c_str(), sensorsAddress.c_str(), sensorsScript.c_str(), sensorsOffset, sensorsSwitch.c_str());
       i++;
     }
     else
-      sensors[i].change("", "", "", 0.0, "", "0");
+      sensors[i].change("", "", "", 0.0, "");
   }
 
   if (numberOfSensors == 0)
@@ -97,10 +92,7 @@ bool loadConfig()
     String indPinYellow = indObj["PINYELLOW"];
     String indPinBlue = indObj["PINBLUE"];
     String indScript = indObj["TOPIC"];
-    String indKettleid = "0";
-    if (indObj.containsKey("kettle_id"))
-      indKettleid = indObj["kettle_id"].as<String>();
-
+    String indGrafana = indObj["GRAF"];
     long indDelayOff = DEF_DELAY_IND; //default delay
     int indPowerLevel = 100;
     if (indObj.containsKey("PL"))
@@ -109,8 +101,8 @@ bool loadConfig()
     if (indObj.containsKey("DELAY"))
       indDelayOff = indObj["DELAY"];
 
-    inductionCooker.change(StringToPin(indPinWhite), StringToPin(indPinYellow), StringToPin(indPinBlue), indScript, indDelayOff, indEnabled, indPowerLevel, indKettleid);
-    DEBUG_MSG("Induction: %d MQTT: %s Relais (WHITE): %s Command channel (YELLOW): %s Backchannel (BLUE): %s Delay after power off %d Power level on error: %d ID: %s\n", inductionStatus, indScript.c_str(), indPinWhite.c_str(), indPinYellow.c_str(), indPinBlue.c_str(), (indDelayOff / 1000), indPowerLevel, indKettleid.c_str());
+    inductionCooker.change(StringToPin(indPinWhite), StringToPin(indPinYellow), StringToPin(indPinBlue), indScript, indDelayOff, indEnabled, indPowerLevel, indGrafana);
+    DEBUG_MSG("Induction: %d MQTT: %s Relais (WHITE): %s Command channel (YELLOW): %s Backchannel (BLUE): %s Delay after power off %d Power level on error: %d\n", inductionStatus, indScript.c_str(), indPinWhite.c_str(), indPinYellow.c_str(), indPinBlue.c_str(), (indDelayOff / 1000), indPowerLevel);
   }
   else
   {
@@ -148,7 +140,6 @@ bool loadConfig()
     DEBUG_MSG("OLED Display: %d\n", oledDisplay.dispEnabled);
     TickerDisp.stop();
   }
-
   DEBUG_MSG("%s\n", "--------------------");
 
   // Misc Settings
@@ -226,25 +217,27 @@ bool loadConfig()
   DEBUG_MSG("Sensors update intervall: %d sec\n", (SEN_UPDATE / 1000));
   DEBUG_MSG("Actors update intervall: %d sec\n", (ACT_UPDATE / 1000));
   DEBUG_MSG("Induction update intervall: %d sec\n", (IND_UPDATE / 1000));
-  if (miscObj["tcp"] == "1")
-    startTCP = true;
-  else
-    startTCP = false;
-  if (miscObj.containsKey("uptcp"))
-    TCP_UPDATE = miscObj["uptcp"];
 
-  if (miscObj.containsKey("TCPHOST"))
-    strlcpy(tcpHost, miscObj["TCPHOST"], sizeof(tcpHost));
+  if (miscObj.containsKey("STARTDB") == 1)
+    startDB = miscObj["STARTDB"];
   else
-    startTCP = false;
-  if (miscObj.containsKey("TCPPORT"))
-    tcpPort = miscObj["TCPPORT"];
+    startDB = false;
+
+  if (miscObj.containsKey("DBSERVER"))
+    strlcpy(dbServer, miscObj["DBSERVER"], sizeof(dbServer));
+  if (miscObj.containsKey("DB"))
+    strlcpy(dbDatabase, miscObj["DB"], sizeof(dbDatabase));
+  if (miscObj.containsKey("DBUSER"))
+    strlcpy(dbUser, miscObj["DBUSER"], sizeof(dbUser));
+  if (miscObj.containsKey("DBPASS"))
+    strlcpy(dbPass, miscObj["DBPASS"], sizeof(dbPass));
+  if (miscObj.containsKey("DBUP"))
+    upInflux = miscObj["DBUP"];
+
+  if (startDB)
+    DEBUG_MSG("InfluxDB Server URL %s User: %s Pass: %s Update %d\n", dbServer, dbUser, dbPass, upInflux);
   else
-    startTCP = false;
-  if (startTCP)
-    DEBUG_MSG("TCP Server IP %s Port %d Update %d\n", tcpHost, tcpPort, (TCP_UPDATE / 1000));
-  else
-    DEBUG_MSG("TCP Server: %d\n", startTCP);
+    DEBUG_MSG("InfluxDB Server: %d\n", startDB);
 
   if (miscObj.containsKey("MQTTHOST"))
   {
@@ -263,14 +256,16 @@ bool loadConfig()
   int memoryUsed = doc.memoryUsage();
   DEBUG_MSG("JSON memory usage: %d\n", memoryUsed);
 
-  if (startTCP)
+  // Influx Datenbank
+  if (startDB)
   {
-    setTCPConfig();
-    TickerTCP.config(TCP_UPDATE, 0);
-    TickerTCP.start();
+    setInfluxDB();
+    TickerInfluxDB.config(upInflux, 0);
+    TickerInfluxDB.start();
   }
   else
-    TickerTCP.stop();
+    TickerInfluxDB.stop();
+
   return true;
 }
 
@@ -303,8 +298,8 @@ bool saveConfig()
     actorsObj["SCRIPT"] = actors[i].argument_actor;
     actorsObj["INV"] = actors[i].getInverted();
     actorsObj["SW"] = actors[i].getSwitchable();
-    actorsObj["kettle_id"] = actors[i].kettle_id;
-    DEBUG_MSG("Actor #: %d Name: %s MQTT: %s PIN: %s INV: %s SW: %s ID: %s\n", (i + 1), actors[i].name_actor.c_str(), actors[i].argument_actor.c_str(), PinToString(actors[i].pin_actor).c_str(), actors[i].getInverted().c_str(), actors[i].getSwitchable().c_str(), actors[i].kettle_id.c_str());
+    actorsObj["GRAF"] = actors[i].getGrafana();
+    DEBUG_MSG("Actor #: %d Name: %s MQTT: %s PIN: %s INV: %s SW: %s GRAF: %s\n", (i + 1), actors[i].name_actor.c_str(), actors[i].argument_actor.c_str(), PinToString(actors[i].pin_actor).c_str(), actors[i].getInverted().c_str(), actors[i].getSwitchable().c_str(), actors[i].getGrafana().c_str());
   }
   if (numberOfActors == 0)
     DEBUG_MSG("Actors: %d\n", numberOfActors);
@@ -321,8 +316,7 @@ bool saveConfig()
     sensorsObj["OFFSET"] = sensors[i].sens_offset;
     sensorsObj["SCRIPT"] = sensors[i].sens_mqtttopic;
     sensorsObj["SW"] = sensors[i].getSwitchable();
-    sensorsObj["kettle_id"] = sensors[i].kettle_id;
-    DEBUG_MSG("Sensor #: %d Name: %s Address: %s MQTT: %s Offset: %f SW: %s ID: %s\n", (i + 1), sensors[i].sens_name.c_str(), sensors[i].getSens_adress_string().c_str(), sensors[i].sens_mqtttopic, sensors[i].sens_offset, sensors[i].getSwitchable().c_str(), sensors[i].kettle_id.c_str());
+    DEBUG_MSG("Sensor #: %d Name: %s Address: %s MQTT: %s Offset: %f SW: %s\n", (i + 1), sensors[i].sens_name.c_str(), sensors[i].getSens_adress_string().c_str(), sensors[i].sens_mqtttopic, sensors[i].sens_offset, sensors[i].getSwitchable().c_str());
   }
   if (numberOfSensors == 0)
     DEBUG_MSG("Sensors: %d\n", numberOfSensors);
@@ -342,8 +336,8 @@ bool saveConfig()
     indObj["DELAY"] = inductionCooker.delayAfteroff;
     indObj["ENABLED"] = "1";
     indObj["PL"] = inductionCooker.powerLevelOnError;
-    indObj["kettle_id"] = inductionCooker.kettle_id;
-    DEBUG_MSG("Induction: %d MQTT: %s Relais (WHITE): %s Command channel (YELLOW): %s Backchannel (BLUE): %s Delay after power off %d Power level on error: %d ID: %s\n", inductionCooker.isEnabled, inductionCooker.mqtttopic.c_str(), PinToString(inductionCooker.PIN_WHITE).c_str(), PinToString(inductionCooker.PIN_YELLOW).c_str(), PinToString(inductionCooker.PIN_INTERRUPT).c_str(), (inductionCooker.delayAfteroff / 1000), inductionCooker.powerLevelOnError, inductionCooker.kettle_id.c_str());
+    indObj["GRAF"] = inductionCooker.setGrafana;
+    DEBUG_MSG("Induction: %d MQTT: %s Relais (WHITE): %s Command channel (YELLOW): %s Backchannel (BLUE): %s Delay after power off %d Power level on error: %d\n", inductionCooker.isEnabled, inductionCooker.mqtttopic.c_str(), PinToString(inductionCooker.PIN_WHITE).c_str(), PinToString(inductionCooker.PIN_YELLOW).c_str(), PinToString(inductionCooker.PIN_INTERRUPT).c_str(), (inductionCooker.delayAfteroff / 1000), inductionCooker.powerLevelOnError);
   }
   else
   {
@@ -382,7 +376,6 @@ bool saveConfig()
     DEBUG_MSG("OLED display: %d\n", oledDisplay.dispEnabled);
     TickerDisp.stop();
   }
-
   DEBUG_MSG("%s\n", "--------------------");
 
   // Write Misc Stuff
@@ -424,19 +417,17 @@ bool saveConfig()
   else
     miscObj["mdns"] = "0";
 
-  miscObj["TCPHOST"] = tcpHost;
-  miscObj["TCPPORT"] = tcpPort;
-  miscObj["uptcp"] = TCP_UPDATE;
-  if (startTCP)
-  {
-    miscObj["tcp"] = "1";
-    DEBUG_MSG("TCP Server IP %s Port %d Update %d\n", tcpHost, tcpPort, (TCP_UPDATE / 1000));
-  }
+  miscObj["STARTDB"] = startDB;
+  miscObj["DBSERVER"] = dbServer;
+  miscObj["DB"] = dbDatabase;
+  miscObj["DBUSER"] = dbUser;
+  miscObj["DBPASS"] = dbPass;
+  miscObj["DBUP"] = upInflux;
+  if (startDB)
+    DEBUG_MSG("InfluxDB Server URL %s User: %s Pass: %s Update %d\n", dbServer, dbUser, dbPass, upInflux);
   else
-  {
-    miscObj["tcp"] = "0";
-    DEBUG_MSG("TCP Server: %d\n", startTCP);
-  }
+    DEBUG_MSG("InfluxDB Server: %d\n", startDB);
+
   miscObj["MQTTHOST"] = mqtthost;
   miscObj["upsen"] = SEN_UPDATE;
   miscObj["upact"] = ACT_UPDATE;
@@ -488,13 +479,5 @@ bool saveConfig()
   DEBUG_MSG("ESP8266 device IP Address: %s\n", WiFi.localIP().toString().c_str());
   DEBUG_MSG("Configured WLAN SSID: %s\n", Network.c_str());
   DEBUG_MSG("%s\n", "---------------------------------");
-  if (startTCP)
-  {
-    setTCPConfig();
-    TickerTCP.config(TCP_UPDATE, 0);
-    TickerTCP.start();
-  }
-  else
-    TickerTCP.stop();
   return true;
 }

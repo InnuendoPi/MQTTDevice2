@@ -3,7 +3,8 @@ void loop()
   server.handleClient();    // Webserver handle
   cbpiEventSystem(EM_WLAN); // Überprüfe WLAN
   cbpiEventSystem(EM_MQTT); // Überprüfe MQTT
-  cbpiEventSystem(EM_MDNS); // MDNS handle
+  if (startMDNS)            // MDNS handle
+    cbpiEventSystem(EM_MDNS);
   gEM.processAllEvents();
 
   if (numberOfSensors > 0)  // Sensoren Ticker
@@ -14,8 +15,8 @@ void loop()
     TickerInd.update();
   if (useDisplay)           // Display Ticker
     TickerDisp.update();
-  if (startTCP)             // TCP Server Ticker
-    TickerTCP.update();
+  if (startDB)              // InfluxDB Ticker
+    TickerInfluxDB.update();
 
   TickerNTP.update();       // NTP Ticker
 }

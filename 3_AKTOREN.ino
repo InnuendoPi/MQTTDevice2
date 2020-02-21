@@ -15,14 +15,14 @@ public:
   bool switchable;              // actors switchable on error events?
   bool isOnBeforeError = false; // isOn status before error event
   bool actor_state = true;      // Error state actor
-  String kettle_id = "0";
+  bool setGrafana = false;
 
   // MQTT Publish
   char actor_mqtttopic[50]; // Für MQTT Kommunikation
 
-  Actor(String pin, String argument, String aname, String ainverted, String aswitchable, String akettle_id)
+  Actor(String pin, String argument, String aname, String ainverted, String aswitchable, String agrafana)
   {
-    change(pin, argument, aname, ainverted, aswitchable, akettle_id);
+    change(pin, argument, aname, ainverted, aswitchable, agrafana);
   }
 
   void Update()
@@ -51,7 +51,7 @@ public:
     }
   }
 
-  void change(const String &pin, const String &argument, const String &aname, const String &ainverted, const String &aswitchable, const String &akettle_id)
+  void change(const String &pin, const String &argument, const String &aname, const String &ainverted, const String &aswitchable, const String &agrafana)
   {
     // Set PIN
     if (isPin(pin_actor))
@@ -97,7 +97,7 @@ public:
     aswitchable == "1" ? switchable = true : switchable = false;
     actor_state = true;
     isOnBeforeError = false;
-    kettle_id = akettle_id;
+    agrafana == "1" ? setGrafana = true : setGrafana = false;
   }
 
   /* MQTT Publish Not yet ready
@@ -181,6 +181,13 @@ public:
     else
       return "0";
   }
+  String getGrafana()
+  {
+    if (setGrafana)
+      return "1";
+    else
+      return "0";
+  }
 };
 
 // Initialisierung des Arrays max 6
@@ -198,12 +205,6 @@ void handleActors()
   for (int i = 0; i < numberOfActors; i++)
   {
     actors[i].Update();
-    // TCP Server
-    if (startTCP)
-    {
-      if (actors[i].kettle_id.toInt() > 0)
-        setTCPPowerAct(actors[i].kettle_id, actors[i].power_actor);
-    }
     yield();
   }
 }
@@ -225,7 +226,7 @@ void handleRequestActors()
     actorsObj["pin"] = PinToString(actors[i].pin_actor);
     actorsObj["sw"] = actors[i].switchable;
     actorsObj["state"] = actors[i].actor_state;
-    actorsObj["kettle_id"] = actors[i].kettle_id;
+    actorsObj["grafana"] = actors[i].setGrafana;
     yield();
   }
 
@@ -272,9 +273,9 @@ void handleRequestActor()
       message = actors[id].getSwitchable();
       goto SendMessage;
     }
-    if (request == "kettle_id")
+    if (request == "grafana")
     {
-      message = actors[id].kettle_id;
+      message = actors[id].setGrafana;
       goto SendMessage;
     }
     message = "not found";
@@ -301,7 +302,7 @@ void handleSetActor()
   String ac_name = actors[id].name_actor;
   String ac_isinverted = actors[id].getInverted();
   String ac_switchable = actors[id].getSwitchable();
-  String ac_kettle_id = actors[id].kettle_id;
+  String ac_grafana = actors[id].getGrafana();
 
   for (int i = 0; i < server.args(); i++)
   {
@@ -325,18 +326,13 @@ void handleSetActor()
     {
       ac_switchable = server.arg(i);
     }
-    if (server.argName(i) == "kettle_id")
+    if (server.argName(i) == "grafana")
     {
-      if (isValidInt(server.arg(i)))
-        ac_kettle_id = server.arg(i);
-      else
-        ac_kettle_id = "0";
+      ac_grafana = server.arg(i);
     }
     yield();
   }
-
-  actors[id].change(ac_pin, ac_argument, ac_name, ac_isinverted, ac_switchable, ac_kettle_id);
-
+  actors[id].change(ac_pin, ac_argument, ac_name, ac_isinverted, ac_switchable, ac_grafana);
   saveConfig();
   server.send(201, "text/plain", "created");
 }
@@ -344,7 +340,6 @@ void handleSetActor()
 void handleDelActor()
 {
   int id = server.arg(0).toInt();
-
   for (int i = id; i < numberOfActors; i++)
   {
     if (i == (numberOfActorsMax - 1)) // 5 - Array von 0 bis (numberOfActorsMax-1)
@@ -353,8 +348,9 @@ void handleDelActor()
     }
     else
     {
-      actors[i].change(PinToString(actors[i + 1].pin_actor), actors[i + 1].argument_actor, actors[i + 1].name_actor, actors[i + 1].getInverted(), actors[i + 1].getSwitchable(), actors[i + 1].kettle_id);
+      actors[i].change(PinToString(actors[i + 1].pin_actor), actors[i + 1].argument_actor, actors[i + 1].name_actor, actors[i + 1].getInverted(), actors[i + 1].getSwitchable(), actors[i + 1].getGrafana());
     }
+    yield();
   }
 
   numberOfActors -= 1;

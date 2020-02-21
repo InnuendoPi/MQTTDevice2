@@ -32,7 +32,7 @@ public:
   int powerLevelOnError = 100;   // 100% schaltet das Event handling für Induktion aus
   int powerLevelBeforeError = 0; // in error event save last power state
   bool induction_state = true;   // Error state induction
-  String kettle_id = "0";
+  bool setGrafana = false;
 
   // MQTT Publish - not yet ready
   // char induction_mqtttopic[50];      // Für MQTT Kommunikation
@@ -42,7 +42,7 @@ public:
     setupCommands();
   }
 
-  void change(unsigned char pinwhite, unsigned char pinyellow, unsigned char pinblue, String topic, long delayoff, bool is_enabled, int powerLevel, String new_kettle_id)
+  void change(unsigned char pinwhite, unsigned char pinyellow, unsigned char pinblue, String topic, long delayoff, bool is_enabled, int powerLevel, bool new_grafana)
   {
     if (isEnabled)
     {
@@ -66,7 +66,6 @@ public:
         digitalWrite(PIN_INTERRUPT, HIGH);
         pins_used[PIN_INTERRUPT] = false;
       }
-
       mqtt_unsubscribe();
     }
 
@@ -80,7 +79,7 @@ public:
     delayAfteroff = delayoff;
     powerLevelOnError = powerLevel;
     induction_state = true;
-    kettle_id = new_kettle_id;
+    setGrafana = new_grafana;
 
     // MQTT Publish - not yet ready
     //mqtttopic.toCharArray(induction_mqtttopic, mqtttopic.length() + 1);
@@ -177,16 +176,12 @@ public:
     if (state == "off")
     {
       newPower = 0;
-      if (kettle_id.toInt() > 0)
-        setTCPPowerInd(kettle_id, newPower);
       return;
     }
     else
     {
       newPower = doc["power"];
     }
-    if (kettle_id.toInt() > 0)
-      setTCPPowerInd(kettle_id, newPower);
   }
 
   void setupCommands()
@@ -340,7 +335,6 @@ public:
     // Glitch rausfiltern
     if (signalTime > 10)
     {
-
       if (ishigh)
       {
         lastInterrupt = newInterrupt; // PIN ist auf Rising, Bit senden hat gestartet :)
@@ -408,7 +402,6 @@ void readInputWrap()
   inductionCooker.readInput();
 }
 
-/* Funktion für Loop */
 void handleInduction()
 {
   inductionCooker.Update();
@@ -424,7 +417,7 @@ void handleRequestInduction()
     doc["power"] = inductionCooker.power;
     doc["relayOn"] = inductionCooker.isRelayon;
     doc["state"] = inductionCooker.induction_state;
-    doc["kettle_id"] = inductionCooker.kettle_id;
+    doc["grafana"] = inductionCooker.setGrafana;
     doc["pl"] = inductionCooker.powerLevelOnError;
     if (inductionCooker.isPower)
     {
@@ -472,9 +465,16 @@ void handleRequestIndu()
     message = inductionCooker.powerLevelOnError;
     goto SendMessage;
   }
-  if (request == "kettle_id")
+  if (request == "grafana")
   {
-    message = inductionCooker.kettle_id;
+    if (inductionCooker.setGrafana)
+    {
+      message = "1";
+    }
+    else
+    {
+      message = "0";
+    }
     goto SendMessage;
   }
   if (request == "pins")
@@ -526,20 +526,16 @@ void handleSetIndu()
   bool is_enabled = inductionCooker.isEnabled;
   String topic = inductionCooker.mqtttopic;
   int pl = inductionCooker.powerLevelOnError;
-  String new_kettle_id = inductionCooker.kettle_id;
+  bool new_grafana = inductionCooker.setGrafana;
 
   for (int i = 0; i < server.args(); i++)
   {
     if (server.argName(i) == "enabled")
     {
       if (server.arg(i) == "1")
-      {
         is_enabled = true;
-      }
       else
-      {
         is_enabled = false;
-      }
     }
     if (server.argName(i) == "topic")
     {
@@ -568,24 +564,16 @@ void handleSetIndu()
       else
         pl = 100;
     }
-    if (server.argName(i) == "kettle_id")
+    if (server.argName(i) == "grafana")
     {
-      if (isValidInt(server.arg(i)))
-        new_kettle_id = server.arg(i);
+      if (server.arg(i) == "1")
+        new_grafana = true;
       else
-        new_kettle_id = "0";
+        new_grafana = false;
     }
-
     yield();
   }
 
-  inductionCooker.change(pin_white, pin_yellow, pin_blue, topic, delayoff, is_enabled, pl, new_kettle_id);
-
+  inductionCooker.change(pin_white, pin_yellow, pin_blue, topic, delayoff, is_enabled, pl, new_grafana);
   saveConfig();
 }
-
-// void timerIndCallback(void *pArg) // Timer Objekt Temperatur mit Pointer
-// {
-//   if (inductionCooker.isEnabled)
-//     timInd = true; // Bei true wird im nächsten loop readTemperature ausgeführt
-// }

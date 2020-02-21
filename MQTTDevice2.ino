@@ -1,7 +1,6 @@
-
 //    Name:		MQTTDevice
 //    Erstellt:	2020
-//    Author:	    Innuendo
+//    Author:	Innuendo
    
 //    Sketch für ESP8266
 //    Kommunikation via MQTT mit CraftBeerPi v3
@@ -11,7 +10,6 @@
 //    Unterstützung für GGM IDS2 Induktionskochfeld
 //    Unterstützung für Web Update
 //    Unterstützung für OLED Display 126x64 I2C (D1+D2)
-
 
 #include <OneWire.h>           // OneWire Bus Kommunikation
 #include <DallasTemperature.h> // Vereinfachte Benutzung der DS18B20 Sensoren
@@ -34,6 +32,7 @@
 #include <NTPClient.h>
 #include "InnuTicker.h"
 #include <CertStoreBearSSL.h>
+#include <InfluxDbClient.h>
 
 extern "C"
 {
@@ -47,7 +46,7 @@ extern "C"
 #endif
 
 // Version
-#define Version "2.0b1"
+#define Version "2.01"
 
 // Definiere Pausen
 #define PAUSE1SEC 1000
@@ -63,7 +62,6 @@ DallasTemperature DS18B20(&oneWire);
 ESP8266WebServer server(80);
 WiFiManager wifiManager;
 WiFiClient espClient;
-WiFiClient tcpClient;
 PubSubClient pubsubClient(espClient);
 MDNSResponder mdns;
 ESP8266HTTPUpdateServer httpUpdate;
@@ -145,7 +143,7 @@ EventManager gEM; //  Eventmanager Objekt Queues
 #define EM_MQTTSUB 28
 #define EM_SETNTP 29
 #define EM_DISPUP 30
-#define EM_TCP 33
+#define EM_DB 33
 #define EM_LOG 35
 
 // Event für Sensoren, Aktor und Induktion
@@ -182,23 +180,21 @@ InnuTicker TickerSen;
 InnuTicker TickerAct;
 InnuTicker TickerInd;
 InnuTicker TickerDisp;
-InnuTicker TickerTCP;
 InnuTicker TickerMQTT;
 InnuTicker TickerWLAN;
 InnuTicker TickerNTP;
+InnuTicker TickerInfluxDB;
 
 // Update Intervalle für Ticker Objekte
 int SEN_UPDATE = 5000;  //  sensors update delay loop
 int ACT_UPDATE = 5000;  //  actors update delay loop
 int IND_UPDATE = 5000;  //  induction update delay loop
 int DISP_UPDATE = 5000; //  NTP and display update
-int TCP_UPDATE = 60000; //  TCP server Update interval
 
 
 // Systemstart
 bool startMDNS = true; // Standard mDNS Name ist ESP8266- mit mqtt_chip_key
 char nameMDNS[16] = "MQTTDevice";
-bool startTCP = false;
 bool shouldSaveConfig = false; // WiFiManager
 
 unsigned long lastSenAct = 0;      // Timestap actors on sensor error
@@ -208,9 +204,15 @@ int sensorsStatus = 0;
 int actorsStatus = 0;
 int inductionStatus = 0;
 
-// TCP Server (optional)
-int tcpPort = 9501; // TCP server Port
-char tcpHost[16];   // TCP server IP
+// Influx Server (optional)
+#define numberOfDBMax 3
+InfluxDBClient dbClient;
+bool startDB = false;
+char dbServer[30] = "http://192.168.100.30:8086";     // InfluxDB Server IP
+char dbUser[15] = "";
+char dbPass[15] = "";
+char dbDatabase[15] = "mqttdevice";
+unsigned long upInflux = 15000;
 
 // FSBrowser
 File fsUploadFile; // a File object to temporarily store the received file

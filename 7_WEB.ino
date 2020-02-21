@@ -72,13 +72,13 @@ bool loadFromSpiffs(String path)
 
 void mqttcallback(char *topic, unsigned char *payload, unsigned int length)
 {
-  //DEBUG_MSG("Web: Received MQTT Topic: %s ", topic);
-  //DBG_PRINT("Web: Payload: ");
+  // DEBUG_MSG("Web: Received MQTT Topic: %s ", topic);
+  // Serial.print("Web: Payload: ");
   // for (int i = 0; i < length; i++)
   // {
-  //   DBG_PRINT((char)payload[i]);
+  //   Serial.print((char)payload[i]);
   // }
-  // DBG_PRINTLN(" ");
+  // Serial.println(" ");
   char payload_msg[length];
   for (int i = 0; i < length; i++)
   {
@@ -93,12 +93,12 @@ void mqttcallback(char *topic, unsigned char *payload, unsigned int length)
       DEBUG_MSG("%s\n", "*** Verwerfe MQTT wegen Status Induktion (Event handling)");
   }
 
-  if (startTCP)
+  if (startDB)
   {
-    for (int i = 1; i < numberOfSensorsMax; i++)
+    for (int i = 0; i < numberOfDBMax; i++)
     {
-      if (tcpServer[i].tcpTopic == topic)
-        tcpServer[i].handlemqtt(payload_msg);
+      if (dbInflux[i].kettle_topic == topic)
+        dbInflux[i].handlemqtt(payload_msg);
     }
   }
 
@@ -123,15 +123,11 @@ void handleRequestMiscSet()
   doc["del_sen_ind"] = wait_on_Sensor_error_induction / 1000;
   doc["enable_mqtt"] = StopOnMQTTError;
   doc["enable_wlan"] = StopOnWLANError;
-  // doc["mqtt_state"] = mqtt_state;
   doc["mqtt_state"] = oledDisplay.mqttOK; // Anzeige MQTT Status -> mqtt_state verzögerter Status!
-  //doc["wlan_state"] = wlan_state;
   doc["wlan_state"] = oledDisplay.wlanOK;
   doc["delay_mqtt"] = wait_on_error_mqtt / 1000;
   doc["delay_wlan"] = wait_on_error_wlan / 1000;
-  doc["tcp"] = startTCP;
-  doc["tcphost"] = tcpHost;
-  doc["tcpport"] = tcpPort;
+  doc["startdb"] = startDB;
   String response;
   serializeJson(doc, response);
   server.send(200, "application/json", response);
@@ -207,28 +203,6 @@ void handleRequestMisc()
     message = wait_on_Sensor_error_induction / 1000;
     goto SendMessage;
   }
-  if (request == "tcp")
-  {
-    if (startTCP)
-    {
-      message = "1";
-    }
-    else
-    {
-      message = "0";
-    }
-    goto SendMessage;
-  }
-  if (request == "tcphost")
-  {
-    message = tcpHost;
-    goto SendMessage;
-  }
-  if (request == "tcpport")
-  {
-    message = tcpPort;
-    goto SendMessage;
-  }
   if (request == "upsen")
   {
     message = SEN_UPDATE / 1000;
@@ -244,11 +218,6 @@ void handleRequestMisc()
     message = IND_UPDATE / 1000;
     goto SendMessage;
   }
-  if (request == "uptcp")
-  {
-    message = TCP_UPDATE / 1000;
-    goto SendMessage;
-  }
   if (request == "firmware")
   {
     if (startMDNS)
@@ -259,6 +228,59 @@ void handleRequestMisc()
     else
       message = "MQTTDevice V ";
     message += Version;
+    goto SendMessage;
+  }
+  if (request == "dbserver")
+  {
+    message = dbServer;
+    goto SendMessage;
+  }
+  if (request == "startdb")
+  {
+    if (startDB)
+      message = "1";
+    else
+      message = "0";
+    goto SendMessage;
+  }
+  if (request == "dbdatabase")
+  {
+    message = dbDatabase;
+    goto SendMessage;
+  }
+  if (request == "dbuser")
+  {
+    message = dbUser;
+    goto SendMessage;
+  }
+  if (request == "dbpass")
+  {
+    message = dbPass;
+    goto SendMessage;
+  }
+  if (request == "dbup")
+  {
+    message = (upInflux / 1000);
+    goto SendMessage;
+  }
+  if (request == "dburl")
+  {
+    File urlFile = SPIFFS.open("/urlChart.txt", "r");
+    if (!urlFile)
+    {
+      DEBUG_MSG("%s\n", "Failed to open urlFile\n");
+      message = "about:blank";
+    }
+    else
+    {
+      String line = "";
+      while (urlFile.available())
+      {
+        line += char(urlFile.read());
+      }
+      urlFile.close();
+      message = line;
+    }
     goto SendMessage;
   }
 
@@ -276,14 +298,7 @@ void handleSetMisc()
       {
         WiFi.disconnect();
         wifiManager.resetSettings();
-
-        unsigned long last = millis();
-        while (millis() < last + PAUSE2SEC)
-        {
-          // just wait for approx 2sec
-          yield();
-        }
-
+        delay(PAUSE2SEC);
         ESP.reset();
       }
     }
@@ -294,7 +309,7 @@ void handleSetMisc()
         SPIFFS.remove("/config.txt");
         WiFi.disconnect();
         wifiManager.resetSettings();
-        millis2wait(PAUSE2SEC);
+        delay(PAUSE2SEC);
         ESP.reset();
       }
     }
@@ -346,26 +361,6 @@ void handleSetMisc()
       {
         wait_on_Sensor_error_induction = server.arg(i).toInt() * 1000;
       }
-    if (server.argName(i) == "tcp")
-    {
-      if (server.arg(i) == "1")
-        startTCP = true;
-      else
-        startTCP = false;
-    }
-    if (server.argName(i) == "tcphost")
-    {
-      server.arg(i).toCharArray(tcpHost, 16);
-    }
-    if (server.argName(i) == "tcpport")
-    {
-      if (isValidInt(server.arg(i)))
-      {
-        int newPort = server.arg(i).toInt();
-        if (newPort > 0)
-          tcpPort = newPort;
-      }
-    }
     if (server.argName(i) == "upsen")
     {
       if (isValidInt(server.arg(i)))
@@ -393,14 +388,48 @@ void handleSetMisc()
           IND_UPDATE = newiup * 1000;
       }
     }
-    if (server.argName(i) == "uptcp")
+    if (server.argName(i) == "dbserver")
+    {
+      server.arg(i).toCharArray(dbServer, 30);
+      checkChars(dbServer);
+    }
+    if (server.argName(i) == "startdb")
+    {
+      if (server.arg(i) == "1")
+        startDB = true;
+      else
+        startDB = false;
+    }
+    if (server.argName(i) == "dbdatabase")
+    {
+      server.arg(i).toCharArray(dbDatabase, 15);
+      checkChars(dbDatabase);
+    }
+    if (server.argName(i) == "dbuser")
+    {
+      server.arg(i).toCharArray(dbUser, 15);
+      checkChars(dbUser);
+    }
+    if (server.argName(i) == "dbpass")
+    {
+      server.arg(i).toCharArray(dbPass, 15);
+      checkChars(dbPass);
+    }
+    if (server.argName(i) == "dbup")
     {
       if (isValidInt(server.arg(i)))
       {
-        int newtcp = server.arg(i).toInt();
-        if (newtcp > 0)
-          TCP_UPDATE = newtcp * 1000;
+        upInflux = server.arg(i).toInt() * 1000;
       }
+    }
+    if (server.argName(i) == "dburl")
+    {
+      DEBUG_MSG("server.arg: %s\n", server.arg(i).c_str());
+      File urlFile = SPIFFS.open("/urlChart.txt", "w");
+      String line = server.arg(i);
+      line.replace("!", "&"); // Ersetzen von &-Zeichen in index.html rückgängig machen
+      int bytesWritten = urlFile.print(line);
+      urlFile.close();
     }
     yield();
   }

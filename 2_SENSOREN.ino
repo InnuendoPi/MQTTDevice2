@@ -10,16 +10,15 @@ public:
   bool sens_sw = false;          // Events aktivieren
   bool sens_state = true;        // Fehlerstatus ensor
   int sens_err = 0;
-  String kettle_id = "0";
 
   String getSens_adress_string()
   {
     return SensorAddressToString(sens_address);
   }
 
-  TemperatureSensor(String new_address, String new_mqtttopic, String new_name, float new_offset, String new_sw, String new_kettle_id)
+  TemperatureSensor(String new_address, String new_mqtttopic, String new_name, float new_offset, String new_sw)
   {
-    change(new_address, new_mqtttopic, new_name, new_offset, new_sw, new_kettle_id);
+    change(new_address, new_mqtttopic, new_name, new_offset, new_sw);
   }
 
   void Update()
@@ -74,13 +73,12 @@ public:
     publishmqtt();
   } // void Update
 
-  void change(const String &new_address, const String &new_mqtttopic, const String &new_name, float new_offset, const String &new_sw, const String &new_kettle_id)
+  void change(const String &new_address, const String &new_mqtttopic, const String &new_name, float new_offset, const String &new_sw)
   {
     new_mqtttopic.toCharArray(sens_mqtttopic, new_mqtttopic.length() + 1);
     sens_name = new_name;
     sens_offset = new_offset;
     new_sw == "1" ? sens_sw = true : sens_sw = false;
-    kettle_id = new_kettle_id;
 
     if (new_address.length() == 16)
     {
@@ -130,10 +128,10 @@ public:
       pubsubClient.publish(sens_mqtttopic, jsonMessage);
     }
   }
-  char buf[5]; // TEST!
+  char buf[5];
   char *getValueString()
   {
-    //    char buf[5]; // TEST!
+    // char buf[5];
     dtostrf(sens_value, 2, 1, buf);
     return buf;
   }
@@ -148,12 +146,12 @@ public:
 
 // Initialisierung des Arrays -> max 6 Sensoren
 TemperatureSensor sensors[numberOfSensorsMax] = {
-    TemperatureSensor("", "", "", 0.0, "", "0"),
-    TemperatureSensor("", "", "", 0.0, "", "0"),
-    TemperatureSensor("", "", "", 0.0, "", "0"),
-    TemperatureSensor("", "", "", 0.0, "", "0"),
-    TemperatureSensor("", "", "", 0.0, "", "0"),
-    TemperatureSensor("", "", "", 0.0, "", "0")};
+    TemperatureSensor("", "", "", 0.0, ""),
+    TemperatureSensor("", "", "", 0.0, ""),
+    TemperatureSensor("", "", "", 0.0, ""),
+    TemperatureSensor("", "", "", 0.0, ""),
+    TemperatureSensor("", "", "", 0.0, ""),
+    TemperatureSensor("", "", "", 0.0, "")};
 
 // Funktion für Loop im Timer Objekt
 void handleSensors()
@@ -163,16 +161,11 @@ void handleSensors()
   {
     sensors[i].Update();
 
-    // TCP Server
-    if (startTCP)
-    {
-      if (sensors[i].kettle_id.toInt() > 0)
-        setTCPTemp(sensors[i].kettle_id, (sensors[i].sens_value + sensors[i].sens_offset));
-    }
     // get max sensorstatus
     if (sensors[i].sens_sw && max_status < sensors[i].sens_err)
       max_status = sensors[i].sens_err;
-    //yield();
+
+    yield();
   }
   sensorsStatus = max_status;
 }
@@ -207,8 +200,6 @@ String SensorAddressToString(unsigned char addr[8])
   return charbuffer;
 }
 
-/* Funktionen für Web */
-
 // Sensor wird geändert
 void handleSetSensor()
 {
@@ -227,7 +218,6 @@ void handleSetSensor()
   String new_address = sensors[id].getSens_adress_string();
   float new_offset = sensors[id].sens_offset;
   String new_sw = sensors[id].getSwitchable();
-  String new_kettle_id = sensors[id].kettle_id;
 
   for (int i = 0; i < server.args(); i++)
   {
@@ -251,17 +241,10 @@ void handleSetSensor()
     {
       new_sw = server.arg(i);
     }
-    if (server.argName(i) == "kettle_id")
-    {
-      if (isValidInt(server.arg(i)))
-        new_kettle_id = server.arg(i);
-      else
-        new_kettle_id = "0";
-    }
     yield();
   }
 
-  sensors[id].change(new_address, new_mqtttopic, new_name, new_offset, new_sw, new_kettle_id);
+  sensors[id].change(new_address, new_mqtttopic, new_name, new_offset, new_sw);
   saveConfig();
   server.send(201, "text/plain", "created");
 }
@@ -275,10 +258,12 @@ void handleDelSensor()
   {
     if (i == (numberOfSensorsMax - 1)) // 5 - Array von 0 bis (numberOfSensorsMax-1)
     {
-      sensors[i].change("", "", "", 0.0, "", "0");
+      sensors[i].change("", "", "", 0.0, "");
     }
     else
-      sensors[i].change(sensors[i + 1].getSens_adress_string(), sensors[i + 1].sens_mqtttopic, sensors[i + 1].sens_name, sensors[i + 1].sens_offset, sensors[i + 1].getSwitchable(), sensors[i + 1].kettle_id);
+      sensors[i].change(sensors[i + 1].getSens_adress_string(), sensors[i + 1].sens_mqtttopic, sensors[i + 1].sens_name, sensors[i + 1].sens_offset, sensors[i + 1].getSwitchable());
+
+    yield();
   }
 
   // den letzten löschen
@@ -323,7 +308,6 @@ void handleRequestSensors()
     sensorsObj["offset"] = sensors[i].sens_offset;
     sensorsObj["sw"] = sensors[i].getSwitchable();
     sensorsObj["state"] = sensors[i].sens_state;
-    sensorsObj["kettle_id"] = sensors[i].kettle_id;
     if (sensors[i].sens_value != -127.0)
       sensorsObj["value"] = sensors[i].getValueString();
     else
@@ -338,10 +322,6 @@ void handleRequestSensors()
         sensorsObj["value"] = "ERR";
     }
     sensorsObj["mqtt"] = sensors[i].sens_mqtttopic;
-    if (startTCP)
-      sensorsObj["target_temp"] = getTCPTargetTemp(sensors[i].kettle_id);
-    else
-      sensorsObj["target_temp"] = "-1";
     yield();
   }
 
@@ -381,11 +361,6 @@ void handleRequestSensor()
     if (request == "script")
     {
       message = sensors[id].sens_mqtttopic;
-      goto SendMessage;
-    }
-    if (request == "kettle_id")
-    {
-      message = sensors[id].kettle_id;
       goto SendMessage;
     }
     message = "not found";

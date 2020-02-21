@@ -68,6 +68,7 @@ void listenerSystem(int event, int parm) // System event listener
           actors[i].actor_state = true; // Sensor ok
           actors[i].Update();
         }
+        yield();
       }
       if (!inductionCooker.induction_state)
       {
@@ -144,18 +145,17 @@ void listenerSystem(int event, int parm) // System event listener
       for (int i = 0; i < numberOfActors; i++)
       {
         actors[i].mqtt_subscribe();
+        yield();
       }
       if (inductionCooker.isEnabled)
         inductionCooker.mqtt_subscribe();
 
-      if (startTCP)
+      if (startDB)
       {
-        for (int i = 1; i < numberOfSensorsMax; i++)
+        for (int i = 0; i < numberOfDBMax; i++)
         {
-          if (tcpServer[i].kettle_id != "0")
-          {
-            tcpServer[i].mqtt_subscribe();
-          }
+          dbInflux[i].mqtt_subscribe();
+          yield();
         }
       }
       oledDisplay.mqttOK = true; // Display MQTT
@@ -165,8 +165,7 @@ void listenerSystem(int event, int parm) // System event listener
     }
     break;
   case EM_MDNS: // check MDSN (24)
-    if (startMDNS)
-      mdns.update();
+    mdns.update();
     break;
   case EM_SETNTP: // NTP Update (25)
     timeClient.begin();
@@ -188,10 +187,11 @@ void listenerSystem(int event, int parm) // System event listener
     if (oledDisplay.dispEnabled)
       oledDisplay.dispUpdate();
     break;
-  case EM_TCP: // TCPServer setup
-    publishTCP();
+  case EM_DB: // InfluxDB
+    sendData();
     break;
   case EM_LOG:
+    // Not yet ready!
     if (SPIFFS.exists("/log1.txt")) // WebUpdate Zertifikate
     {
       fsUploadFile = SPIFFS.open("/log1.txt", "r");
@@ -256,6 +256,7 @@ void listenerSensors(int event, int parm) // Sensor event listener
           actors[i].Update();
           lastSenAct = 0; // Delete actor timestamp after event
         }
+        yield();
       }
 
       if (!inductionCooker.induction_state)
@@ -295,11 +296,11 @@ void listenerSensors(int event, int parm) // Sensor event listener
             break;
           case EM_DEVER:
             // -127°C device error
-            DEBUG_MSG("%s", "EM DEVER: Sensor %s device error\n", sensors[i].sens_name.c_str());
+            DEBUG_MSG("EM DEVER: Sensor %s device error\n", sensors[i].sens_name.c_str());
             break;
           case EM_UNPL:
             // sensor unpluged
-            DEBUG_MSG("%s", "EM UNPL: Sensor %s unplugged\n", sensors[i].sens_name.c_str());
+            DEBUG_MSG("EM UNPL: Sensor %s unplugged\n", sensors[i].sens_name.c_str());
             break;
           default:
             break;
@@ -327,8 +328,9 @@ void listenerSensors(int event, int parm) // Sensor event listener
               cbpiEventInduction(EM_INDER);
           }
         } // Switchable
-      }   // Iterate sensors
-    }     // wlan und mqtt state
+        yield();
+      } // Iterate sensors
+    }   // wlan und mqtt state
     break;
   default:
     break;
@@ -353,11 +355,11 @@ void listenerActors(int event, int parm) // Actor event listener
       {
         actors[i].isOnBeforeError = actors[i].isOn;
         actors[i].isOn = false;
-        //actors[i].power_actor = 0;
         actors[i].actor_state = false;
         actors[i].Update();
         DEBUG_MSG("EM ACTER: Aktor: %s : %d isOnBeforeError: %d\n", actors[i].name_actor.c_str(), actors[i].actor_state, actors[i].isOnBeforeError);
       }
+      yield();
     }
     break;
   case EM_ACTOFF:
@@ -369,6 +371,7 @@ void listenerActors(int event, int parm) // Actor event listener
         actors[i].Update();
         DEBUG_MSG("EM ACTER: Aktor: %s  ausgeschaltet\n", actors[i].name_actor.c_str());
       }
+      yield();
     }
     break;
   default:

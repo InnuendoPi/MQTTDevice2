@@ -23,15 +23,54 @@ MQTTDevice ist ein Arduino Sketch für die Module ESP8266 Wemos D1 mini. Damit i
 * WebUpdate Firmware
 * Update Firmware und SPIFFS über Datei Upload
 * Event handling
-* TCP Server Support (Tozzi Server)
+* Brautag Visualisierung mit Grafana
 * Dateiexplorer
 
 Dieses Projekt wurde im hobbybrauer Forum gestartet und dient dem Informationsaustausch.
-Forum: <https://hobbybrauer.de/forum/viewtopic.php?f=58&t=19036&p=309196#p309196>
+Forum: <https://hobbybrauer.de/forum/viewtopic.php?f=58&t=23509>
 
 # Installation
 
-**Installation ohne den Quellcode zu compilieren:**
+Die Installation unterteilt sich in drei Schritte:
+
+1. Installation RaspberryPi und CraftbeerPi3
+2. Installation Plugin für CraftbeerPi3
+3. Installation MQTTDevice
+
+Die Installation und Konfiguration von CraftbeerPi3 ist hier beschrieben: <https://github.com/Manuel83/craftbeerpi3>
+Die Installation und Konfiguration von RaspberryPi ist in vielen guten Anleitungen im Internet verfügbar.
+
+Die Kommunikation zwischen CraftbeerPi und MQTTDevice findet über WLAN statt. Sensoren senden Temperaturwerte an CraftbeerPi und CraftbeerPi sendet Befehle (bspw. schalte Rührwerk ein/aus) an Aktoren. Für diese Kommunikation wird das Protokoll MQTT verwendet. Das Protokoll MQTT benötigt eine zentrale Vermittlungsstelle: einen MQTT Broker.
+
+**MQTT Plugin CraftbeerPi3:**
+
+CraftbeerPi3 muss ein Plugin hinzugefügt werden: cbpi-mqttPub <https://github.com/InnuendoPi/cbpi-mqttPub>
+Das Plugin basiert auf dem craftbeerPi3 MQTT Basis Plugin.
+
+Vorbereitung auf dem RaspberryPi: Installation MQTT Broker
+
+> pip install paho-mqtt
+
+> sudo apt-get install mosquitto
+
+Die zwei Anweisungen installieren auf dem RaspberryPi den MQTT Broker mosquitto. Der MQTT Broker dient als zentrale Vermittlungsstelle zwischen CraftbeerPi und MQTTDevices. CraftbeerPi3 kann über das Protokoll MQTT Daten von Sensoren empfangen und Anweisungen an Aktoren senden. Dafür benötigt CraftbeerPi3 das Plugin cbpi-mqttPub
+
+Plugin herunterladen <https://github.com/InnuendoPi/cbpi-mqttPub> und in den Ordner cbpi-mqttPub auf dem RaspberryPi kopieren (..pi-home\craftbeerpi3\modules\plugins\cbpi-mqttPub).
+
+CraftbeerPi3 muss nun einmal neu gestartet werden. Anschließend steht der Typ MQTT für Sensoren und Aktoren zur Verfügung
+![mqttSensor](img/mqttSensor.jpg)
+![mqttAktor](img/mqttAktor.jpg)
+
+MQTT kommuniziert mit Topics. Jeder Sensor und jeder Aktor bekommt sein eigenes Topic für die Kommunikation.
+Auf den Bildern dargestellt ist ein CraftbeerPi3 Temperatur Sensor mit dem Namen Temp Induktion. CraftbeerPi3 liest Sensordaten aus dem Topic "induktion/temperatur".
+
+Analog zum Sensor sendet CraftbeerPi Befehle an den Aktor Rührwerk in das Topic "induktion/ruehrwerk".
+
+Diese zwei Topics werden nun beispielhaft auf dem MQTTDevice eingerichtet.
+
+*Hinweis: falls ein CraftbeerPi3 MQTT Plugin bereits vorhanden ist (bspw. die ältere Version cbpi-mqttCompressor), muss das Plugin ersetzt werden. Dazu die Version cbpi-mqttPub in den Plugins Ordner kopieren und den Ordner cbpi-mqttCompressor löschen.*
+
+**MQTTDevice flashen:**
 
 Mit Hilfe von esptool.exe (<https://github.com/igrr/esptool-ck/releases> ) aus dem Ordner tools kann die Firmware auf das ESP Modul geladen werden. Das ESPTool ist für verschiedene Betriebssysteme verfügbar.
 ESPtool-ck Copyright (C) 2014 Christian Klippel ck@atelier-klippel.de. This code is licensed under GPL v2.
@@ -46,54 +85,28 @@ Beispiel für ein ESP8266 Modul vom Typ Wemos D1 mini mit 4MB Flash verbunden mi
 
   * Doppelklick auf die Datei Flashen.cmd.
 
-  Fertig!
+  Die Firmware wird nun auf das MQTTDevice aufgespielt.
 
-  Sollte COM3 nicht der richtige Anschluss für den Wemos D1 mini sein, muss im Skript Flashen.cmd an zwei Stellen COM3 durch den richtigen Anschluss ersetzt werden.
+  *Das Skript Flashen verwendet COM3 als Anschluss für das MQTTDevice. Sollte COM3 nicht der richtige Anschluss für den Wemos D1 mini sein, muss im Skript Flashen.cmd an zwei Stellen COM3 durch den richtigen Anschluss ersetzt werden.*
 
-  Alternativ manuell mit esptool:
+  Nach dem Flashen startet das MQTTDevice im Access Point Modus mit dem Namen "ESP8266-xxxx" und der Adresse <http://192.168.4.1>
 
-  * Wemos D1 mini löschen: (Beispiel wieder an COM3)
-        esptool.exe -cp COM3 -cd nodemcu -ce
-        * Flashen:
-        esptool.exe -cp COM3 -cd nodemcu -ca 0x000000 -cf MQTTDevice2.ino.bin -ca 0x200000 -cf MQTTDevice2.spiffs.bin
+  ![wlan](img/wlan-ap.jpg)
 
-    * Das ESP8266 Modul resetten
+  Das MQTTDevice muss nun mit dem WLAN verbunden werden und die IP Adresse vom MQTT Broker muss eingetragen werden. In diesem Beispiel wurde der MQTT Broker mosquitto auf dem RaspberryPi installiert. Es ist also die IP Adresse vom RaspberryPi (CraftbeerPi) einzugeben.
 
-      * Das ESP8266 Modul startet anschließend im Access Point Modus mit der IP Adresse 192.168.4.1
+Der MQTT Sensor "Temp Induktion" und der MQTT Aktor "Rührwerk" werden nun auf dem MQTTDevice mit den identischen Topics angelegt:
 
-        * Das ESP8266 Modul über einen Webbrowser mit dem WLAN verbinden
+![mqttSensor2](img/mqttSensor2.jpg)
+![mqttAktor2](img/mqttAktor2.jpg)
 
-        * Anschließend ist das MQTTDevice erreichbar über <http://mqttdevice>
+Der Sensor- oder Aktorname darf unterschiedlich sein. Mit diesen Schritten ist die beispielhafte Installation und Konfiguration von MQTT Sensoren und Aktoren abgeschlossen. Es können je MQTTDevice bis zu 6 Sensoren und 6 Aktoren eingerichtet werden. Es können (nahezu) beliebig viele MQTTDevices mit CraftbeerPi über MQTT verbunden werden. Sehr häufig werden zwei MQTTDevices verwendet:
 
-**Installation mit Quellcode:**
+MQTTDevice 1: Sud & Maische Kessel mit Temperatursensoren und Aktoren für Induktionskochfeld und Rührwerk
 
-Voraussetzungen: (2020.02)
+MQTTDevice 2: Nachguss und Pumpen mit Temperatursensoren und Aktoren für Heater, Pumpen, Heizstäbe, Ringheizelemente etc.
 
-* Arduino IDE 1.8.10
-* Optional Microsoft VSCode + Arduino + ESP8266FS
-* ESP8266 by ESP8266 Community version 2.6.3
-* Folgende Bibliotheken müssen über die Arduino IDE hinzugefügt werden:
-  * Standard Bibliotheken (buildin) von der Arduino IDE
-    * ESP8266WiFi
-    * ESP8266WebServer
-    * DNSServer
-    * ESP8266mDNS
-    * SPI
-    * Wire
-  * Zusätzliche Bibliotheken
-    * NTPClient by Fabrice Weinberg Version 3.2.0
-    * Adafruit GFX Library by Adafruit Version 1.7.3
-    * Adafruit SSD1306 by Adafruit Version 2.0.4
-    * ArduinoJSON by Benoit Blanchon Version 6.13.0
-    * DallasTemperature by Miles Burton Version 3.8.0
-    * OneWire By Jim Studt Version 2.3.5
-    * PubSubClient by Nick O'Leary Version 2.7.0
-    * WiFiManager by tzapu Version 0.15.0
-    * EventManager
-    * InnuTicker (im Repository enthalten)
-
-    Die Firmware muss mit der Einstellung Flash size 4MB (FS: 2MB OTA:~1019kB) aufgespielt werden.
-    Debug Ausgaben werden in der IDE über "Debug Port" aktiviert. In der Standard Einstellung (bin Dateien) hat die Firmware nach dem Start keine Ausgaben auf dem seriellen Monitor.
+Es sind beliebige Kombinationen möglich. Weil die Kommunikation MQTT über Topics realisiert ist, muss bspw. ein Temperatursensor und ein Induktionskochfeld für ein CraftbeerPi Kettle nicht am gleichen MQTTDeivce konfiguriert sein.
 
 **Updates:**
 
@@ -144,16 +157,18 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
     **IP Adresse MQTT Server (CBPi):**
 
     Unter System wird der MQTT Broker eingetragen. In den allermeisten Fällen dürfte dies mosquitto auf dem CBPi sein.
-    Wichtig ist, dass die Firmware MQTTDevice permanent versucht, mit dem MQTT Broker eine Verbindung aufzubauen. Wenn der MQTT Broker nicht verfügbar ist, beeinträchtigt das Geschwindigkeit vom Wemos. Der Wemos wirkt abhängig von der bereits konfiguraierten Anzahl an Sensoren und Aktoren träge bis zu sehr lahm. Beim Testen sollte daher der MQTT Broker online sein.
+    Wichtig ist, dass die Firmware MQTTDevice permanent versucht, mit dem MQTT Broker eine Verbindung aufzubauen. Wenn der MQTT Broker nicht verfügbar ist, beeinträchtigt das Geschwindigkeit vom MQTTDevice.
 
     **mDNS:**
 
     mDNS ist eine einfache Möglichkeit, um das MQTTDevice mit einem beliebigen Namen anzusprechen. In der Standardkonfiguration ist das MQTTDevice im Webbrowser über <http://mqttdevice> erreichbar.
-    Zu beachten ist, dass mDNS Namen im Netzwerk eindeutig sein müssen.
+    Zu beachten ist, dass mDNS Namen im Netzwerk eindeutig sein müssen. Zwei oder mehr MQTTDevices müssen unterschiedliche mDNS Namen haben.
 
-    **TCPServer IP, Port und Update Intervall**
+    **Grafana Einstellungen**
 
-    siehe Rubrik TCP Server.
+    Die Anbindung an Grafana, um einen Brautag graphisch darzustellen, ist optional. Die Eingabefelder sind selbsterklärend. Wird Grafana über die Checkbox aktiviert, benötigt das MQTTDevice einen Reboot.
+
+    Zur Konfiguration siehe Rubrik Visualisierung.
 
 2. Intervalle
 
@@ -245,7 +260,7 @@ Anschluss ESP8266 D1 Mini an AZ-Delivery 0.96 i2c 128x64 OLED Display (Verwendun
 
 **Wichtiger Hinweis:**
 
-Die Platine ist aus einem Hobby-Projekt entstanden. Eine fertig bestückte Platine wird nicht angeboten. Das Projekt verfolgt keinerlei kommerzielle Absichten. Die hier geteilten Informationen stellen einen Entwicklungszustand dar und dienen der Weiterentwicklung sowie der Überprüfung, Korrektur und Verbesserung. Inhalte aus externen Links (bspw Forum hobbybrauer) und Angaben zu externen Inhalten (bspw. Artikel unterschiedlicher Anbieter) unterliegen den jeweiligen Rechten der Inhaber. Externe Inhalte sind ausschließlich als informative Starthilfe anzusehen.  
+Die Platine ist aus einem Hobby-Projekt entstanden. Eine fertig bestückte Platine wird nicht angeboten. Das Projekt verfolgt keinerlei kommerzielle Absichten. Die hier geteilten Informationen stellen einen Entwicklungszustand dar und dienen der Weiterentwicklung sowie der Überprüfung, Korrektur und Verbesserung. Inhalte aus externen Links (bspw Forum hobbybrauer) und Angaben zu externen Inhalten (bspw. Artikel allgemein bekannter Anbieter) unterliegen den jeweiligen Rechten der Inhaber. Externe Inhalte sind ausschließlich als informative Starthilfe anzusehen.  
 
 *Alle Informationen über die Platine sind rein informativ und können falsch sein.*
 *Verwendung dieser Informationen auf eigene Gefahr. Jegliche Haftung wird ausgeschlossen.*
@@ -343,7 +358,7 @@ Eine separate Stromversorgung ist für das MQTTDevice bei Verwendung der GGM IDS
 
 ## Anschluss DS18B20
 
-Es werden Temperatursensoren vom Typ DS18B20 mit 3 Anschlusskabeln (Data, VCC und GND) unterstützt. Temperatursensoren sind an D3 gebunden. der notwendige Widerstand 4k7 gegen 3V3 ist auf der Platine vorgesehen. Die Spannungsversorgung der Temperatursensoren ist an 5V angebunden.
+Es werden Temperatursensoren vom Typ DS18B20 mit 3 Anschlusskabeln (Data, VCC und GND) unterstützt. Temperatursensoren sind an D3 gebunden. Der notwendige Widerstand 4k7 gegen 3V3 ist auf der Platine vorgesehen. Die Spannungsversorgung der Temperatursensoren ist an 5V angebunden.
 
 ## Anschluss Relaisboards
 
@@ -361,76 +376,110 @@ Die benötigten Dateien 3D Druck werden im Ordner Info hnterlegt.
 
 ---
 
-# TCP Server
+# Visualisierung
 
-*Hinweis: die Anbindung an den "Tozzi Server" basiert auf einer Version aus 10.2019. Die aktuelle Weiterentwicklung in diesem Projekt wurde noch nicht getestet.*
+Das MQTTDevice unterstützt die Visualisierung mit der OpenSource Grafana. Zum aktuellen Zeitpunkt wird die lokalen Installation unterstützt. In dieser Anleitung wird die Installation und Konfiguration auf einem RaspberryPi beschrieben. Als Datenbank wird InfluxDB verwendet.
 
-Die Firmware bietet eine Möglichkeit Daten mit dem TCP Server iSpindel (Tozzi Server) auszutauschen, um eine graphische Darstellung von einem Brautag zu erstellen. Zur Konfiguration muss
+Der Datenfluss: das Plugin MQTT-Pub sendet Kettle Informationen von CraftbeerPi3 über das Protokoll MQTT an den MQTTBroker mosquitto. Das MQTTDevice erhält diese Daten, wertet sie aus und schreibt in die Datenbank InfluxDB. Grafana stellt die Daten graphisch dar.
 
-* der TCP Server um eine MQTTDevice Seite erweitert werden
-* CBPi um ein Plugin erweitert werden
-* das MQTTDevice konfiguriert werden
+Mit der aktuelle Firmware können in Grafana bis zu 3 Kettles visualisiert werden. Jedes Kettle bekommt von CraftbeerPi eine eindeutige forlaufende Nummer. An dieser Kettle-Nummer (Tag) hängen für jedes Kettle die zugehörigen Parameter
 
-Die Anbindung an den TCP Server Tozzi ist optional und in der Standard Einstellung deaktiviert.
+* aktuelle Temperatur vom Kettle-Sensor
+* Zieltemperatur
+* aktueller Powerlevel vom Kettle-Heater
+* der Kettle Name
 
-![TCPServer](img/tcpserver.jpg)
+Für jedes Kettle kann nun eine eigene Visualisierung erstellt werden oder in einer graphischen Darstellung alle 3 Kettles zusammengefasst werden.
 
-    **Vorbereitung TCP Server**
+![Grafana](img/grafana.png)
 
-Die Konfiguration setzt einen funktionierenden TCPServer voraus. Eine entsprechende Anleitung findet sich im Forum und im Fork <https://github.com/InnuendoPi/iSpindel-TCP-Server>
+**Vor der Installation:**
 
-## Manuelle Installation
+Vor der Installation sollte der Raspberry aktualisiert werden:
 
-Auf dem RaspberryPi:
+* sudo apt-get update
+* sudo apt-get upgrade
+* sudo reboot
 
-1. Dienst stoppen: sudo service ispindle-srv stop
-2. Verzeichnis umbenennen /home/pi/iSpindle-Srv in ori-iSpindle-Srv (Backup) (pi => username)
-3. git clone <https://github.com/InnuendoPi/iSpindel-TCP-Server> iSpindle-Srv
-4. Datei ori-iSpindle-Srv/web/config/common_db_config.php nach iSpindle-Srv/web/config/common_db_config.php kopieren (DB Zugriff)
-5. MySQL_Update_mqttdevice.sql in phpmyadmin auf Datenbank iSpindle Tabelle Strings ausführen
+**Installation Datenbank:**
 
-    Auf dem RaspberryPi folgende Befehle ausführen:
-    cd /home/pi/iSpindel-Srv
-    sudo mv iSpindle.py /usr/local/bin
-    sudo mv ispindle-srv /etc/init.d
-    sudo chmod 755 /usr/local/bin/iSpindle.py
-    sudo chmod 755 /etc/init.d/ispindle-srv
-    cd /etc/init.d
-    sudo systemctl daemon-reload
+Installation der Datenbank InfluxDB:
 
-6. Dienst starten sudo service ispindle-srv start oder sudo reboot
+Mit shh (bspw. Putty) anmelden und die folgenden Befehle ausführen
 
-## Installation CBPi Plugin
+> wget -qO- https://repos.influxdata.com/influxdb.key | sudo apt-key add -
+  
+Wenn auf dem RaspberryPi die OS Version "stretch" installiert ist (cat /ect/os-release)
+> echo "deb https://repos.influxdata.com/debian stretch stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+  
+  oder wenn auf dem RaspberryPi die OS Version "buster" installiert ist
+  
+> echo "deb https://repos.influxdata.com/debian buster stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
 
-Beim CBPI muss ein Plugin hinzugefügt werden: cbpi-mqttPub <https://github.com/InnuendoPi/cbpi-mqttPub>
-Das Plugin basiert auf Manuels MQTT Basis Plugin und liest Daten von CBPi Kettles und deren aktuelle Zieltemperatur ein und stellt diese  auf dem MQTT Broker bereit. Bitte mit einem MQTTClient prüfen, ob die Daten vorhanden sind.
+> sudo apt update
 
-![MQTT-Plugin](img/mqttplugin.jpg)
+> sudo apt install influxdb
 
-Dargestellt werden 3 Kettles vom CBPi mit einer eindeutigen id (1,2 und 3). Außerdem wird die aktuelle Zieltemperatur von dem jeweiligen Kettel angegeben.
+> sudo systemctl unmask influxdb
 
-    **Konfiguration am MQTTDevice**
+> sudo systemctl enable influxdb
 
-Im MQTTDevice müssen nun diese IDs den Sensoren, Aktoren und Induktion zugewiesen werden.
+Die Datenbank InfluxDB ist mit diesen 6 Schritten installiert und startet automatisch bei jedem Neustart vom RaspberryPi
 
-**Beispiel:**
-Bei dem im Bild dargestellten Kettles hat der Sudkessel mit dem Namen "Maische & Sud" die ID 1. Die aktuelle Zieltemperatur für den Sudkessel "Maische & Sud" beträgt 0 Grad. Die ID 1 muss im MQTTDevice nun dem Induktionskochfeld und dem Temperatursensor vom Induktionskochfeld zugewiesen werden.
+**Konfiguration Datenbank:**
 
-Unter den Einstellungen im Tab System muss die IP-Adresse vom TCP Server und der Port (9501) eingetragen und der TCP Server aktiviert werden. Der Wemos sollte nach der Aktivierung TCPServer neu gestartet werden.
+Datenbank und Benutzer einrichten:
 
-**Einrichtung am TCP Server**
-Wenn die oben aufgeführten Schritte erfolgreich abgeschlossen sind, meldet sich das MQTTDevice am TCPServer als neue RasPySindel:
+Mit shh (bspw. Putty) anmelden und den folgenden Befehl ausführen
 
-![Einrichtung-TCPServer](img/tcpserver_konfig.jpg)
+> influx
 
-Jetzt muss das MQTTDevice, genauer gesagt der Temperatursensor, im TCPServer kalibriert werden. Für die 3 Parameter zur Kalibrierung wird jeweils eine 0 (null)eingetragen und abgespeichert. Der Vorgang Kalibrieren muss für jeden Temperatursensor (IDs) durchgeführt werden. Die Kalibrieren ist für die iSpindel gedacht (Neigung, Winkel, Gravity). Das MQTTDevice verhält sich gegenüber dem TCPServer wie eine iSpindel. Die Kalibrierung muss durchgeführt werden, hat aber keinerlei sonstige Auswirkung. Die obligatorische Kalibrierung kann sich mit einer zukünftigen Version vom TCPServer verändern.
+Die folgenden Datenbank Befehle der Reihe nach eingeben. Das Password xxx durch ein eigenes Password ersetzen. Die Anführungstriche müssen bleiben!
 
-**Start am Brautag**
-Um an einem Brautag nur "neue" Daten zu sehen, muss das sog. "Reset Flag" gesetzt werden:
-<http://ip-tcpserver/iSpindle/reset_now.php?name=Sensorname&days=12&recipe=Rezeptname>
-Dabei sind die Platzhalter ip.tcpserver, Sensorname und Rezeptname zu ersetzen.
+> CREATE DATABASE mqttdevice
 
-**Beispiel:**
-<http://192.168.178.10/iSpindle/reset_now.php?name=Temp_Induktion&days=1&recipe=Muenchner_Hell>
+> CREATE USER pi WITH PASSWORD 'xxx' WITH ALL PRIVILEGES
 
----
+Zugriff auf die Datenbank einrichten:
+
+> sudo nano /etc/influxdb/influxdb.conf
+
+  Mit der Tastenkombination Strg+W nach HTTP suchen. In diesem Abschnitt muss mindestens aktiviert werden:
+
+> enabled = true
+
+> bind-address = ":8086"
+
+Diese zwei Einträge sind das Minimum. Es wird dringend empfohlen, eine Benutzer und Password Abfrage zu aktivieren.
+Die Änderung wird mit der Tastenkombination Strg+O gespeichert. Den Editor beenden mit Strg+X.
+
+Abschließend muss die Datenbank neu gestartet werden:
+
+> sudo systemctl restart influxdb
+
+**Installation Grafana:**
+
+Vor der Eingabe der Befehle die aktuelle Version Grafana überprüfen und in Schritt 1 und 2 die Versionsnummer 6.6.1 ersetzen.
+
+1. wget https://dl.grafana.com/oss/release/grafana_6.6.1_armhf.deb
+2. sudo dpkg -i grafana_6.6.1_armhf.deb
+3. sudo systemctl enable grafana-server
+4. sudo systemctl start grafana-server
+
+Im Grafana Web Interface muss nun abschließend nur noch die DataSource InfluxDB hinzugefügt werden.
+
+* URL: <http://ip_rasberrypi:8086>
+* Database: mqttdevice
+* User: pi
+* Password: xxx
+* HTTP Method: POST
+
+Mit "Save & Test" wird die Verbindung gespeichert und überprüft. Nun kann entweder das Beispiel-Dashboard MQTTDevice (Datei MQTTDevice Dashboard.json) aus dem Ordner Info in Grafana importiert oder ein eigenes Dashboard erstellt werden.
+
+## ToDo Visualisierung
+
+Archivieren oder löschen alter Daten
+
+Um einen Brautag zu visualisieren, werden lediglich die Daten der letzten 4-8 Stunden aus der Datenbank benötigt. Alte Daten können gelöscht werden. Die Datenbank InfluxDB bietet eine Retention Policy. Um aber im Nachgang auch vergangene Brautage zu überprüfen, wäre ein Archivieren der Daten sinnvoll. Um dies zu erreichen wäre eine Lösung, die Abfragen zur Visualisierung (Queries) in einer WHERE Klausel mit einer Zeiteinschränkung einzuschränken.
+
+Eine Basis Visulaisierung als Vorlage für Grafana liegt in Form einer JSON Datein im Ordner Info.

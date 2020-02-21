@@ -56,7 +56,7 @@ void setup()
   // Starte NTP
   cbpiEventSystem(EM_SETNTP);
   TickerNTP.start();
-  
+
   // Lege Event Queues an
   gEM.addListener(EventManager::kEventUser0, listenerSystem);
   gEM.addListener(EventManager::kEventUser1, listenerSensors);
@@ -87,15 +87,22 @@ void setup()
   // Starte OLED Display
   dispStartScreen();
 
+  // Influx Datenbank
+  if (startDB)
+  {
+    setInfluxDB();
+    TickerInfluxDB.start();
+  }
+
   // Starte MQTT
   cbpiEventSystem(EM_MQTTCON); // MQTT Verbindung
   cbpiEventSystem(EM_MQTTSUB); // MQTT Subscribe
-  // Starte Log (WebUpdate)
-  cbpiEventSystem(EM_LOG); // Not yet ready!
 
+  cbpiEventSystem(EM_LOG); // webUpdate log
+  
   // Verarbeite alle Events Setup
   gEM.processAllEvents();
-  
+
   Serial.printf("*** SYSINFO: %s\n", timeClient.getFormattedTime().c_str());
 }
 

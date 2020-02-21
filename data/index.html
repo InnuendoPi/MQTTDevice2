@@ -145,10 +145,6 @@
             <label for="modal_actor_pin">PIN</label>
             <select class="form-control" id="modal_actor_pin"></select>
           </div>
-          <div class="form-group">
-            <label for="modal_actor_kettleid">TCP Server Kettle ID</label>
-            <input type="text" class="form-control" placeholder="" id="modal_actor_kettleid" />
-          </div>
           <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="modal_actor_inverted" />
             <label class="form-check-label" for="modal_actor_inverted">GPIO invertieren</label>
@@ -156,6 +152,10 @@
           <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="modal_actor_switchable" />
             <label class="form-check-label" for="modal_actor_switchable">Aktiviere Event handling</label>
+          </div>
+		  <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="modal_actor_grafana" />
+            <label class="form-check-label" for="modal_actor_grafana">Aktiviere Grafana</label>
           </div>
         </div>
         <div class="modal-footer"> <button type="button" class="btn btn-primary" id="modal_actor_btn_save">Speichern</button>
@@ -191,10 +191,6 @@
             <div class="form-group">
               <label for="modal_sensor_offset">Offset</label>
               <input type="text" class="form-control" placeholder="" id="modal_sensor_offset" />
-            </div>
-            <div class="form-group">
-              <label for="modal_sensor_kettleid">TCP Server Kettle ID</label>
-              <input type="text" class="form-control" placeholder="" id="modal_sensor_kettleid" />
             </div>
             <div class="form-check">
               <input class="form-check-input" type="checkbox" value="" id="modal_sensor_sw" />
@@ -246,9 +242,9 @@
             <label for="modal_induction_pl">Event Handling Induktionskochfeld (0 = Induktion aus ... 100 = keine Änderung)</label>
             <input type="text" class="form-control" placeholder="" id="modal_induction_pl" />
           </div>
-          <div class="form-group">
-            <label for="modal_induction_kettleid">TCP Server Kettle ID</label>
-            <input type="text" class="form-control" placeholder="" id="modal_induction_kettleid" />
+		  <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="modal_induction_grafana" />
+            <label class="form-check-label" for="modal_induction_grafana">Aktiviere Grafana</label>
           </div>
         </div>
         <div class="modal-footer"> <button type="button" class="btn btn-primary" id="modal_induction_btn_save">Speichern</button>
@@ -327,20 +323,28 @@
                 <input type="text" class="form-control" placeholder="" id="modal_misc_mdns_name" />
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="modal_misc_tcp" />
-                <label class="form-check-label" for="modal_misc_tcp">Aktiviere TCP Server</label>
+                <input class="form-check-input" type="checkbox" value="" id="modal_misc_db_enable" />
+                <label class="form-check-label" for="modal_misc_db_enable">Aktiviere Visualisierung Grafana (Neustart erforderlich!)</label>
               </div>
-              <div class="form-group">
-                <label for="modal_misc_tcp_host">TCP Server IP</label>
-                <input type="text" class="form-control" placeholder="" id="modal_misc_tcp_host" />
+			  <div class="form-group">
+                <label for="modal_misc_db_server">Influx Datenbank Server IP</label>
+                <input type="text" class="form-control" placeholder="" id="modal_misc_db_server" />
               </div>
-              <div class="form-group">
-                <label for="modal_misc_tcp_port">TCP Server Port</label>
-                <input type="text" class="form-control" placeholder="" id="modal_misc_tcp_port" />
+			  <div class="form-group">
+                <label for="modal_misc_db_database">Datenbank Name (mqttdevice)</label>
+                <input type="text" class="form-control" placeholder="" id="modal_misc_db_database" />
               </div>
-              <div class="form-group">
-                <label for="modal_misc_tcp_interval">TCP Server Update Intervall (Sek)</label>
-                <input type="text" class="form-control" placeholder="" id="modal_misc_tcp_interval" />
+			  <div class="form-group">
+                <label for="modal_misc_db_user">Datenbank Benutzer</label>
+                <input type="text" class="form-control" placeholder="" id="modal_misc_db_user" />
+              </div>
+			  <div class="form-group">
+                <label for="modal_misc_db_pass">Datenbank Benutzer Password</label>
+                <input type="text" class="form-control" placeholder="" id="modal_misc_db_pass" />
+              </div>
+			  <div class="form-group">
+                <label for="modal_misc_db_url">URL Dashboard</label>
+                <input type="text" class="form-control" placeholder="" id="modal_misc_db_url" />
               </div>
             </div>
             <div class="tab-pane fade" id="misc2" role="tabpanel" aria-labelledby="misc2-tab">
@@ -455,14 +459,6 @@
             sensor += element.value + "°C";
           }
           sensor += "</span> "
-          sensor += "<span class='badge badge-light'>";
-          sensor += element.offset;
-          sensor += "</span> "
-          if (element.target_temp != "-1") {
-            sensor += "<span class='badge badge-light'>";
-            sensor += element.target_temp + "°C";
-            sensor += "</span> "
-          }
           sensor += " <span class='badge";
           if (element.sw == true) {
             if (element.state == true) {
@@ -585,7 +581,7 @@
         }
         else {
           inductionRender += "Induktionskochfeld<span class='badge";
-		  inductionRender += " badge-dark'> deaktiviert";
+		  inductionRender += " badge-dark'> Deaktiviert";
 		  inductionRender += " </span> </li>";
         }
         $('#inductionCooker').html(inductionRender);
@@ -604,7 +600,7 @@
           }
         }
         else {
-		      displayRender += " badge-dark'> deaktiviert";
+		      displayRender += " badge-dark'> Deaktiviert";
         }
         displayRender += " </span> </li>";
         $('#oledDisplay').html(displayRender);
@@ -642,7 +638,14 @@
         else {
            miscRender += " badge-danger'> Offline";
         }
-		miscRender += "</span></li>";
+		miscRender += "</span></li>  <li class='list-group-item d-flex justify-content-between align-items-center'> Visualisierung Grafana <span class='badge ";
+        if (data.startdb) {
+          miscRender += " badge-success'> Aktiviert";
+        }
+        else {
+          miscRender += " badge-dark'> Deaktiviert";
+        }
+        miscRender += " </span> </li>";
         $('#miscSettings').html(miscRender);
       });
     }
@@ -687,7 +690,7 @@
       var actorpin;
       var actorinverted;
       var actorswitchable;
-      var actorkettleid;
+      var actorgraf;
       $.ajax({
         url: '/reqActor?id=' + actorid + '&req=name',
         type: 'get',
@@ -729,25 +732,26 @@
         }
       });
       $.ajax({
-        url: '/reqActor?id=' + actorid + '&req=kettle_id',
+        url: '/reqActor?id=' + actorid + '&req=grafana',
         type: 'get',
         dataType: 'html',
         async: false,
         cache: false,
         success: function (data) {
-          actorkettleid = data;
+          actorgraf = data;
         }
       });
       var modal = $(this)
       modal.attr('actor_id', actorid)
       modal.find('#modal_actor_name').val(actorname)
       modal.find('#modal_actor_script').val(actorscript)
-      modal.find('#modal_actor_kettleid').val(actorkettleid)
       $('#modal_actor_pin').load('/reqPins?id=' + actorid)
       if (actorinverted == "1") { modal.find('#modal_actor_inverted').prop("checked", true) }
       else { modal.find('#modal_actor_inverted').prop("checked", false) }
       if (actorswitchable == "1") { modal.find('#modal_actor_switchable').prop("checked", true) }
       else { modal.find('#modal_actor_switchable').prop("checked", false) }
+	  if (actorgraf == "1") { modal.find('#modal_actor_grafana').prop("checked", true) }
+      else { modal.find('#modal_actor_grafana').prop("checked", false) }
     })
 
     $("#modal_actor_btn_save").click(function () {
@@ -755,7 +759,6 @@
       var actorname = modal.find('#modal_actor_name').val()
       var actorscript = modal.find('#modal_actor_script').val()
       var actorpin = modal.find('#modal_actor_pin').val()
-      var actorkettleid = modal.find('#modal_actor_kettleid').val()
       if (modal.find('#modal_actor_inverted').prop("checked") == true) {
         var actorinverted = "1"
       } else {
@@ -766,9 +769,15 @@
       } else {
         var actorswitchable = "0"
       }
+	  if (modal.find('#modal_actor_grafana').prop("checked") == true) {
+        var actorgraf = "1"
+      } else {
+        var actorgraf = "0"
+      }
+
       var actorid = modal.attr('actor_id')
       $.ajax({
-        url: '/setActor?id=' + actorid + '&name=' + actorname + '&script=' + actorscript + '&pin=' + actorpin + '&inv=' + actorinverted + '&sw=' + actorswitchable + '&kettle_id=' + actorkettleid,
+        url: '/setActor?id=' + actorid + '&name=' + actorname + '&script=' + actorscript + '&pin=' + actorpin + '&inv=' + actorinverted + '&sw=' + actorswitchable + '&grafana=' + actorgraf,
         type: 'POST',
         dataType: 'html',
         async: false,
@@ -797,7 +806,6 @@
       var sensorscript;
       var sensoroffset;
       var sensorsw;
-      var sensorkettleid;
       $.ajax({
         url: '/reqSensor?id=' + sensorid + '&req=name',
         type: 'get',
@@ -838,22 +846,11 @@
           sensorsw = data;
         }
       });
-      $.ajax({
-        url: '/reqSensor?id=' + sensorid + '&req=kettle_id',
-        type: 'get',
-        dataType: 'html',
-        async: false,
-        cache: false,
-        success: function (data) {
-          sensorkettleid = data;
-        }
-      });
       $('#modal_sensor_address').load('/reqSearchSensorAdresses?id=' + sensorid);
       var modal = $(this)
       modal.find('#modal_sensor_name').val(sensorname)
       modal.find('#modal_sensor_script').val(sensorscript)
       modal.find('#modal_sensor_offset').val(sensoroffset)
-      modal.find('#modal_sensor_kettleid').val(sensorkettleid)
       if (sensorsw == "1") { modal.find('#modal_sensor_sw').prop("checked", true) }
       else { modal.find('#modal_sensor_sw').prop("checked", false) }
       modal.attr('sensor_id', sensorid)
@@ -866,14 +863,13 @@
       var sensorid = modal.attr('sensor_id')
       var sensoraddress = modal.find('#modal_sensor_address').val()
       var sensoroffset = modal.find('#modal_sensor_offset').val()
-      var sensorkettleid = modal.find('#modal_sensor_kettleid').val()
       if (modal.find('#modal_sensor_sw').prop("checked") == true) {
         var sensorsw = "1"
       } else {
         var sensorsw = "0"
       }
       $.ajax({
-        url: '/setSensor?id=' + sensorid + '&name=' + sensorname + '&topic=' + sensorscript + '&address=' + sensoraddress + '&offset=' + sensoroffset + '&sw=' + sensorsw + '&kettle_id=' + sensorkettleid,
+        url: '/setSensor?id=' + sensorid + '&name=' + sensorname + '&topic=' + sensorscript + '&address=' + sensoraddress + '&offset=' + sensoroffset + '&sw=' + sensorsw,
         type: 'POST',
         dataType: 'html',
         async: false,
@@ -909,7 +905,7 @@
       var pin_yellow;
       var delay;
       var pl;
-      var kettleid;
+      var indgraf;
 
       $.ajax({
         url: '/reqIndu?req=isEnabled',
@@ -952,13 +948,13 @@
         }
       });
       $.ajax({
-        url: '/reqIndu?req=kettle_id',
+        url: '/reqIndu?req=grafana',
         type: 'get',
         dataType: 'html',
         async: false,
         cache: false,
         success: function (data) {
-          kettleid = data;
+          indgraf = data;
         }
       });
 
@@ -970,9 +966,10 @@
       modal.find('#modal_induction_script').val(mqtttopic)
       modal.find('#modal_induction_delay').val(delay)
       modal.find('#modal_induction_pl').val(pl)
-      modal.find('#modal_induction_kettleid').val(kettleid)
       if (isEnabled == "1") { modal.find('#modal_induction_enabled').prop("checked", true) }
       else { modal.find('#modal_induction_enabled').prop("checked", false) }
+	  if (indgraf == "1") { modal.find('#modal_induction_grafana').prop("checked", true) }
+      else { modal.find('#modal_induction_grafana').prop("checked", false) }
       var modal = $(this)
 
     });
@@ -986,14 +983,19 @@
       var pin_yellow = modal.find('#modal_induction_pinyellow').val()
       var delay = modal.find('#modal_induction_delay').val()
       var pl = modal.find('#modal_induction_pl').val()
-      var kettleid = modal.find('#modal_induction_kettleid').val()
       if (modal.find('#modal_induction_enabled').prop("checked") == true) {
         var isenabled = "1"
       } else {
         var isenabled = "0"
       }
+      if (modal.find('#modal_induction_grafana').prop("checked") == true) {
+        var indgraf = "1"
+      } else {
+        var indgraf = "0"
+      }
+
       $.ajax({
-        url: '/setIndu?enabled=' + isenabled + '&topic=' + mqtttopic + '&pinwhite=' + pin_white + '&pinyellow=' + pin_yellow + '&pinblue=' + pin_blue + '&delay=' + delay + '&pl=' + pl + '&kettle_id=' + kettleid,
+        url: '/setIndu?enabled=' + isenabled + '&topic=' + mqtttopic + '&pinwhite=' + pin_white + '&pinyellow=' + pin_yellow + '&pinblue=' + pin_blue + '&delay=' + delay + '&pl=' + pl + '&grafana=' + indgraf,
         type: 'POST',
         dataType: 'html',
         async: false,
@@ -1077,10 +1079,13 @@
       var upsen;
       var upact;
       var upind;
-      var uptcp;
-      var tcphost;
-      var tcpport;
-      var tcp;
+	  var startdb;
+	  var dbserver;
+	  var dbdatabase;
+	  var dbuser;
+	  var dbpass;
+	  var dbup;
+	  var dburl;
 
       $.ajax({
         url: '/reqMisc?req=MQTTHOST',
@@ -1221,44 +1226,74 @@
           upind = data;
         }
       });
-      $.ajax({
-        url: '/reqMisc?req=uptcp',
+  	  $.ajax({
+        url: '/reqMisc?req=dbserver',
         type: 'get',
         dataType: 'html',
         async: false,
         cache: false,
         success: function (data) {
-          uptcp = data;
+          dbserver = data;
         }
       });
-      $.ajax({
-        url: '/reqMisc?req=tcphost',
+	  $.ajax({
+        url: '/reqMisc?req=startdb',
         type: 'get',
         dataType: 'html',
         async: false,
         cache: false,
         success: function (data) {
-          tcphost = data;
+          startdb = data;
         }
       });
-      $.ajax({
-        url: '/reqMisc?req=tcpport',
+	  $.ajax({
+        url: '/reqMisc?req=dbdatabase',
         type: 'get',
         dataType: 'html',
         async: false,
         cache: false,
         success: function (data) {
-          tcpport = data;
+          dbdatabase = data;
         }
       });
-      $.ajax({
-        url: '/reqMisc?req=tcp',
+	  $.ajax({
+        url: '/reqMisc?req=dbuser',
         type: 'get',
         dataType: 'html',
         async: false,
         cache: false,
         success: function (data) {
-          tcp = data;
+          dbuser = data;
+        }
+      });
+	  $.ajax({
+        url: '/reqMisc?req=dbpass',
+        type: 'get',
+        dataType: 'html',
+        async: false,
+        cache: false,
+        success: function (data) {
+          dbpass = data;
+        }
+      });
+	  $.ajax({
+        url: '/reqMisc?req=dbup',
+        type: 'get',
+        dataType: 'html',
+        async: false,
+        cache: false,
+        success: function (data) {
+          dbup = data;
+        }
+      });
+	  $.ajax({
+        url: '/reqMisc?req=dburl',
+        type: 'get',
+        dataType: 'html',
+        async: false,
+        cache: false,
+        success: function (data) {
+          dburl = data;
         }
       });
 
@@ -1271,8 +1306,8 @@
       else { modal.find('#modal_misc_onErrorMQTT').prop("checked", false) }
       if (enable_wlan == "1") { modal.find('#modal_misc_onErrorWLAN').prop("checked", true) }
       else { modal.find('#modal_misc_onErrorWLAN').prop("checked", false) }
-      if (tcp == "1") { modal.find('#modal_misc_tcp').prop("checked", true) }
-      else { modal.find('#modal_misc_tcp').prop("checked", false) }
+	  if (startdb == "1") { modal.find('#modal_misc_db_enable').prop("checked", true) }
+      else { modal.find('#modal_misc_db_enable').prop("checked", false) }
       modal.find('#modal_misc_delay_mqtt').val(delay_mqtt)
       modal.find('#modal_misc_delay_wlan').val(delay_wlan)
       modal.find('#modal_misc_del_sen_act').val(del_sen_act)
@@ -1282,9 +1317,12 @@
       modal.find('#modal_misc_upsen').val(upsen)
       modal.find('#modal_misc_upact').val(upact)
       modal.find('#modal_misc_upind').val(upind)
-      modal.find('#modal_misc_tcp_interval').val(uptcp)
-      modal.find('#modal_misc_tcp_host').val(tcphost)
-      modal.find('#modal_misc_tcp_port').val(tcpport)
+	  modal.find('#modal_misc_db_server').val(dbserver)
+	  modal.find('#modal_misc_db_database').val(dbdatabase)
+	  modal.find('#modal_misc_db_user').val(dbuser)
+	  modal.find('#modal_misc_db_pass').val(dbpass)
+	  modal.find('#modal_misc_db_up').val(dbup)
+	  modal.find('#modal_misc_db_url').val(dburl)
 
       var modal = $(this)
     });
@@ -1300,9 +1338,14 @@
       var upsen = modal.find('#modal_misc_upsen').val()
       var upact = modal.find('#modal_misc_upact').val()
       var upind = modal.find('#modal_misc_upind').val()
-      var uptcp = modal.find('#modal_misc_tcp_interval').val()
-      var tcphost = modal.find('#modal_misc_tcp_host').val()
-      var tcpport = modal.find('#modal_misc_tcp_port').val()
+	  var dbserver = modal.find('#modal_misc_db_server').val()
+	  var dbdatabase = modal.find('#modal_misc_db_database').val()
+	  var dbuser = modal.find('#modal_misc_db_user').val()
+	  var dbpass = modal.find('#modal_misc_db_pass').val()
+	  var dbup = modal.find('#modal_misc_db_up').val()
+	  var dburl = modal.find('#modal_misc_db_url').val()
+  	  // Alle & durch ! ersetzen - senden an ESP funktioniert sonst nicht 
+	  var dburl2 = dburl.replace(/&/g, "!");
 
 
       if (modal.find('#modal_misc_mdns').prop("checked") == true) {
@@ -1330,14 +1373,17 @@
       } else {
         var clear = "0"
       }
-      if (modal.find('#modal_misc_tcp').prop("checked") == true) {
-        var tcp = "1"
-      } else {
-        var tcp = "0"
+	  if (modal.find('#modal_misc_db_enable').prop("checked") == true) 
+	  {
+        var startdb = "1"
+      } 
+	  else 
+	  {
+        var startdb = "0"
       }
 
       $.ajax({
-        url: '/setMisc?reset=' + reset + '&clear=' + clear + '&MQTTHOST=' + mqttaddress + '&enable_mqtt=' + enable_mqtt + '&delay_mqtt=' + delay_mqtt + '&enable_wlan=' + enable_wlan + '&delay_wlan=' + delay_wlan + '&del_sen_act=' + del_sen_act + '&del_sen_ind=' + del_sen_ind + '&mdns=' + mdns + '&mdns_name=' + mdns_name + '&upsen=' + upsen + '&upact=' + upact + '&upind=' + upind + '&tcp=' + tcp + '&tcphost=' + tcphost + '&tcpport=' + tcpport + '&uptcp=' + uptcp,
+        url: '/setMisc?reset=' + reset + '&clear=' + clear + '&MQTTHOST=' + mqttaddress + '&enable_mqtt=' + enable_mqtt + '&delay_mqtt=' + delay_mqtt + '&enable_wlan=' + enable_wlan + '&delay_wlan=' + delay_wlan + '&del_sen_act=' + del_sen_act + '&del_sen_ind=' + del_sen_ind + '&mdns=' + mdns + '&mdns_name=' + mdns_name + '&upsen=' + upsen + '&upact=' + upact + '&upind=' + upind + '&startdb=' + startdb + '&dbserver=' + dbserver + '&dbdatabase=' + dbdatabase + '&dbuser=' + dbuser + '&dbpass=' + dbpass + '&dbup=' + dbup  + '&dburl=' + dburl2,
         type: 'POST',
         dataType: 'html',
         async: false,
@@ -1360,56 +1406,40 @@
 
     $(function () {
       var tcpurl = "";
-      var tcp;
-      var tcpkettle;
+      var startdb;
+	  var dburl;
+      
       $.ajax({
-        url: '/reqMisc?req=tcp',
+        url: '/reqMisc?req=startdb',
         type: 'get',
         dataType: 'html',
         async: false,
         cache: false,
         success: function (data) {
-          tcp = data;
+          startdb = data;
         }
       });
-      if (tcp == 1) {
-        $.ajax({
-          url: '/reqMisc?req=tcphost',
-          type: 'get',
-          dataType: 'html',
-          async: false,
-          cache: false,
-          success: function (data) {
-            tcphost = data;
-          }
-        });
-      }
-      else {
-        testurl = "about:blank";
-      }
-
-      if (tcp == 1) {
-        $.get("/reqSensors", function (data) {
+	  $.ajax({
+		  url: '/reqMisc?req=dburl',
+		  type: 'get',
+		  dataType: 'html',
+		  async: false,
+		  cache: false,
+		  success: function (data) {
+			dburl = data;
+		  }
+	  });
+      if (startdb == 1) {
           let content = "";
           content += "<div class='list-group'>";
-          data.forEach(function (element, index) {
-            if (element.kettleid != "0") {
-              let tcpurl = "<div class='list-group-item list-group-item-action d-flex align-items-start' style='height: 600px'>";
-              tcpurl += "<iframe class='embed-responsive-item'";
-              tcpurl += " src='http://";
-              tcpurl += tcphost;
-              tcpurl += "/iSpindle/mqttdevice.php?name=";
-              tcpurl += element.namehtml;
-              tcpurl += "&hours=5&reset=true'";
-              tcpurl += " frameborder='0' allowfullscreen>";
-              tcpurl += "</iframe></div>";
+			  let tcpurl = "<div class='list-group-item list-group-item-action d-flex align-items-start' style='height: 680px'>";
+			  tcpurl += "<object data=";
+			  tcpurl += dburl;
+			  tcpurl += "' width='600' height='400'</object></div>";
               content += tcpurl;
-            }
-          });
           content += "</div>";
           //alert("content: " + content);
           $('#listeSenName').html(content);
-        });
       }
     });
 
