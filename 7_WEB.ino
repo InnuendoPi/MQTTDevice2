@@ -99,6 +99,7 @@ void mqttcallback(char *topic, unsigned char *payload, unsigned int length)
     {
       if (dbInflux[i].kettle_topic == topic)
         dbInflux[i].handlemqtt(payload_msg);
+      yield();
     }
   }
 
@@ -110,6 +111,7 @@ void mqttcallback(char *topic, unsigned char *payload, unsigned int length)
         actors[i].handlemqtt(payload_msg);
       else
         DEBUG_MSG("%s\n", "*** Verwerfe MQTT wegen Status Aktoren (Event handling)");
+      yield();
     }
   }
 }

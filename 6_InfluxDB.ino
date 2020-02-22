@@ -4,7 +4,7 @@ public:
     String kettle_id = "";            // Kettle ID
     String kettle_topic = "";         // Kettle Topic
     String kettle_heater_topic = "";  // Kettle Heater MQTT Topic
-    String kettle_name = "";          // Kettle Name
+    // String kettle_name = "";          // Kettle Name
     float kettle_sensor_temp = 0.0;   // Kettle Sensor aktuelle Temperatur
     int kettle_target_temp = 0;       // Kettle Heater TargetTemp
     int kettle_heater_powerlevel = 0; // Kettle Heater aktueller Powerlevel
@@ -51,8 +51,6 @@ public:
             return;
         }
         kettle_id = doc["id"].as<String>();
-        kettle_name = doc["na"].as<String>();
-        kettle_heater_state = doc["st"];
         if (isValidInt(doc["tt"].as<String>()))
             kettle_target_temp = doc["tt"];
         else
@@ -61,12 +59,8 @@ public:
             kettle_sensor_temp = doc["te"];
         else
             kettle_sensor_temp = 0.0;
-        if (isValidInt(doc["pl"].as<String>()))
-            kettle_heater_powerlevel = doc["pl"];
-        else
-            kettle_heater_powerlevel = 0;
         kettle_heater_topic = doc["he"].as<String>();
-        // DEBUG_MSG("Influx handleMQTT dbEn: %d ID: %s Name: %s State: %d Target: %d Temp: %f Power: %d Topic: %s\n", dbEnabled, kettle_id.c_str(), kettle_name.c_str(), kettle_heater_state, kettle_target_temp, kettle_sensor_temp, kettle_heater_powerlevel, kettle_heater_topic.c_str());
+        DEBUG_MSG("Influx handleMQTT dbEn: %d ID: %s Name: %s State: %d Target: %d Temp: %f Power: %d Topic: %s\n", dbEnabled, kettle_id.c_str(), kettle_name.c_str(), kettle_heater_state, kettle_target_temp, kettle_sensor_temp, kettle_heater_powerlevel, kettle_heater_topic.c_str());
         if (dbEnabled == -1)
         {
             if (kettle_heater_topic == inductionCooker.mqtttopic)
@@ -74,6 +68,8 @@ public:
                 if (inductionCooker.setGrafana)
                 {
                     dbEnabled = 1;
+                    kettle_heater_state = inductionCooker.isInduon;
+                    kettle_heater_powerlevel = inductionCooker.power;
                     return;
                 }
             }
@@ -84,6 +80,8 @@ public:
                     if (actors[j].setGrafana)
                     {
                         dbEnabled = 1;
+                        kettle_heater_state = actors[j].actor_state;
+                        kettle_heater_powerlevel = actors[j].power_actor;
                         return;
                     }
                 }
@@ -112,14 +110,13 @@ void sendData()
 
         Point dbData("mqttdevice_status");
         dbData.addTag("ID", dbInflux[i].kettle_id);
-        dbData.addField("Name", dbInflux[i].kettle_name);
         dbData.addField("Temperatur", dbInflux[i].kettle_sensor_temp);
         dbData.addField("TargetTemp", dbInflux[i].kettle_target_temp);
         if (dbInflux[i].kettle_heater_state == 1)
             dbData.addField("Powerlevel", dbInflux[i].kettle_heater_powerlevel);
         else
             dbData.addField("Powerlevel", 0);
-        // DEBUG_MSG("Sende an InfluxDB: %s\n", dbData.toLineProtocol().c_str());
+        DEBUG_MSG("Sende an InfluxDB: %s\n", dbData.toLineProtocol().c_str());
         if (!dbClient.writePoint(dbData))
         {
             DEBUG_MSG("InfluxDB Schreibfehler: %s\n", dbClient.getLastErrorMessage().c_str());
