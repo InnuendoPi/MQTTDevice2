@@ -60,8 +60,9 @@ public:
         else
             kettle_sensor_temp = 0.0;
         kettle_heater_topic = doc["he"].as<String>();
-        DEBUG_MSG("Influx handleMQTT dbEn: %d ID: %s Name: %s State: %d Target: %d Temp: %f Power: %d Topic: %s\n", dbEnabled, kettle_id.c_str(), kettle_name.c_str(), kettle_heater_state, kettle_target_temp, kettle_sensor_temp, kettle_heater_powerlevel, kettle_heater_topic.c_str());
-        if (dbEnabled == -1)
+        DEBUG_MSG("Influx handleMQTT dbEn: %d ID: %s State: %d Target: %d Temp: %f Power: %d Topic: %s\n", dbEnabled, kettle_id.c_str(), kettle_heater_state, kettle_target_temp, kettle_sensor_temp, kettle_heater_powerlevel, kettle_heater_topic.c_str());
+        //if (dbEnabled == -1)
+        if (dbEnabled != 0)
         {
             if (kettle_heater_topic == inductionCooker.mqtttopic)
             {
