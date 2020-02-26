@@ -29,6 +29,8 @@ MQTTDevice ist ein Arduino Sketch für die Module ESP8266 Wemos D1 mini. Damit i
 Dieses Projekt wurde im hobbybrauer Forum gestartet und dient dem Informationsaustausch.
 Forum: <https://hobbybrauer.de/forum/viewtopic.php?f=58&t=23509>
 
+---
+
 ## Installation
 
 Die Installation unterteilt sich in drei Schritte:
@@ -38,20 +40,22 @@ Die Installation unterteilt sich in drei Schritte:
 3. Installation MQTTDevice
 
 Die Installation und Konfiguration von CraftbeerPi3 ist hier beschrieben: <https://github.com/Manuel83/craftbeerpi3>
+
 Die Installation und Konfiguration von RaspberryPi ist in vielen guten Anleitungen im Internet verfügbar.
 
 Die Kommunikation zwischen CraftbeerPi und MQTTDevice findet über WLAN statt. Sensoren senden Temperaturwerte an CraftbeerPi und CraftbeerPi sendet Befehle (bspw. schalte Rührwerk ein/aus) an Aktoren. Für diese Kommunikation wird das Protokoll MQTT verwendet. Das Protokoll MQTT benötigt eine zentrale Vermittlungsstelle: einen MQTT Broker.
 
 **MQTT Plugin CraftbeerPi3:**
 
-CraftbeerPi3 muss ein Plugin hinzugefügt werden: cbpi-mqttPub <https://github.com/InnuendoPi/cbpi-mqttPub>
+CraftbeerPi3 muss um ein Plugin erweitert werden: cbpi-mqttPub <https://github.com/InnuendoPi/cbpi-mqttPub>
+
 Das Plugin basiert auf dem craftbeerPi3 MQTT Basis Plugin.
 
 Vorbereitung auf dem RaspberryPi: Installation MQTT Broker
 
-> pip install paho-mqtt
-<!-- -->
-> sudo apt-get install mosquitto
+`pip install paho-mqtt`
+
+`sudo apt-get install mosquitto`
 
 Die zwei Anweisungen installieren auf dem RaspberryPi den MQTT Broker mosquitto. Der MQTT Broker dient als zentrale Vermittlungsstelle zwischen CraftbeerPi und MQTTDevices. CraftbeerPi3 kann über das Protokoll MQTT Daten von Sensoren empfangen und Anweisungen an Aktoren senden. Dafür benötigt CraftbeerPi3 das Plugin cbpi-mqttPub
 
@@ -133,6 +137,8 @@ Der Dateiexplorer ist erreichbar über den Webbrowser <http://mqttdevice/edit>
 2. Restore
 
     Auf Datei auswählen klicken, die config.txt auswählen und Upload auswählen
+
+---
 
 ## Verwenden der Firmware
 
@@ -234,6 +240,8 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
     * WLAN Einstellungen löschen
     * Alle Einstellungen löschen (WLAN und Konfiguration)
 
+---
+
 **Das OLED Display:**
 
 Diese Firmware unterstützt OLED Display monochrom OLED 128x64 I2C 0.96".
@@ -255,6 +263,8 @@ Anschluss ESP8266 D1 Mini an AZ-Delivery 0.96 i2c 128x64 OLED Display (Verwendun
 * GND -> GND
 * SCL -> D1
 * SDA -> D2
+
+---
 
 ## Die MQTTDevice Platine
 
@@ -329,13 +339,14 @@ Folgende Bautteile werden benötigt:
 | 1 | D1 mini NodeMcu ESP8266-12E mit Sockel | (Bsp amazon ASIN B01N9RXGHY) |
 | 1 | LevelShifter 8 Kanal 5V 3.3V | (Bsp amazon ASIN B01MZ76GN5) |
 
-    *amazon, reichelt und voelkner sind rein informativ als Suchhilfe für allgemein bekannter Anbieter zu verstehen*
+*amazon, reichelt und voelkner sind rein informativ als Suchhilfe*
+*für allgemein bekannter Anbieter zu verstehen*
 
 ![LevelShifter](img/platine_levelshifter.jpg)
 
 Bei der Auswahl LevelShifter (Logic Level Converter) muss zwingend die Belgung beachtet werden. Der LevelShifter muss im Eingang Low Voltage (LV) diese Reihenfolge haben:
 
-    **LV1 - LV2 - LV3 - LV4 - LV (3V3) - Ground - LV5 - LV6 - LV7 - LV8**
+`LV1 - LV2 - LV3 - LV4 - LV (3V3) - Ground - LV5 - LV6 - LV7 - LV8`
 
 **Platine Hinweise zum Aufbau:**
 
@@ -365,6 +376,8 @@ Es werden Temperatursensoren vom Typ DS18B20 mit 3 Anschlusskabeln (Data, VCC un
 ## Anschluss Relaisboards
 
 Relaisboards benötigen neben einem GPIO eine 5V Spannungsversorgung. 5V können an einem der drei Anschlüsse für die Temperatursensoren DS18B20 an VCC und GND abgegriffen werden.
+
+---
 
 ## Gehäuse
 
