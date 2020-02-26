@@ -409,14 +409,15 @@ Installation der Datenbank InfluxDB:
 
 Mit shh (bspw. Putty) anmelden und die folgenden Befehle ausführen
 
-> wget -qO- <https://repos.influxdata.com/influxdb.key> | sudo apt-key add -
+> wget -qO- <https://repos.influxdata.com/influxdb.key> \| sudo apt-key add -
   
-Wenn auf dem RaspberryPi die OS Version "stretch" installiert ist (cat /ect/os-release)
-> echo "deb <https://repos.influxdata.com/debian> stretch stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+    **ENTWEDER**    wenn auf dem RaspberryPi die OS Version "stretch" installiert ist (cat /ect/os-release)
+
+> echo "deb <https://repos.influxdata.com/debian> stretch stable" \| sudo tee /etc/apt/sources.list.d/influxdb.list
   
-  oder wenn auf dem RaspberryPi die OS Version "buster" installiert ist
+    **ODER**        wenn auf dem RaspberryPi die OS Version "buster" installiert ist
   
-> echo "deb <https://repos.influxdata.com/debian> buster stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+> echo "deb <https://repos.influxdata.com/debian> buster stable" \| sudo tee /etc/apt/sources.list.d/influxdb.list
 <!-- -->
 > sudo apt update
 <!-- -->
