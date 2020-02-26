@@ -409,23 +409,23 @@ Installation der Datenbank InfluxDB:
 
 Mit shh (bspw. Putty) anmelden und die folgenden Befehle ausführen
 
-> wget -qO- <https://repos.influxdata.com/influxdb.key> \| sudo apt-key add -
+> * wget -qO- <https://repos.influxdata.com/influxdb.key> \| sudo apt-key add -
   
-    **ENTWEDER**    wenn auf dem RaspberryPi die OS Version "stretch" installiert ist (cat /ect/os-release)
+    ENTWEDER:   wenn auf dem RaspberryPi die OS Version "stretch" installiert ist (cat /ect/os-release)
 
-> echo "deb <https://repos.influxdata.com/debian> stretch stable" \| sudo tee /etc/apt/sources.list.d/influxdb.list
+> * echo "deb <https://repos.influxdata.com/debian> stretch stable" \| sudo tee /etc/apt/sources.list.d/influxdb.list
   
-    **ODER**        wenn auf dem RaspberryPi die OS Version "buster" installiert ist
+    ODER:       wenn auf dem RaspberryPi die OS Version "buster" installiert ist
   
-> echo "deb <https://repos.influxdata.com/debian> buster stable" \| sudo tee /etc/apt/sources.list.d/influxdb.list
+> * echo "deb <https://repos.influxdata.com/debian> buster stable" \| sudo tee /etc/apt/sources.list.d/influxdb.list
 <!-- -->
-> sudo apt update
+> * sudo apt update
 <!-- -->
-> sudo apt install influxdb
+> * sudo apt install influxdb
 <!-- -->
-> sudo systemctl unmask influxdb
+> * sudo systemctl unmask influxdb
 <!-- -->
-> sudo systemctl enable influxdb
+> * sudo systemctl enable influxdb
 
 Die Datenbank InfluxDB ist mit diesen 6 Schritten installiert und startet automatisch bei jedem Neustart vom RaspberryPi
 
@@ -435,30 +435,30 @@ Datenbank und Benutzer einrichten:
 
 Mit shh (bspw. Putty) anmelden und den folgenden Befehl ausführen
 
-> influx
+> * influx
 
 Die folgenden Datenbank Befehle der Reihe nach eingeben. Das Password xxx durch ein eigenes Password ersetzen. Die Anführungstriche müssen bleiben!
 
-> CREATE DATABASE mqttdevice
+> * CREATE DATABASE mqttdevice
 <!-- -->
-> CREATE USER pi WITH PASSWORD 'xxx' WITH ALL PRIVILEGES
+> * CREATE USER pi WITH PASSWORD 'xxx' WITH ALL PRIVILEGES
 
 Zugriff auf die Datenbank einrichten:
 
-> sudo nano /etc/influxdb/influxdb.conf
+> * sudo nano /etc/influxdb/influxdb.conf
 
   Mit der Tastenkombination Strg+W nach HTTP suchen. In diesem Abschnitt muss mindestens aktiviert werden:
 
-> enabled = true
+> * enabled = true
 <!-- -->
-> bind-address = ":8086"
+> * bind-address = ":8086"
 
 Diese zwei Einträge sind das Minimum. Es wird dringend empfohlen, eine Benutzer und Password Abfrage zu aktivieren.
 Die Änderung wird mit der Tastenkombination Strg+O gespeichert. Den Editor beenden mit Strg+X.
 
 Abschließend muss die Datenbank neu gestartet werden:
 
-> sudo systemctl restart influxdb
+> * sudo systemctl restart influxdb
 
 **Installation Grafana:**
 
