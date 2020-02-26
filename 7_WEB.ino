@@ -271,6 +271,7 @@ void handleRequestMisc()
     if (!urlFile)
     {
       DEBUG_MSG("%s\n", "Failed to open urlFile\n");
+      //http://192.168.xxx.xxx:3000/d/xxxxxxx/mqttdevice?orgId=1&refresh=5s&kiosk=tv
       message = "about:blank";
     }
     else

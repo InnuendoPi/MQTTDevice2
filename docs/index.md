@@ -29,7 +29,7 @@ MQTTDevice ist ein Arduino Sketch für die Module ESP8266 Wemos D1 mini. Damit i
 Dieses Projekt wurde im hobbybrauer Forum gestartet und dient dem Informationsaustausch.
 Forum: <https://hobbybrauer.de/forum/viewtopic.php?f=58&t=23509>
 
-# Installation
+## Installation
 
 Die Installation unterteilt sich in drei Schritte:
 
@@ -50,7 +50,7 @@ Das Plugin basiert auf dem craftbeerPi3 MQTT Basis Plugin.
 Vorbereitung auf dem RaspberryPi: Installation MQTT Broker
 
 > pip install paho-mqtt
-
+<!-- -->
 > sudo apt-get install mosquitto
 
 Die zwei Anweisungen installieren auf dem RaspberryPi den MQTT Broker mosquitto. Der MQTT Broker dient als zentrale Vermittlungsstelle zwischen CraftbeerPi und MQTTDevices. CraftbeerPi3 kann über das Protokoll MQTT Daten von Sensoren empfangen und Anweisungen an Aktoren senden. Dafür benötigt CraftbeerPi3 das Plugin cbpi-mqttPub
@@ -134,7 +134,7 @@ Der Dateiexplorer ist erreichbar über den Webbrowser <http://mqttdevice/edit>
 
     Auf Datei auswählen klicken, die config.txt auswählen und Upload auswählen
 
-# Verwenden der Firmware
+## Verwenden der Firmware
 
 Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder das Löschen von Sensoren und Aktoren wird daher hier nicht beschrieben.
 
@@ -175,7 +175,7 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
     Unter Intervalle werden die Zeitabstände konfiguriert, mit denen festgelegt wird
     * wie häufig Sensoren abgefragt werden und die Daten zum CBPi gesendet werden
     * wie häufig Befehle für Aktoren / Induktion vom CBPi abgeholt werden
-    
+
     Mit diesen Intervallen kann die Performance vom Wemos verbessert werden. Die Standard Einstellung von 5 Sekunden für Umgebungen mit wenigen Sensoren und Aktoren geeignet. In Umgebungen mit vielen Sensoren und Aktoren wäre ein Intervall von 10 bis 30 Sekunden für den kleinen Wemos besser geeignet. Dies muss individuell ausprobiert werden.  
 
 3. Der Eventmanager
@@ -186,7 +186,7 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
     * die WLAN Verbindung verloren geht
     * der Kommunikation mit dem MQTT Server unterbrochen wird
     * in Sensor plötzlich keine Temperaturdaten liefert
-    
+
     Ohne das Event handling macht der Wemos nichts automatisert. Der Zustand verbleibt unverändert.
 
     Es gibt 4 Grundtypen von Ereignissen (Events), die automatisiert behandelt werden können: für Aktoren und für das Induktionkochfeld bei Sensorfehlern, sowie für Aktoren und das Induktionskochfeld bei WLAN und bei MQTT Fehlern. Für diese 4 Typen werden Verzögerungen für das Event handling konfiguriert. Während der Verzögerung verbleibt der Zustand unverändert. Nach der Verzögerung kann das MQTTDevice den Zustand von Aktoren und Induktionskochfeld ändern.
@@ -256,7 +256,7 @@ Anschluss ESP8266 D1 Mini an AZ-Delivery 0.96 i2c 128x64 OLED Display (Verwendun
 * SCL -> D1
 * SDA -> D2
 
-# Die MQTTDevice Platine
+## Die MQTTDevice Platine
 
 **Wichtiger Hinweis:**
 
@@ -316,16 +316,18 @@ Korrekturen, Verbesserungen und Weiterentwicklungen bitte teilen.
 
 Folgende Bautteile werden benötigt:
 
-    1x Schraubklemmblock 2pol Rastermaß 2,54    (Bsp voelkner S84366)
-    3x Schraubklemmblock 3pol Rastermaß 2,54
-    2x Schraubklemmblock 5pol Rastermaß 2,54
-    2x Schraubklemmblock 8pol Rastermaß 2,54
-    1x JST-HX Buchse gewinkelt Rastermaß 2,54   (Bsp voelkner D17526)
-    1x Stiftleiste einreihig Rastermaß 2,54     (Bsp reichelt SL 1X36G 2,54)
-    4x Steckbrücken (Jumper) Rastermaß 2,54     (Bsp reichelt JUMPER 2,54 SW)
-    1x Widerstand 4,7kOhm                       (Bsp reichelt YAG 4FTE52-4K7)
-    1x D1 mini NodeMcu ESP8266-12E mit Sockel   (Bsp amazon ASIN B01N9RXGHY)
-    1x LevelShifter 8 Kanal 5V 3.3V             (Bsp amazon ASIN B01MZ76GN5)
+| Anzahl | Artikel | ArtikelNr |
+| ------ | ------- | --------- |
+| 1 | Schraubklemmblock 2pol Rastermaß 2,54 | (Bsp voelkner S84366) |
+| 3 | Schraubklemmblock 3pol Rastermaß 2,54 |
+| 2 | Schraubklemmblock 5pol Rastermaß 2,54 |
+| 2 | Schraubklemmblock 8pol Rastermaß 2,54 |
+| 1 | JST-HX Buchse gewinkelt Rastermaß 2,54 | (Bsp voelkner D17526) |
+| 1 | Stiftleiste einreihig Rastermaß 2,54 | (Bsp reichelt SL 1X36G 2,54) |
+| 4 | Steckbrücken (Jumper) Rastermaß 2,54 | (Bsp reichelt JUMPER 2,54 SW) |
+| 1 | Widerstand 4,7kOhm | (Bsp reichelt YAG 4FTE52-4K7) |
+| 1 | D1 mini NodeMcu ESP8266-12E mit Sockel | (Bsp amazon ASIN B01N9RXGHY) |
+| 1 | LevelShifter 8 Kanal 5V 3.3V | (Bsp amazon ASIN B01MZ76GN5) |
 
     *amazon, reichelt und voelkner sind rein informativ als Suchhilfe für allgemein bekannter Anbieter zu verstehen*
 
@@ -376,7 +378,7 @@ Die benötigten Dateien 3D Druck werden im Ordner Info hnterlegt.
 
 ---
 
-# Visualisierung
+## Visualisierung
 
 Das MQTTDevice unterstützt die Visualisierung mit der OpenSource Grafana. Zum aktuellen Zeitpunkt wird die lokalen Installation unterstützt. In dieser Anleitung wird die Installation und Konfiguration auf einem RaspberryPi beschrieben. Als Datenbank wird InfluxDB verwendet.
 
@@ -407,21 +409,21 @@ Installation der Datenbank InfluxDB:
 
 Mit shh (bspw. Putty) anmelden und die folgenden Befehle ausführen
 
-> wget -qO- https://repos.influxdata.com/influxdb.key | sudo apt-key add -
+> wget -qO- <https://repos.influxdata.com/influxdb.key> | sudo apt-key add -
   
 Wenn auf dem RaspberryPi die OS Version "stretch" installiert ist (cat /ect/os-release)
-> echo "deb https://repos.influxdata.com/debian stretch stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+> echo "deb <https://repos.influxdata.com/debian> stretch stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
   
   oder wenn auf dem RaspberryPi die OS Version "buster" installiert ist
   
-> echo "deb https://repos.influxdata.com/debian buster stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
-
+> echo "deb <https://repos.influxdata.com/debian> buster stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+<!-- -->
 > sudo apt update
-
+<!-- -->
 > sudo apt install influxdb
-
+<!-- -->
 > sudo systemctl unmask influxdb
-
+<!-- -->
 > sudo systemctl enable influxdb
 
 Die Datenbank InfluxDB ist mit diesen 6 Schritten installiert und startet automatisch bei jedem Neustart vom RaspberryPi
@@ -437,7 +439,7 @@ Mit shh (bspw. Putty) anmelden und den folgenden Befehl ausführen
 Die folgenden Datenbank Befehle der Reihe nach eingeben. Das Password xxx durch ein eigenes Password ersetzen. Die Anführungstriche müssen bleiben!
 
 > CREATE DATABASE mqttdevice
-
+<!-- -->
 > CREATE USER pi WITH PASSWORD 'xxx' WITH ALL PRIVILEGES
 
 Zugriff auf die Datenbank einrichten:
@@ -447,7 +449,7 @@ Zugriff auf die Datenbank einrichten:
   Mit der Tastenkombination Strg+W nach HTTP suchen. In diesem Abschnitt muss mindestens aktiviert werden:
 
 > enabled = true
-
+<!-- -->
 > bind-address = ":8086"
 
 Diese zwei Einträge sind das Minimum. Es wird dringend empfohlen, eine Benutzer und Password Abfrage zu aktivieren.
@@ -461,7 +463,7 @@ Abschließend muss die Datenbank neu gestartet werden:
 
 Vor der Eingabe der Befehle die aktuelle Version Grafana überprüfen und in Schritt 1 und 2 die Versionsnummer 6.6.1 ersetzen.
 
-1. wget https://dl.grafana.com/oss/release/grafana_6.6.1_armhf.deb
+1. wget <https://dl.grafana.com/oss/release/grafana_6.6.1_armhf.deb>
 2. sudo dpkg -i grafana_6.6.1_armhf.deb
 3. sudo systemctl enable grafana-server
 4. sudo systemctl start grafana-server
