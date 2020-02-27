@@ -6,8 +6,11 @@ Dokumentation: <https://innuendopi.github.io/MQTTDevice2/>
 
 ## Changelog
 
-Version 2.01
+Version 2.02
 
+- Reworked: Neuer Button Visualisierung Start/Stop
+- Added:    Datenbank Tag Sud-ID für Visualisierung hinzugefügt
+- Reworked: Updates
 - Added:    Visualisierung Grafana, Influx Datenbank
 - Fixed:    Typo Display Update
 - Removed:  Visualisierung TCPServer

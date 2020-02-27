@@ -92,6 +92,7 @@ void setup()
   {
     setInfluxDB();
     TickerInfluxDB.start();
+    TickerInfluxDB.pause();
   }
 
   // Starte MQTT
@@ -131,7 +132,8 @@ void setupServer()
   server.on("/reqMiscSet", handleRequestMiscSet);
   server.on("/reqMisc", handleRequestMisc);       // Misc Infos für WebConfig
   server.on("/setMisc", handleSetMisc);           // Misc ändern
-  server.on("/startHTTPUpdate", startHTTPUpdate); // Firmware ebUpdate
+  server.on("/startHTTPUpdate", startHTTPUpdate); // Firmware WebUpdate
+  server.on("/visualisieren", visualisieren);     // Visualisierung
 
   // FSBrowser initialisieren
   server.on("/list", HTTP_GET, handleFileList); // Verzeichnisinhalt

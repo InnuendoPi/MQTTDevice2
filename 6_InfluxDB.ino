@@ -111,6 +111,8 @@ void sendData()
 
         Point dbData("mqttdevice_status");
         dbData.addTag("ID", dbInflux[i].kettle_id);
+        if (dbVisTag[0] != '\0')
+            dbData.addTag("Sud-ID", dbVisTag);
         dbData.addField("Temperatur", dbInflux[i].kettle_sensor_temp);
         dbData.addField("TargetTemp", dbInflux[i].kettle_target_temp);
         if (dbInflux[i].kettle_heater_state == 1)

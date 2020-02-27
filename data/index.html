@@ -18,8 +18,8 @@
         </div>
         <div class="col-md-auto">
           <a href="/edit" class="btn btn-outline-primary" id="btn_edit">Dateiexplorer</a>
-          <a href="/update" class="btn btn-outline-danger" id="btn_upd">DateiUpdate</a>
-          <button type="button" class="btn btn-outline-danger" id="btn_httpupdate">WebUpdate</button>
+          <button type="button" class="btn btn-outline-primary" id="btn_visual">Visualisierung</button>
+          <button type="button" class="btn btn-outline-danger" id="btn_update">Update</button>
           <button type="button" class="btn btn-outline-danger" id="btn_reboot">Neustart</button>
         </div>
       </div>
@@ -412,21 +412,41 @@
       </div>
     </div>
   </div>
-  <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true"
-    id="mi-modal">
+  <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="mi-modal-upd">
     <div class="modal-dialog modal-sm">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title" id="myModalLabel">WebUpdate starten?</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-              aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabelUpd">Firmware Update</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
-		<div class="modal-body">
-			<p>BETA! MQTTDevice startet neu!</p>
-		</div>
+        <div class="modal-body">
+          <p>Datei Upload oder Web Update?</p>
+          <p>MQTTDevice startet automatisch neu!</p>
+        </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" id="modal-btn-yes">Start</button>
-          <button type="button" class="btn btn-primary" id="modal-btn-no">Abbruch</button>
+          <button type="button" class="btn btn-default" id="modal-btn-file">Upload</button>
+          <button type="button" class="btn btn-secondary" id="modal-btn-web">WebUpdate</button>
+          <button type="button" class="btn btn-primary" id="modal-btn-abbruch">Zurück</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabelVis" aria-hidden="true" id="mi-modal-vis">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabelVis">Visualisierung</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="modal_misc_vis_tag">Sud-ID für Visualisierung</label>
+            <input type="text" class="form-control" placeholder="" id="modal_misc_vis_tag" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" id="modal-btn-start">Starten</button>
+          <button type="button" class="btn btn-primary" id="modal-btn-stop">Stoppen</button>
         </div>
       </div>
     </div>
@@ -650,27 +670,75 @@
       });
     }
 
-    var modalConfirm = function (callback) {
-
-      $("#btn_httpupdate").on("click", function () {
-        $("#mi-modal").modal('show');
+    var modalConfirmVis = function (callback) {
+      $("#btn_visual").on("click", function () {
+        $("#mi-modal-vis").modal('show');
       });
 
-      $("#modal-btn-yes").on("click", function () {
-		onload = setInterval(refresh, 60000);
+      $("#modal-btn-start").on("click", function () {
         callback(true);
-        $("#mi-modal").modal('hide');
+        $("#mi-modal-vis").modal('hide');
       });
 
-      $("#modal-btn-no").on("click", function () {
+      $("#modal-btn-stop").on("click", function () {
         callback(false);
-        $("#mi-modal").modal('hide');
+        $("#mi-modal-vis").modal('hide');
       });
     };
 
-    modalConfirm(function (confirm) {
+    modalConfirmVis(function (confirm) {
       if (confirm) {
-        //Yes
+        // start
+        var vistag = $('#modal_misc_vis_tag').val()
+        $.ajax({
+          url: '/visualisieren?vistag=' + vistag + '&startvis=1',
+          type: 'POST',
+          async: false,
+          cache: false
+        }).done(function (msg) {
+          window.location.reload(true);
+        });;
+      }
+      else {
+        // stop
+        var vistag = $('#modal_misc_vis_tag').val()
+        $.ajax({
+          url: '/visualisieren?vistag=' + vistag + '&startvis=0',
+          type: 'POST',
+          async: false,
+          cache: false
+        }).done(function (msg) {
+          window.location.reload(true);
+        });;
+      }
+    });
+
+    var modalConfirmUpd = function (callback) 
+    {
+      $("#btn_update").on("click", function () {
+        $("#mi-modal-upd").modal('show');
+      });
+
+      $("#modal-btn-web").on("click", function () {
+        $("#mi-modal-upd").modal('hide');
+        onload = setInterval(refresh, 60000);
+        callback("1");
+      });
+
+      $("#modal-btn-file").on("click", function () {
+        $("#mi-modal-upd").modal('hide');
+        callback("2");
+      });
+
+      $("#modal-btn-abbruch").on("click", function () {
+        callback("0");
+        $("#mi-modal-upd").modal('hide');
+      });
+    };
+
+    modalConfirmUpd(function (confirm) 
+    {
+      if (confirm == "1") {
         $.ajax({
           url: '/startHTTPUpdate',
           type: 'POST',
@@ -679,6 +747,10 @@
         }).done(function (msg) {
           window.location.reload(true);
         });;
+      }
+      else if (confirm == "2")
+      {
+        location.href = "/update";
       }
     });
 

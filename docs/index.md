@@ -118,13 +118,15 @@ Die Firmware bietet zwei Möglichkeiten, um Updates sehr einfach einspielen zu k
 
 1. Update durch Dateiupload
 
-    Im Webbrowser die URL <http://mqttdevice/update> aufrufen.
+    Im Webbrowser die URL <http://mqttdevice/update> aufrufen oder im WebIf den Button "Update" -> "Upload" verwenden.
     Hier kann Firmware und das Filesystem SPIFFS aktualisiert werden. Wenn das Filesystem SPIFFS mit Dateiupload aktualisiert wird, wird die Konfigurationsdatei überschrieben. Siehe Backup und Restore.
 
 2. WebUpdate
 
-    Im Webbrowser die URL <http://mqttdevice> aufrufen und die Funktion "WebUpdate" aufrufen.
+    Im Webbrowser die URL <http://mqttdevice> aufrufen und die Funktion "Update" -> "WebUpdate" aufrufen.
     WebUpdate aktualisiert die Firmware, die index Datei und Zertifikate. Durch WebUpdate wird die Konfigurationsdatei nicht überschrieben.
+
+Das WebUpdate kann je nach Internetverbindung ein paar Minuten dauern. Während des WebUpdates steht das Web Interface nicht zur Verfügung. Wenn nur eine sehr langsame Internetanbindung zur Verfügung steht, wird nach ca. 60 Sekunden die Meldung "Browser reagiert nicht" angezeigt. Bitte warten und das WebUpdate durchlaufen lassen.
 
 **Backup and Restore der Konfiguration:**
 
@@ -402,21 +404,38 @@ Mit der aktuelle Firmware können in Grafana bis zu 3 Kettles visualisiert werde
 * aktuelle Temperatur vom Kettle-Sensor
 * Zieltemperatur
 * aktueller Powerlevel vom Kettle-Heater
-* der Kettle Name
 
 Für jedes Kettle kann nun eine eigene Visualisierung erstellt werden oder in einer graphischen Darstellung alle 3 Kettles zusammengefasst werden.
 
+**Konfiguration:**
+
+Unter den Systemeinstellungen im Tab System müssen die folge den Parameter konfiguriert werden:
+
+1. Influx Datenbank Server IP
+
+    Die Adresse vom Datenbank Server ist im Format <http:IP-Adresse:Port> einzutragen. Der Standard Port lautet 8086
+
+    Beispiel: <http://192.168.178.100:8086>
+
+2. Datenbank Name
+
+    Hier ist der Name der Datenbank in InfluxDB einzutragen
+
+3. Benutzername und Password
+
+    Ist die Authentifizierung aktiviert mussen Benutzername und Password hinterlegt werden
+
+Mit der Checkbox "Aktiviere Visualisierung Grafana" wird die Visualisierung aktiviert. Nun müssen die Aktoren für die Visualisierung aktiviert werden. Geeignete Aktoren sind Heater oder das Induktionskochfeld. Mit diesen Einstellungen ist die Visualisierung betriebsbereit. Es werden aber noch keine Daten in die Datenbank übertragen. Über den Button "Visualisierung" kann nun das Schreiben in die Datenbank gestartet bzw. gestoppt werden. Zusätzlich kann optional eine Sud-ID eingegeben werden. Diese Sud-ID wird in der InfluxDB als zusätzlicher tag verwendet. Die Daten Temperatur, Zieltemperatur und Powerlevel befinden sich dann unter den tags "mqttdevice-status, sud-id". Es empfiehlt sich für das tag Sud-ID eine eindeutige Bezeichnung zu verwenden, bsp. mit Datumsangabe.
+
+Beispiel für eine Sud-ID: Helles-20200201
+
+Maximal können 15 Zeichen für die Sud-ID eingegeben werden.
+
+Die URL für das Dashboard kann in Grafana über die Funktion Export ausgelesen werden.
+
+Beispiel für die URL Dashboard: <http://192.168.178.100:3000/d/xxxxxxx/mqttdevice?orgId=1&refresh=5s&kiosk=tv>
+
 ![Grafana](img/grafana.png)
-
-**Vor der Installation:**
-
-Vor der Installation sollte der Raspberry aktualisiert werden:
-
-`sudo apt-get update`
-
-`sudo apt-get upgrade`
-
-`sudo reboot`
 
 **Installation Datenbank:**
 

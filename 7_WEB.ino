@@ -130,6 +130,7 @@ void handleRequestMiscSet()
   doc["delay_mqtt"] = wait_on_error_mqtt / 1000;
   doc["delay_wlan"] = wait_on_error_wlan / 1000;
   doc["startdb"] = startDB;
+  doc["vistag"] = dbVisTag;
   String response;
   serializeJson(doc, response);
   server.send(200, "application/json", response);
@@ -440,6 +441,30 @@ void handleSetMisc()
 }
 
 // Some helper functions WebIf
+void visualisieren()
+{
+    for (int i = 0; i < server.args(); i++)
+    {
+        if (server.argName(i) == "vistag")
+        {
+          server.arg(i).toCharArray(dbVisTag, 15);
+          checkChars(dbVisTag);
+        }
+        if (server.argName(i) == "startvis")
+        {
+            if (server.arg(i) == "1")
+                startVis = true;
+            else
+                startVis = false;
+        }
+        yield();
+    }
+    if (startDB && startVis)
+        TickerInfluxDB.resume();
+    else
+        TickerInfluxDB.pause();
+}
+
 void rebootDevice()
 {
   cbpiEventSystem(EM_REBOOT);

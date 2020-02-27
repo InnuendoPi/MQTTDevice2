@@ -46,7 +46,7 @@ extern "C"
 #endif
 
 // Version
-#define Version "2.01"
+#define Version "2.02"
 
 // Definiere Pausen
 #define PAUSE1SEC 1000
@@ -208,10 +208,12 @@ int inductionStatus = 0;
 #define numberOfDBMax 3
 InfluxDBClient dbClient;
 bool startDB = false;
+bool startVis = false;
 char dbServer[30] = "http://192.168.100.30:8086";     // InfluxDB Server IP
 char dbUser[15] = "";
 char dbPass[15] = "";
 char dbDatabase[15] = "mqttdevice";
+char dbVisTag[15] = "";
 unsigned long upInflux = 15000;
 
 // FSBrowser
