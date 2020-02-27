@@ -399,7 +399,7 @@ Das MQTTDevice unterstützt die Visualisierung mit der OpenSource Grafana. Zum a
 
 Der Datenfluss: das Plugin MQTT-Pub sendet Kettle Informationen von CraftbeerPi3 über das Protokoll MQTT an den MQTTBroker mosquitto. Das MQTTDevice erhält diese Daten, wertet sie aus und schreibt in die Datenbank InfluxDB. Grafana stellt die Daten graphisch dar.
 
-Mit der aktuelle Firmware können in Grafana bis zu 3 Kettles visualisiert werden. Jedes Kettle bekommt von CraftbeerPi eine eindeutige forlaufende Nummer. An dieser Kettle-Nummer (Tag) hängen für jedes Kettle die zugehörigen Parameter
+Mit der aktuelle Firmware können in Grafana bis zu 3 Kettles visualisiert werden. Jedes Kettle bekommt von CraftbeerPi eine eindeutige forlaufende Nummer. An dieser Kettle-Nummer (tag) hängen für jedes Kettle die zugehörigen Parameter
 
 * aktuelle Temperatur vom Kettle-Sensor
 * Zieltemperatur
@@ -515,11 +515,3 @@ Im Grafana Web Interface muss nun abschließend nur noch die DataSource InfluxDB
 * HTTP Method: POST
 
 Mit "Save & Test" wird die Verbindung gespeichert und überprüft. Nun kann entweder das Beispiel-Dashboard MQTTDevice (Datei MQTTDevice Dashboard.json) aus dem Ordner Info in Grafana importiert oder ein eigenes Dashboard erstellt werden.
-
-## ToDo Visualisierung
-
-Archivieren oder löschen alter Daten
-
-Um einen Brautag zu visualisieren, werden lediglich die Daten der letzten 4-8 Stunden aus der Datenbank benötigt. Alte Daten können gelöscht werden. Die Datenbank InfluxDB bietet eine Retention Policy. Um aber im Nachgang auch vergangene Brautage zu überprüfen, wäre ein Archivieren der Daten sinnvoll. Um dies zu erreichen wäre eine Lösung, die Abfragen zur Visualisierung (Queries) in einer WHERE Klausel mit einer Zeiteinschränkung einzuschränken.
-
-Eine Basis Visulaisierung als Vorlage für Grafana liegt in Form einer JSON Datein im Ordner Info.
