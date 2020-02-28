@@ -397,7 +397,11 @@ Die benötigten Dateien 3D Druck werden im Ordner Info hnterlegt.
 
 Das MQTTDevice unterstützt die Visualisierung mit der OpenSource Grafana. Zum aktuellen Zeitpunkt wird die lokalen Installation unterstützt. In dieser Anleitung wird die Installation und Konfiguration auf einem RaspberryPi beschrieben. Als Datenbank wird InfluxDB verwendet.
 
-Der Datenfluss: das Plugin MQTT-Pub sendet Kettle Informationen von CraftbeerPi3 über das Protokoll MQTT an den MQTTBroker mosquitto. Das MQTTDevice erhält diese Daten, wertet sie aus und schreibt in die Datenbank InfluxDB. Grafana stellt die Daten graphisch dar.
+Die Visualisierung ist eine optionale Möglichkeit, das Brauprotokoll mit einer graphischen Darstellung zu erweitern. Die Installation der Datenbank InfluxDB, der Visualisierung Grafana und deren Konfiguration ist für den normalen Betrieb nicht erforderlich.
+
+Die Visualisierung bietet die Möglichkeit, einen Brautag optisch zu überprüfen. Mit Hilfe der Daten Ist-Temperatur und Soll-Temperatur sowie dem zugehörigen Powerlevel (Energie) zu einem beliebeigen Zeitpunkt während des Brauens, kann sehr leicht überprüft werden, ob bspw. die gewünschten Rasten korrekt angefahren und ob die Rasttemperaturen korrekt gehalten wurden.
+
+Der Datenfluss: das CraftBeerPi3 Plugin cbpi-mqttPub sendet Kettle Informationen von CraftbeerPi3 über das Protokoll MQTT an den MQTTBroker mosquitto. Das MQTTDevice erhält diese Daten, wertet sie aus und schreibt in die Datenbank InfluxDB. Grafana stellt die Daten graphisch dar.
 
 Mit der aktuelle Firmware können in Grafana bis zu 3 Kettles visualisiert werden. Jedes Kettle bekommt von CraftbeerPi eine eindeutige forlaufende Nummer. An dieser Kettle-Nummer (tag) hängen für jedes Kettle die zugehörigen Parameter
 
@@ -405,7 +409,7 @@ Mit der aktuelle Firmware können in Grafana bis zu 3 Kettles visualisiert werde
 * Zieltemperatur
 * aktueller Powerlevel vom Kettle-Heater
 
-Für jedes Kettle kann nun eine eigene Visualisierung erstellt werden oder in einer graphischen Darstellung alle 3 Kettles zusammengefasst werden.
+Für jedes Kettle kann nun eine eigene Visualisierung erstellt werden oder in einer graphischen Darstellung alle 3 Kettles zusammengefasst werden. Ein Beispiel für ein Dashboard in Grafana ist im repository im Verzeichnis tools enthalten.
 
 **Konfiguration:**
 
@@ -417,6 +421,8 @@ Unter den Systemeinstellungen im Tab System müssen die folge den Parameter konf
 
     Beispiel: <http://192.168.178.100:8086>
 
+    Die Adresse vom Datenbank Server besteht immer aus dem Protokoll (http), der IP-Adresse oder Hostname, gefolgt von einem Doppelpunkt und einem Port.
+
 2. Datenbank Name
 
     Hier ist der Name der Datenbank in InfluxDB einzutragen
@@ -425,11 +431,23 @@ Unter den Systemeinstellungen im Tab System müssen die folge den Parameter konf
 
     Ist die Authentifizierung aktiviert mussen Benutzername und Password hinterlegt werden
 
-Mit der Checkbox "Aktiviere Visualisierung Grafana" wird die Visualisierung aktiviert. Nun müssen die Aktoren für die Visualisierung aktiviert werden. Geeignete Aktoren sind Heater oder das Induktionskochfeld. Mit diesen Einstellungen ist die Visualisierung betriebsbereit. Es werden aber noch keine Daten in die Datenbank übertragen. Über den Button "Visualisierung" kann nun das Schreiben in die Datenbank gestartet bzw. gestoppt werden. Zusätzlich kann optional eine Sud-ID eingegeben werden. Diese Sud-ID wird in der InfluxDB als zusätzlicher tag verwendet. Die Daten Temperatur, Zieltemperatur und Powerlevel befinden sich dann unter den tags "mqttdevice-status, sud-id". Es empfiehlt sich für das tag Sud-ID eine eindeutige Bezeichnung zu verwenden, bsp. mit Datumsangabe.
+Mit der Checkbox "Aktiviere Visualisierung Grafana" wird die Visualisierung aktiviert. Nun müssen die Aktoren für die Visualisierung ausgewählt werden. Geeignete Aktoren sind Heater oder das Induktionskochfeld, weil dieser Typ Aktoren mit einem Temperatursensor als "Kettle" in CraftbeerPi3 verbunden ist. Dem entsprechend sind Aktoren, wie bspw. Rührwerk oder Pumpen für die Visualisierung ungeeignet.
+
+Mit diesen Einstellungen ist die Visualisierung betriebsbereit. Der Status für die Visualisierung lautet "betriebsbereit und pausiert". Das MQTTDevice schreibt nicht permanent Daten in die Influx Datenbank. Nach dem Start oder Reset vom MQTTDevice ist die Visualisierung wartet und wartet auf ein Startsignal.
+
+Über den Button "Visualisierung" im WebIf kann nun das Schreiben in die Datenbank gestartet bzw. gestoppt werden. Zusätzlich kann optional eine Sud-ID eingegeben werden. Diese Sud-ID wird in der InfluxDB als zusätzlicher tag verwendet. Die Daten Temperatur, Zieltemperatur und Powerlevel befinden sich dann unter den tags "mqttdevice-status, sud-id". Es empfiehlt sich für das tag Sud-ID eine eindeutige Bezeichnung zu verwenden, bsp. mit Datumsangabe.
 
 Beispiel für eine Sud-ID: Helles-20200201
 
 Maximal können 15 Zeichen für die Sud-ID eingegeben werden.
+
+Vorgehensweise an einem Brautag:
+
+An einem Brautag wird, wenn alle Vorbereitungen abgeschlossen sind, Craftbeerpi3 mit dem gewünschten Rezept gestartet. Das ist der Zeitpunkt, zu dem die Visualisierung - also das Schreiben von Daten in die Datenbank - mit einem Klick auf "Visualisierung" gestartet wird.
+
+Wenn der Brauvorgang abgeschlossen ist, wird das Schreiben der Daten mit einem Klick auf Visualisierung beendet.
+
+Mit dieser Vorgehensweise beinhaltet die Visualisierung nur die relevanten Daten für den Brauvorgang.
 
 Die URL für das Dashboard kann in Grafana über die Funktion Export ausgelesen werden.
 
@@ -461,7 +479,7 @@ Mit shh (bspw. Putty) anmelden und die folgenden Befehle ausführen
 
 `sudo systemctl enable influxdb`
 
-Die Datenbank InfluxDB ist mit diesen 6 Schritten installiert und startet automatisch bei jedem Neustart vom RaspberryPi
+Die Datenbank InfluxDB ist mit diesen 6 Schritten installiert und startet automatisch bei jedem Neustart vom RaspberryPi.
 
 **Konfiguration Datenbank:**
 
@@ -493,6 +511,12 @@ Die Änderung wird mit der Tastenkombination Strg+O gespeichert. Den Editor been
 Abschließend muss die Datenbank neu gestartet werden:
 
 `sudo systemctl restart influxdb`
+
+Die Datenbank InfluxDB speichert alle Daten in der Standard Einstellung unendlich lange (autogen retention policy). Es empfiehlt sich, veraltete Daten automatisch zu löschen:
+
+`alter retention policy "autogen" on "mqttdevice" duration 52w1d replication 1 shard duration 1d default`
+
+Mit dieser Regel (Retention Policy) wird die Standard-Einstellung "behalte die Daten unendlich lange" geändert in "lösche Daten nach 52 Wochen" (52w) und aggregiere Daten nach einem Tag (1d) in einem Shard.
 
 **Installation Grafana:**
 

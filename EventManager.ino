@@ -201,7 +201,7 @@ void listenerSystem(int event, int parm) // System event listener
         line = char(fsUploadFile.read());
       }
       fsUploadFile.close();
-      DEBUG_MSG("*** SYSINFO: Update Zertifikate Anzahl Versuche %s\n", line.c_str());
+      Serial.printf("*** SYSINFO: Update Zertifikate Anzahl Versuche %s\n", line.c_str());
       SPIFFS.remove("/log1.txt");
     }
     if (SPIFFS.exists("/log2.txt")) // WebUpdate Index
@@ -213,7 +213,7 @@ void listenerSystem(int event, int parm) // System event listener
         line = char(fsUploadFile.read());
       }
       fsUploadFile.close();
-      DEBUG_MSG("*** SYSINFO: Update Index Anzahl Versuche %s\n", line.c_str());
+      Serial.printf("*** SYSINFO: Update Index Anzahl Versuche %s\n", line.c_str());
       SPIFFS.remove("/log2.txt");
     }
     if (SPIFFS.exists("/log3.txt")) // WebUpdate Firmware
@@ -225,7 +225,7 @@ void listenerSystem(int event, int parm) // System event listener
         line = char(fsUploadFile.read());
       }
       fsUploadFile.close();
-      DEBUG_MSG("*** SYSINFO: Update Firmware Anzahl Versuche %s\n", line.c_str());
+      Serial.printf("*** SYSINFO: Update Firmware Anzahl Versuche %s\n", line.c_str());
       SPIFFS.remove("/log3.txt");
     }
     break;
