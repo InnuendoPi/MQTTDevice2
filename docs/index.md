@@ -433,7 +433,7 @@ Unter den Systemeinstellungen im Tab System müssen die folge den Parameter konf
 
 Mit der Checkbox "Aktiviere Visualisierung Grafana" wird die Visualisierung aktiviert. Nun müssen die Aktoren für die Visualisierung ausgewählt werden. Geeignete Aktoren sind Heater oder das Induktionskochfeld, weil dieser Typ Aktoren mit einem Temperatursensor als "Kettle" in CraftbeerPi3 verbunden ist. Dem entsprechend sind Aktoren, wie bspw. Rührwerk oder Pumpen für die Visualisierung ungeeignet.
 
-Mit diesen Einstellungen ist die Visualisierung betriebsbereit. Der Status für die Visualisierung lautet "betriebsbereit und pausiert". Das MQTTDevice schreibt nicht permanent Daten in die Influx Datenbank. Nach dem Start oder Reset vom MQTTDevice ist die Visualisierung wartet und wartet auf ein Startsignal.
+Mit diesen Einstellungen ist die Visualisierung betriebsbereit. Der Status für die Visualisierung lautet "betriebsbereit und pausiert". Das MQTTDevice schreibt nicht permanent Daten in die Influx Datenbank. Nach dem Start oder Reset vom MQTTDevice ist die Visualisierung betriebsbereit und wartet auf ein Startsignal.
 
 Über den Button "Visualisierung" im WebIf kann nun das Schreiben in die Datenbank gestartet bzw. gestoppt werden. Zusätzlich kann optional eine Sud-ID eingegeben werden. Diese Sud-ID wird in der InfluxDB als zusätzlicher tag verwendet. Die Daten Temperatur, Zieltemperatur und Powerlevel befinden sich dann unter den tags "mqttdevice-status, sud-id". Es empfiehlt sich für das tag Sud-ID eine eindeutige Bezeichnung zu verwenden, bsp. mit Datumsangabe.
 
