@@ -331,17 +331,17 @@ Folgende Bautteile werden benötigt:
 | Anzahl | Artikel | ArtikelNr |
 | ------ | ------- | --------- |
 | 1 | Schraubklemmblock 2pol Rastermaß 2,54 | (Bsp voelkner S84366) |
-| 3 | Schraubklemmblock 3pol Rastermaß 2,54 |
-| 2 | Schraubklemmblock 5pol Rastermaß 2,54 |
-| 2 | Schraubklemmblock 8pol Rastermaß 2,54 |
+| 3 | Schraubklemmblock 3pol Rastermaß 2,54 | (Bsp voelkner S84893) |
+| 2 | Schraubklemmblock 5pol Rastermaß 2,54 | (Bsp voelkner S84806) |
+| 2 | Schraubklemmblock 8pol Rastermaß 2,54 | (Bsp voelkner S84611) |
 | 1 | JST-HX Buchse gewinkelt Rastermaß 2,54 | (Bsp voelkner D17526) |
-| 1 | Stiftleiste einreihig Rastermaß 2,54 | (Bsp reichelt SL 1X36G 2,54) |
-| 4 | Steckbrücken (Jumper) Rastermaß 2,54 | (Bsp reichelt JUMPER 2,54 SW) |
-| 1 | Widerstand 4,7kOhm | (Bsp reichelt YAG 4FTE52-4K7) |
+| 1 | Stiftleiste einreihig Rastermaß 2,54 | (Bsp voelkner D19990) |
+| 4 | Steckbrücken (Jumper) Rastermaß 2,54 | (Bsp voelkner S655251) |
+| 1 | Widerstand 4,7kOhm | (Bsp voelkner S620751) |
 | 1 | D1 mini NodeMcu ESP8266-12E mit Sockel | (Bsp amazon ASIN B01N9RXGHY) |
 | 1 | LevelShifter 8 Kanal 5V 3.3V | (Bsp amazon ASIN B01MZ76GN5) |
 
-*amazon, reichelt und voelkner sind rein informativ als Suchhilfe*
+*amazon und voelkner sind rein informativ als Suchhilfe*
 *für allgemein bekannter Anbieter zu verstehen*
 
 ![LevelShifter](img/platine_levelshifter.jpg)
