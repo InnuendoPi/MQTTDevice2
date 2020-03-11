@@ -6,8 +6,9 @@ Dokumentation: <https://innuendopi.github.io/MQTTDevice2/>
 
 ## Changelog
 
-Version 2.02
+Version 2.03
 
+- Added:    nach einem WebUpdate erscheint eine Info
 - Reworked: Neuer Button Visualisierung Start/Stop
 - Added:    Datenbank Tag Sud-ID für Visualisierung hinzugefügt
 - Reworked: Updates

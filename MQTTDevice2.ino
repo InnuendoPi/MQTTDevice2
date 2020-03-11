@@ -46,7 +46,7 @@ extern "C"
 #endif
 
 // Version
-#define Version "2.02"
+#define Version "2.03"
 
 // Definiere Pausen
 #define PAUSE1SEC 1000
@@ -113,6 +113,7 @@ unsigned char numberOfActors = 0; // Gesamtzahl der Aktoren
 char mqtthost[16];                // MQTT Server
 int mqtt_chip_key = ESP.getChipId(); // Device Name
 char mqtt_clientid[16];             // AP-Mode und Gerätename
+bool alertState = false;            // WebUpdate Status
 
 // Zeitserver Einstellungen
 #define NTP_OFFSET 60 * 60                // NTP in Sekunden

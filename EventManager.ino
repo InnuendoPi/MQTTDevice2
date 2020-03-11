@@ -191,7 +191,6 @@ void listenerSystem(int event, int parm) // System event listener
     sendData();
     break;
   case EM_LOG:
-    // Not yet ready!
     if (SPIFFS.exists("/log1.txt")) // WebUpdate Zertifikate
     {
       fsUploadFile = SPIFFS.open("/log1.txt", "r");
@@ -227,6 +226,7 @@ void listenerSystem(int event, int parm) // System event listener
       fsUploadFile.close();
       Serial.printf("*** SYSINFO: Update Firmware Anzahl Versuche %s\n", line.c_str());
       SPIFFS.remove("/log3.txt");
+      alertState = true;
     }
     break;
   default:

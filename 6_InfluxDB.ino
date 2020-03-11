@@ -1,9 +1,9 @@
 class DBServer
 {
 public:
-    String kettle_id = "";            // Kettle ID
-    String kettle_topic = "";         // Kettle Topic
-    String kettle_heater_topic = "";  // Kettle Heater MQTT Topic
+    String kettle_id = "";           // Kettle ID
+    String kettle_topic = "";        // Kettle Topic
+    String kettle_heater_topic = ""; // Kettle Heater MQTT Topic
     // String kettle_name = "";          // Kettle Name
     float kettle_sensor_temp = 0.0;   // Kettle Sensor aktuelle Temperatur
     int kettle_target_temp = 0;       // Kettle Heater TargetTemp

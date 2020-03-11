@@ -667,6 +667,12 @@
         }
         miscRender += " </span> </li>";
         $('#miscSettings').html(miscRender);
+		
+		if (data.alertstate)
+		{
+		  alert("*** SYSINFO: WebUpdate abgeschlossen");
+		  location.reload();
+		}
       });
     }
 
@@ -720,8 +726,9 @@
       });
 
       $("#modal-btn-web").on("click", function () {
-        $("#mi-modal-upd").modal('hide');
-        onload = setInterval(refresh, 60000);
+		document.getElementById("firmware").innerHTML = "WebUpdate gestartet ...";
+		$("#mi-modal-upd").modal('hide');
+		onload = setInterval(refresh, 120000);
         callback("1");
       });
 
