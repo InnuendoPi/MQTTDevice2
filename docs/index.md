@@ -383,13 +383,13 @@ Relaisboards benötigen neben einem GPIO eine 5V Spannungsversorgung. 5V können
 
 ## Gehäuse
 
-Das Gehäuse für die MQTTDevice Platine befindet sich mit Stand 02.2020 noch in der Design-Phase.
-
 ![Gehäuse1](img/gehäuse1.jpg)
 ![Gehäuse2](img/gehäuse2.jpg)
 ![Grundplatte](img/grundplatte.jpg)
 
-Die benötigten Dateien 3D Druck werden im Ordner Info hnterlegt.
+Die benötigten Dateien 3D Druck befinden sich im Ordner Info. Mit dem aktuellen Entwurf Gehäuse werden die Platine und das OLED Display in das Gehäuse verklebt.
+
+Das Gehäuse ist mit Halteklammern zwischen Trägerplatte und Gehäusedeckel ausgestattet.
 
 ---
 
