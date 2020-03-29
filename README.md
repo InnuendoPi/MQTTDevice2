@@ -6,9 +6,10 @@ Dokumentation: <https://innuendopi.github.io/MQTTDevice2/>
 
 ## Changelog
 
-Version 2.03
+Version 2.04
 
 - Update:   Libs InfluxDB, ArduinoJson, Adafruit_SSD1306
+- Update:   Influx CheckDBConnect: bei einem Verbindungsfehler wird der Task Vis gestoppt
 - Added:    nach einem WebUpdate erscheint eine Info
 - Reworked: Neuer Button Visualisierung Start/Stop
 - Added:    Datenbank Tag Sud-ID für Visualisierung hinzugefügt

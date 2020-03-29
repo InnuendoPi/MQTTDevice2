@@ -464,7 +464,20 @@ void visualisieren()
     yield();
   }
   if (startDB && startVis)
-    TickerInfluxDB.resume();
+  {
+    if (checkDBConnect())
+    {
+      startVis = true;
+      TickerInfluxDB.interval(upInflux);
+      TickerInfluxDB.start();
+    }
+    else
+    {
+      startVis = false;
+      TickerInfluxDB.stop();
+    }
+    // TickerInfluxDB.resume();
+  }
   else
     TickerInfluxDB.pause();
 }

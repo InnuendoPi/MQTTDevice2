@@ -133,16 +133,16 @@ void setInfluxDB()
     dbClient.setConnectionParamsV1(dbServer, dbDatabase, dbUser, dbPass);
 }
 
-void checkDBConnect()
+bool checkDBConnect()
 {
     if (dbClient.validateConnection())
     {
-        Serial.print("Connected to InfluxDB: ");
-        Serial.println(dbClient.getServerUrl());
+        DEBUG_MSG("Verbunden mit InfluxDB: %s\n", dbClient.getServerUrl().c_str());
+        return true;
     }
-    else
+    else 
     {
-        Serial.print("InfluxDB connection failed: ");
-        Serial.println(dbClient.getLastErrorMessage());
+        DEBUG_MSG("Verbindung zu InfluxDB Datenbank fehlgeschlagen: %s\n", dbClient.getLastErrorMessage().c_str());
+        return false;
     }
 }
