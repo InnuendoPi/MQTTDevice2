@@ -169,7 +169,8 @@ void listenerSystem(int event, int parm) // System event listener
     break;
   case EM_SETNTP: // NTP Update (25)
     timeClient.begin();
-    timeClient.update();
+    timeClient.forceUpdate();
+    checkSummerTime();
     break;
   case EM_NTP: // NTP Update (25) -> In Ticker Objekt ausgelagert!
     timeClient.update();

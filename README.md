@@ -6,8 +6,9 @@ Dokumentation: <https://innuendopi.github.io/MQTTDevice2/>
 
 ## Changelog
 
-Version 2.04
+Version 2.05
 
+- Fixed:    Umstellung Sommer/Winterzeit
 - Update:   Libs InfluxDB, ArduinoJson, Adafruit_SSD1306
 - Update:   Influx CheckDBConnect: bei einem Verbindungsfehler wird der Task Vis gestoppt
 - Added:    nach einem WebUpdate erscheint eine Info

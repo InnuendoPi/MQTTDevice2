@@ -46,7 +46,7 @@ extern "C"
 #endif
 
 // Version
-#define Version "2.04"
+#define Version "2.05"
 
 // Definiere Pausen
 #define PAUSE1SEC 1000
@@ -116,9 +116,9 @@ char mqtt_clientid[16];             // AP-Mode und Gerätename
 bool alertState = false;            // WebUpdate Status
 
 // Zeitserver Einstellungen
-#define NTP_OFFSET 60 * 60                // NTP in Sekunden
-#define NTP_INTERVAL 60 * 60 * 1000       // NTP in ms
-#define NTP_ADDRESS "europe.pool.ntp.org" // NTP change this to whatever pool is closest (see ntp.org)
+#define NTP_OFFSET 60 * 60                // Offset Winterzeit in Sekunden
+#define NTP_INTERVAL 60 * 60 * 1000       // Aktualisierung NTP in ms
+#define NTP_ADDRESS "europe.pool.ntp.org" // NTP Server
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, NTP_ADDRESS, NTP_OFFSET, NTP_INTERVAL);
 
