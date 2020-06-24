@@ -74,6 +74,9 @@ Diese zwei Topics werden nun beispielhaft auf dem MQTTDevice eingerichtet.
 
 *Hinweis: falls ein CraftbeerPi3 MQTT Plugin bereits vorhanden ist (bspw. die ältere Version cbpi-mqttCompressor), muss das Plugin ersetzt werden. Dazu die Version cbpi-mqttPub in den Plugins Ordner kopieren und den Ordner cbpi-mqttCompressor löschen.*
 
+*Hinweis: wenn das Induktionskochfeld GGM IDS2 eingesetzt wird, sollte das CraftbberPi3 Plugin cbpi-PIDArduinoPowerOutput verwendet werden: <https://github.com/InnuendoPi/cbpi-PIDArduinoPowerOutput>
+Zur Konfiguration der PID Einstellungen empfiehlt ist das Plugin cbpi-PIDAutoTunePowerOutput sehr hilfreich*
+
 **MQTTDevice flashen:**
 
 Mit Hilfe von esptool.exe (<https://github.com/igrr/esptool-ck/releases> ) aus dem Ordner tools kann die Firmware auf das ESP Modul geladen werden. Das ESPTool ist für verschiedene Betriebssysteme verfügbar.
