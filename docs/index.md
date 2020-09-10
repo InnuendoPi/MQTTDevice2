@@ -249,7 +249,7 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
 
 **Das OLED Display:**
 
-Diese Firmware unterstützt OLED Display monochrom OLED 128x64 I2C 0.96".
+Diese Firmware unterstützt OLED Display monochrom 128x64 I2C 1.3" SH1106 und mit einer kleinen Anpassung am Quellcode das OLED Display monochrom 128x64 I2C 0.96" SSD1306.
 
 ![Oled](img/oled.jpg)
 
@@ -262,12 +262,21 @@ Dabei bedeutet "S1 78 | A2 100 | I off"
 
 Mit jeder Aktualisierung Display wandert die Anzeige auf den nächsten Sensor bzw. Aktor. Im Beispiel wäre das S2 und A3.
 
-Anschluss ESP8266 D1 Mini an AZ-Delivery 0.96 i2c 128x64 OLED Display (Verwendung aller Information auf eigene Gefahr!)
+Anschluss ESP8266 D1 Mini an ein AZ-Delivery 1.3" i2c 128x64 OLED Display (Verwendung aller Information auf eigene Gefahr!)
 
 * VCC -> 3.3V
 * GND -> GND
 * SCL -> D1
 * SDA -> D2
+
+Benötigte Bibliothek für das OLED 1.3 SH1106:
+
+Die folgende Bibliothek muss heruntergeladen und in das libraries Verzeichnis kopiert werden:
+<https://github.com/InnuendoPi/Adafruit_SH1106>
+
+Anpassungen für OLED Display mit SSD1306 Chip:
+
+Anschließend müssen im Quellcode die Stellen SH1106 in SSD1306 geändert werden. Die entsprechenden Stellen enthalten bereits Anmerkungen: MQTTDevice2.ino 5_DISPLAY.ino und CONFIGFILE.ino
 
 ---
 

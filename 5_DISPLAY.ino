@@ -39,8 +39,13 @@ public:
     if (is_enabled == 1 && dispAddress != 0)
     {
       address = dispAddress;
-      display.begin(SSD1306_SWITCHCAPVCC, address);
-      display.ssd1306_command(SSD1306_DISPLAYON);
+      // Display mit SSD1306 
+      //display.begin(SSD1306_SWITCHCAPVCC, address);
+      //display.ssd1306_command(SSD1306_DISPLAYON);
+
+      // Display mit SH1106
+      display.begin(SH1106_SWITCHCAPVCC, address);
+      display.SH1106_command(SH1106_DISPLAYON);
       display.clearDisplay();
       display.display();
       dispEnabled = is_enabled;
@@ -60,7 +65,11 @@ void turnDisplay()
   {
     if (oledDisplay.address != 0)
     {
-      display.ssd1306_command(SSD1306_DISPLAYOFF);
+      // Display mit SSD1306
+      //display.ssd1306_command(SSD1306_DISPLAYOFF);
+      
+      // Display mit SH1106
+      display.SH1106_command(SH1106_DISPLAYOFF);
       oledDisplay.dispEnabled = 0;
       TickerDisp.stop();
     }
@@ -69,7 +78,11 @@ void turnDisplay()
   {
     if (oledDisplay.address != 0)
     {
-      display.ssd1306_command(SSD1306_DISPLAYON);
+      // Display mit SSD1306
+      //display.ssd1306_command(SSD1306_DISPLAYON);
+
+      // Display mit SH1106
+      display.SH1106_command(SH1106_DISPLAYON);
       oledDisplay.dispEnabled = 1;
       TickerDisp.start();
     }
@@ -308,10 +321,11 @@ void showDispInd() // Show InductionCooker status on the right
 
 void showDispTime(const String &value) // Show time value in the upper left with fontsize 2
 {
+  // int l = value.length();
   display.setCursor(5, 5);
-  display.setTextSize(1);
+  display.setTextSize(2);
   display.setTextColor(WHITE);
-  display.print(value);
+  display.print(value.substring(0,(value.length()-3))); // substring w/o seconds
 }
 
 void showDispIP(const String &value) // Show IP address under time value with fontsize 1
@@ -319,6 +333,7 @@ void showDispIP(const String &value) // Show IP address under time value with fo
   display.setCursor(5, 30);
   display.setTextSize(1);
   display.setTextColor(WHITE);
+  display.print("IP ");
   display.print(value);
 }
 

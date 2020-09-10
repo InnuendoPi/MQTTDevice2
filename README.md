@@ -6,8 +6,11 @@ Dokumentation: <https://innuendopi.github.io/MQTTDevice2/>
 
 ## Changelog
 
-Version 2.05
+Version 2.06
 
+- Added:    Support für OLED 1,3" SH1106 (siehe Dokumentation)
+- Removed:  OLED SSD1306 (siehe Dokumentation)
+- Update:   Bibliotheken aktualisiert
 - Fixed:    Umstellung Sommer/Winterzeit
 - Update:   Libs InfluxDB, ArduinoJson, Adafruit_SSD1306
 - Update:   Influx CheckDBConnect: bei einem Verbindungsfehler wird der Task Vis gestoppt

@@ -46,7 +46,7 @@ extern "C"
 #endif
 
 // Version
-#define Version "2.05"
+#define Version "2.06"
 
 // Definiere Pausen
 #define PAUSE1SEC 1000
@@ -221,21 +221,32 @@ unsigned long upInflux = 15000;
 File fsUploadFile; // a File object to temporarily store the received file
 
 // OLED Display
-#include <SPI.h>
-#include <Wire.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
 #define SCREEN_WIDTH 128       // OLED display width, in pixels
 #define SCREEN_HEIGHT 64       // OLED display height, in pixels
 #define DISP_DEF_ADDRESS 0x3C  // OLED Display Adresse 3C oder 3D
 #define OLED_RESET LED_BUILTIN // D4
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
-#include "icons.h"              // Icons CraftbeerPi, WLAN und MQTT
 bool useDisplay = false;
 #define SDL D1
 #define SDA D2
 #define numberOfAddress 2
 const int address[numberOfAddress] = {0x3C, 0x3D};
+
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include "icons.h"              // Icons CraftbeerPi, WLAN und MQTT
+// Welchen Chip hat das Display? SSD1306 oder Adafruit_SH1106
+// Wichtig: Für Displays mit SH1106 wird folgende lib benötigt
+// https://github.com/kferrari/Adafruit_SH1106
+
+// Display mit SSD1306 
+//#include <Adafruit_SSD1306.h>
+//Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+// Display mit SH1106
+#include <Adafruit_SH1106.h>
+Adafruit_SH1106 display(OLED_RESET);
+
 
 void configModeCallback(WiFiManager *myWiFiManager)
 {

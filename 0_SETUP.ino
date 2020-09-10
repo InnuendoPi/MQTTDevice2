@@ -69,8 +69,8 @@ void setup()
   pins_used[ONE_WIRE_BUS] = true;
   if (useDisplay)
   {
-    pins_used[SDA] = true;
     pins_used[SDL] = true;
+    pins_used[SDA] = true;
   }
   // Starte Sensoren
   DS18B20.begin();

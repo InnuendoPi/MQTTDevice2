@@ -357,7 +357,11 @@ bool saveConfig()
 
     if (oledDisplay.address == 0x3C || oledDisplay.address == 0x3D)
     {
-      display.ssd1306_command(SSD1306_DISPLAYON);
+      // Display mit SSD1306
+      //display.ssd1306_command(SSD1306_DISPLAYON);
+
+      // Display mit SH1106
+      display.SH1106_command(SH1106_DISPLAYON);
       cbpiEventSystem(EM_DISPUP);
     }
     else
@@ -372,7 +376,11 @@ bool saveConfig()
   }
   else
   {
-    display.ssd1306_command(SSD1306_DISPLAYOFF);
+    // Display mit SSD1306
+    //display.ssd1306_command(SSD1306_DISPLAYOFF);
+
+    // Display mit SH1106
+    display.SH1106_command(SH1106_DISPLAYOFF);
     DEBUG_MSG("OLED display: %d\n", oledDisplay.dispEnabled);
     TickerDisp.stop();
   }
