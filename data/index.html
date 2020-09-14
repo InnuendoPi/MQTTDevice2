@@ -314,13 +314,9 @@
                 <label for="modal_misc_address">IP Adresse MQTT Server (CBPi)</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_address" />
               </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="modal_misc_mdns" />
-                <label class="form-check-label" for="modal_misc_mdns">Aktiviere mDNS</label>
-              </div>
-              <div class="form-group">
-                <label for="modal_misc_mdns_name">Eindeutiger mDNS Name</label>
-                <input type="text" class="form-control" placeholder="" id="modal_misc_mdns_name" />
+			  <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="modal_misc_buzzer" />
+                <label class="form-check-label" for="modal_misc_buzzer">Aktiviere Buzzer</label>
               </div>
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="modal_misc_db_enable" />
@@ -1143,8 +1139,7 @@
     $('#misc_modal').on('show.bs.modal', function (event) {
       var button = $(event.relatedTarget)
       var mqttaddress;
-      var mdns;
-      var mdns_name;
+	  var buzzer;
       var reset;
       var clear;
       var enable_mqtt;
@@ -1176,25 +1171,16 @@
           mqttaddress = data;
         }
       });
-      $.ajax({
-        url: '/reqMisc?req=mdns',
+	  $.ajax({
+        url: '/reqMisc?req=buzzer',
         type: 'get',
         dataType: 'html',
         async: false,
         cache: false,
         success: function (data) {
-          mdns = data;
+          buzzer = data;
         }
-      }); $.ajax({
-        url: '/reqMisc?req=mdns_name',
-        type: 'get',
-        dataType: 'html',
-        async: false,
-        cache: false,
-        success: function (data) {
-          mdns_name = data;
-        }
-      });
+      }); 
       $.ajax({
         url: '/reqMisc?req=enable_mqtt',
         type: 'get',
@@ -1378,9 +1364,8 @@
 
       var modal = $(this)
       modal.find('#modal_misc_address').val(mqttaddress)
-      modal.find('#modal_misc_mdns_name').val(mdns_name)
-      if (mdns == "1") { modal.find('#modal_misc_mdns').prop("checked", true) }
-      else { modal.find('#modal_misc_mdns').prop("checked", false) }
+	  if (buzzer == "1") { modal.find('#modal_misc_buzzer').prop("checked", true) }
+      else { modal.find('#modal_misc_buzzer').prop("checked", false) }
       if (enable_mqtt == "1") { modal.find('#modal_misc_onErrorMQTT').prop("checked", true) }
       else { modal.find('#modal_misc_onErrorMQTT').prop("checked", false) }
       if (enable_wlan == "1") { modal.find('#modal_misc_onErrorWLAN').prop("checked", true) }
@@ -1409,7 +1394,6 @@
     $("#modal_misc_btn_save").click(function () {
       var modal = $('#misc_modal')
       var mqttaddress = modal.find('#modal_misc_address').val()
-      var mdns_name = modal.find('#modal_misc_mdns_name').val()
       var delay_mqtt = modal.find('#modal_misc_delay_mqtt').val()
       var delay_wlan = modal.find('#modal_misc_delay_wlan').val()
       var del_sen_act = modal.find('#modal_misc_del_sen_act').val()
@@ -1425,12 +1409,10 @@
 	  var dburl = modal.find('#modal_misc_db_url').val()
   	  // Alle & durch ! ersetzen - senden an ESP funktioniert sonst nicht 
 	  var dburl2 = dburl.replace(/&/g, "!");
-
-
-      if (modal.find('#modal_misc_mdns').prop("checked") == true) {
-        var mdns = "1"
+	  if (modal.find('#modal_misc_buzzer').prop("checked") == true) {
+        var buzzer = "1"
       } else {
-        var mdns = "0"
+        var buzzer = "0"
       }
       if (modal.find('#modal_misc_onErrorMQTT').prop("checked") == true) {
         var enable_mqtt = "1"
@@ -1462,8 +1444,8 @@
       }
 
       $.ajax({
-        url: '/setMisc?reset=' + reset + '&clear=' + clear + '&MQTTHOST=' + mqttaddress + '&enable_mqtt=' + enable_mqtt + '&delay_mqtt=' + delay_mqtt + '&enable_wlan=' + enable_wlan + '&delay_wlan=' + delay_wlan + '&del_sen_act=' + del_sen_act + '&del_sen_ind=' + del_sen_ind + '&mdns=' + mdns + '&mdns_name=' + mdns_name + '&upsen=' + upsen + '&upact=' + upact + '&upind=' + upind + '&startdb=' + startdb + '&dbserver=' + dbserver + '&dbdatabase=' + dbdatabase + '&dbuser=' + dbuser + '&dbpass=' + dbpass + '&dbup=' + dbup  + '&dburl=' + dburl2,
-        type: 'POST',
+        url: '/setMisc?reset=' + reset + '&clear=' + clear + '&MQTTHOST=' + mqttaddress + '&enable_mqtt=' + enable_mqtt + '&delay_mqtt=' + delay_mqtt + '&enable_wlan=' + enable_wlan + '&delay_wlan=' + delay_wlan + '&del_sen_act=' + del_sen_act + '&del_sen_ind=' + del_sen_ind + '&buzzer=' + buzzer + '&upsen=' + upsen + '&upact=' + upact + '&upind=' + upind + '&startdb=' + startdb + '&dbserver=' + dbserver + '&dbdatabase=' + dbdatabase + '&dbuser=' + dbuser + '&dbpass=' + dbpass + '&dbup=' + dbup  + '&dburl=' + dburl2,
+		type: 'POST',
         dataType: 'html',
         async: false,
         cache: false

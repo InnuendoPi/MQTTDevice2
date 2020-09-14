@@ -9,10 +9,10 @@ MQTTDevice ist ein Arduino Sketch für die Module ESP8266 Wemos D1 mini. Damit i
 **Was bietet diese Firmware?**
 
 * Ein Web Interface (WebIf) für die Konfiguration
-* Sensoren (max 6)
+* Sensoren (max 4)
   * Suche nach angeschlossenen Sensoren basierend auf OneWire Adressen
   * Das Leseintervall der Sensordaten und das Offset sind konfigurierbar (in Sek)
-* Aktoren (max 6)
+* Aktoren (max 5)
   * PIN Auswahl (GPIO)
   * PINs in Verwendung werden ausgeblendet
   * Invertierte GPIO
@@ -72,10 +72,10 @@ Analog zum Sensor sendet CraftbeerPi Befehle an den Aktor Rührwerk in das Topic
 
 Diese zwei Topics werden nun beispielhaft auf dem MQTTDevice eingerichtet.
 
-*Hinweis: falls ein CraftbeerPi3 MQTT Plugin bereits vorhanden ist (bspw. die ältere Version cbpi-mqttCompressor), muss das Plugin ersetzt werden. Dazu die Version cbpi-mqttPub in den Plugins Ordner kopieren und den Ordner cbpi-mqttCompressor löschen.*
+*Hinweis 1: falls ein CraftbeerPi3 MQTT Plugin bereits vorhanden ist (bspw. die ältere Version cbpi-mqttCompressor), muss das Plugin ersetzt werden. Dazu die Version cbpi-mqttPub in den Plugins Ordner kopieren und den Ordner cbpi-mqttCompressor löschen.*
 
-*Hinweis: wenn das Induktionskochfeld GGM IDS2 eingesetzt wird, sollte das CraftbberPi3 Plugin cbpi-PIDArduinoPowerOutput verwendet werden: <https://github.com/InnuendoPi/cbpi-PIDArduinoPowerOutput>
-Zur Konfiguration der PID Einstellungen empfiehlt ist das Plugin cbpi-PIDAutoTunePowerOutput <https://github.com/InnuendoPi/cbpi_PIDAutoTunePowerOutput> sehr hilfreich*
+*Hinweis 2: wenn das Induktionskochfeld GGM IDS2 eingesetzt wird, sollte das CraftbberPi3 Plugin cbpi-PIDArduinoPowerOutput verwendet werden: <https://github.com/InnuendoPi/cbpi-PIDArduinoPowerOutput>*
+*Zur Konfiguration der PID Einstellungen empfiehlt ist das Plugin cbpi-PIDAutoTunePowerOutput <https://github.com/InnuendoPi/cbpi_PIDAutoTunePowerOutput> sehr hilfreich*
 
 **MQTTDevice flashen:**
 
@@ -168,12 +168,11 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
     **IP Adresse MQTT Server (CBPi):**
 
     Unter System wird der MQTT Broker eingetragen. In den allermeisten Fällen dürfte dies mosquitto auf dem CBPi sein.
-    Wichtig ist, dass die Firmware MQTTDevice permanent versucht, mit dem MQTT Broker eine Verbindung aufzubauen. Wenn der MQTT Broker nicht verfügbar ist, beeinträchtigt das Geschwindigkeit vom MQTTDevice.
+    Wichtig: die Firmware MQTTDevice versucht permanent, mit dem MQTT Broker eine Verbindung aufzubauen. Wenn der MQTT Broker nicht verfügbar ist, beeinträchtigt das sehr stark Geschwindigkeit vom MQTTDevice (Web-Interface).
 
-    **mDNS:**
+    **Piezo Buzzer:**
 
-    mDNS ist eine einfache Möglichkeit, um das MQTTDevice mit einem beliebigen Namen anzusprechen. In der Standardkonfiguration ist das MQTTDevice im Webbrowser über <http://mqttdevice> erreichbar.
-    Zu beachten ist, dass mDNS Namen im Netzwerk eindeutig sein müssen. Zwei oder mehr MQTTDevices müssen unterschiedliche mDNS Namen haben.
+    Ein Piezo Buzzer kann nur an PIN D8 (GPIO15) angeschlossen werden. Ein Piezo Buzzer ist optional. Die Firmware unterstützt 4 verschiedene Signale: ON, OFF, OK und ERROR
 
     **Grafana Einstellungen**
 

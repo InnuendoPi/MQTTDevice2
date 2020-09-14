@@ -56,7 +56,7 @@ void upIn()
                             len -= c;
                         }
                     }
-                    delay(1);
+                    delay(5);
                 }
 
                 Serial.println("*** SYSINFO: Index Update abgeschlossen.");
@@ -65,6 +65,8 @@ void upIn()
                 fsUploadFile = SPIFFS.open("/update3.txt", "w");
                 int bytesWritten = fsUploadFile.print("0");
                 fsUploadFile.close();
+                SPIFFS.end(); // unmount SPIFFS
+                ESP.restart();
             }
             else
                 return;
@@ -97,7 +99,7 @@ void upCerts()
         int httpCode = https.GET();
         if (httpCode > 0)
         {
-            // Serial.printf("*** SYSINFO: [HTTPS] GET certs.ar Antwort: %d\n", httpCode);
+            Serial.printf("*** SYSINFO: [HTTPS] GET certs.ar Antwort: %d\n", httpCode);
             if (httpCode == HTTP_CODE_OK)
             {
                 int len = https.getSize();
@@ -110,6 +112,7 @@ void upCerts()
                     https.end();
                     return;
                 }
+
                 while (https.connected() && (len > 0 || len == -1))
                 {
                     size_t size = clientup->available();
@@ -122,7 +125,7 @@ void upCerts()
                             len -= c;
                         }
                     }
-                    delay(1);
+                    delay(5);
                 }
                 Serial.println("*** SYSINFO: Certs Update abgeschlossen.");
                 fsUploadFile.close();
@@ -130,11 +133,11 @@ void upCerts()
                 fsUploadFile = SPIFFS.open("/update2.txt", "w");
                 int bytesWritten = fsUploadFile.print("0");
                 fsUploadFile.close();
+                SPIFFS.end(); // unmount SPIFFS
+                ESP.restart();
             }
             else
-            {
                 return;
-            }
         }
         else
         {
@@ -206,13 +209,15 @@ void updateSys()
         }
         fsUploadFile.close();
         int i = line.toInt();
-        if (i >= 3)
+        if (i > 2)
         {
             SPIFFS.remove("/update.txt");
+            Serial.println("*** SYSINFO: ERROR Cert Update");
             return;
         }
         fsUploadFile = SPIFFS.open("/update.txt", "w");
-        int bytesWritten = fsUploadFile.print((i++));
+        i++;
+        int bytesWritten = fsUploadFile.print(i);
         fsUploadFile.close();
         fsUploadFile = SPIFFS.open("/log1.txt", "w");
         bytesWritten = fsUploadFile.print((i));
@@ -221,6 +226,7 @@ void updateSys()
         Serial.print("*** SYSINFO Starte Cert Update Free Heap: ");
         Serial.println(ESP.getFreeHeap());
         upCerts();
+
     }
     if (SPIFFS.exists("/update2.txt"))
     {
@@ -232,13 +238,15 @@ void updateSys()
         }
         fsUploadFile.close();
         int i = line.toInt();
-        if (i >= 3)
+        if (i > 2)
         {
             SPIFFS.remove("/update2.txt");
+            Serial.println("*** SYSINFO: ERROR Index Update");
             return;
         }
         fsUploadFile = SPIFFS.open("/update2.txt", "w");
-        int bytesWritten = fsUploadFile.print((i++));
+        i++;
+        int bytesWritten = fsUploadFile.print(i);
         fsUploadFile.close();
         fsUploadFile = SPIFFS.open("/log2.txt", "w");
         bytesWritten = fsUploadFile.print((i));
@@ -258,13 +266,15 @@ void updateSys()
         }
         fsUploadFile.close();
         int i = line.toInt();
-        if (i >= 3)
+        if (i > 2)
         {
             SPIFFS.remove("/update3.txt");
+            Serial.println("*** SYSINFO: ERROR Firmware Update");
             return;
         }
         fsUploadFile = SPIFFS.open("/update3.txt", "w");
-        int bytesWritten = fsUploadFile.print((i++));
+        i++;
+        int bytesWritten = fsUploadFile.print(i);
         fsUploadFile.close();
         fsUploadFile = SPIFFS.open("/log3.txt", "w");
         bytesWritten = fsUploadFile.print((i));
@@ -315,4 +325,3 @@ void update_error(int err)
     SPIFFS.end(); // unmount SPIFFS
     ESP.restart();
 }
-

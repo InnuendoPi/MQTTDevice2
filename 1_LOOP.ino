@@ -3,9 +3,12 @@ void loop()
   server.handleClient();    // Webserver handle
   cbpiEventSystem(EM_WLAN); // Überprüfe WLAN
   cbpiEventSystem(EM_MQTT); // Überprüfe MQTT
-  if (startMDNS)            // MDNS handle
-    cbpiEventSystem(EM_MDNS);
   gEM.processAllEvents();
+  
+  // while (gEM.getNumEventsInQueue()) // Eventmanager process queued events
+  // {
+  //   gEM.processEvent();
+  // }
 
   if (numberOfSensors > 0)  // Sensoren Ticker
     TickerSen.update();

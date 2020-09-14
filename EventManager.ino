@@ -124,6 +124,7 @@ void listenerSystem(int event, int parm) // System event listener
     {
       if (TickerMQTT.state() != RUNNING)
       {
+        DEBUG_MSG("%s\n", "MQTT Error! Starte TickerMQTT!");
         TickerMQTT.resume();
         mqttconnectlasttry = millis();
       }
@@ -133,6 +134,7 @@ void listenerSystem(int event, int parm) // System event listener
   case EM_MQTTCON:                     // MQTT connect (27)
     if (WiFi.status() == WL_CONNECTED) // kein wlan = kein mqtt
     {
+      DEBUG_MSG("%s\n", "Verbinde MQTT ...");
       pubsubClient.setServer(mqtthost, 1883);
       pubsubClient.setCallback(mqttcallback);
       pubsubClient.connect(mqtt_clientid);
@@ -160,12 +162,9 @@ void listenerSystem(int event, int parm) // System event listener
       }
       oledDisplay.mqttOK = true; // Display MQTT
       mqtt_state = true;         // MQTT state ok
-      if (TickerMQTT.state() == RUNNING)
-        TickerMQTT.stop();
+      //if (TickerMQTT.state() == RUNNING)
+      TickerMQTT.stop();
     }
-    break;
-  case EM_MDNS: // check MDSN (24)
-    mdns.update();
     break;
   case EM_SETNTP: // NTP Update (25)
     timeClient.begin();
@@ -174,15 +173,6 @@ void listenerSystem(int event, int parm) // System event listener
     break;
   case EM_NTP: // NTP Update (25) -> In Ticker Objekt ausgelagert!
     timeClient.update();
-    break;
-  case EM_MDNSET: // MDNS setup (26)
-    if (startMDNS && nameMDNS[0] != '\0' && WiFi.status() == WL_CONNECTED)
-    {
-      if (mdns.begin(nameMDNS))
-        Serial.printf("*** SYSINFO: mDNS Name %s mit IP %s verbunden\n", nameMDNS, WiFi.localIP().toString().c_str());
-      else
-        Serial.println("*** SYSINFO: mMDNS Fehler beim Start");
-    }
     break;
   case EM_DISPUP: // Display screen output update (30)
     if (oledDisplay.dispEnabled)

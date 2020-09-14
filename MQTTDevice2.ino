@@ -21,7 +21,6 @@
 #include <PubSubClient.h> // MQTT Kommunikation
 #include <FS.h>           // SPIFFS Zugriff
 #include <ArduinoJson.h>  // Lesen und schreiben von JSON Dateien
-#include <ESP8266mDNS.h>  // mDNS
 #include <WiFiUdp.h>      // WiFi
 #include <EventManager.h> // Eventmanager
 #include <ArduinoOTA.h>   // OTA
@@ -46,7 +45,7 @@ extern "C"
 #endif
 
 // Version
-#define Version "2.06"
+#define Version "2.10"
 
 // Definiere Pausen
 #define PAUSE1SEC 1000
@@ -63,7 +62,6 @@ ESP8266WebServer server(80);
 WiFiManager wifiManager;
 WiFiClient espClient;
 PubSubClient pubsubClient(espClient);
-MDNSResponder mdns;
 ESP8266HTTPUpdateServer httpUpdate;
 
 // Induktion Signallaufzeiten
@@ -86,17 +84,17 @@ int CMD[6][33] = {
     {1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0},  // P4
     {1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0}}; // P5
 unsigned char PWR_STEPS[] = {0, 20, 40, 60, 80, 100};                                                     // Prozentuale Abstufung zwischen den Stufen
-String errorMessages[10] = {
-    "E0",
-    "E1",
-    "E2",
-    "E3",
-    "E4",
-    "E5",
-    "E6",
-    "E7",
-    "E8",
-    "EC"};
+// String errorMessages[10] = {
+//     "E0",
+//     "E1",
+//     "E2",
+//     "E3",
+//     "E4",
+//     "E5",
+//     "E6",
+//     "E7",
+//     "E8",
+//     "EC"};
 
 bool pins_used[17];
 const unsigned char numberOfPins = 9;
@@ -105,11 +103,11 @@ const String pin_names[numberOfPins] = {"D0", "D1", "D2", "D3", "D4", "D5", "D6"
 
 // Variablen
 unsigned char numberOfSensors = 0; // Gesamtzahl der Sensoren
-#define numberOfSensorsMax 6       // Maximale ANzahl an Sensoren
+#define numberOfSensorsMax 4       // Maximale ANzahl an Sensoren
 unsigned char addressesFound[numberOfSensorsMax][8];
 unsigned char numberOfSensorsFound = 0;
 unsigned char numberOfActors = 0; // Gesamtzahl der Aktoren
-#define numberOfActorsMax 6       // Maximale Anzahl an Aktoren
+#define numberOfActorsMax 5       // Maximale Anzahl an Aktoren
 char mqtthost[16];                // MQTT Server
 int mqtt_chip_key = ESP.getChipId(); // Device Name
 char mqtt_clientid[16];             // AP-Mode und Gerätename
@@ -137,9 +135,7 @@ EventManager gEM; //  Eventmanager Objekt Queues
 #define EM_WLAN 20
 #define EM_OTA 21
 #define EM_MQTT 22
-#define EM_MDNS 24
 #define EM_NTP 25
-#define EM_MDNSET 26
 #define EM_MQTTCON 27
 #define EM_MQTTSUB 28
 #define EM_SETNTP 29
@@ -192,10 +188,6 @@ int ACT_UPDATE = 5000;  //  actors update delay loop
 int IND_UPDATE = 5000;  //  induction update delay loop
 int DISP_UPDATE = 5000; //  NTP and display update
 
-
-// Systemstart
-bool startMDNS = true; // Standard mDNS Name ist ESP8266- mit mqtt_chip_key
-char nameMDNS[16] = "MQTTDevice";
 bool shouldSaveConfig = false; // WiFiManager
 
 unsigned long lastSenAct = 0;      // Timestap actors on sensor error
@@ -210,10 +202,10 @@ int inductionStatus = 0;
 InfluxDBClient dbClient;
 bool startDB = false;
 bool startVis = false;
-char dbServer[30] = "http://192.168.100.30:8086";     // InfluxDB Server IP
-char dbUser[15] = "";
-char dbPass[15] = "";
-char dbDatabase[15] = "mqttdevice";
+char dbServer[28] = "http://192.168.100.30:8086";     // InfluxDB Server IP
+char dbUser[5] = "";
+char dbPass[5] = "";
+char dbDatabase[11] = "mqttdevice";
 char dbVisTag[15] = "";
 unsigned long upInflux = 15000;
 
@@ -221,8 +213,8 @@ unsigned long upInflux = 15000;
 File fsUploadFile; // a File object to temporarily store the received file
 
 // OLED Display
-#define SCREEN_WIDTH 128       // OLED display width, in pixels
-#define SCREEN_HEIGHT 64       // OLED display height, in pixels
+// #define SCREEN_WIDTH 128       // OLED display width, in pixels
+// #define SCREEN_HEIGHT 64       // OLED display height, in pixels
 #define DISP_DEF_ADDRESS 0x3C  // OLED Display Adresse 3C oder 3D
 #define OLED_RESET LED_BUILTIN // D4
 bool useDisplay = false;
@@ -231,7 +223,7 @@ bool useDisplay = false;
 #define numberOfAddress 2
 const int address[numberOfAddress] = {0x3C, 0x3D};
 
-#include <SPI.h>
+// #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include "icons.h"              // Icons CraftbeerPi, WLAN und MQTT
@@ -247,6 +239,12 @@ const int address[numberOfAddress] = {0x3C, 0x3D};
 #include <Adafruit_SH1106.h>
 Adafruit_SH1106 display(OLED_RESET);
 
+// #define ALARM_ON 1
+// #define ALARM_OFF 2
+// #define ALARM_OK 3
+// #define ALARM_ERROR 4
+const int PIN_BUZZER = D8;          // Buzzer
+bool startBuzzer = false;           // Aktiviere Buzzer
 
 void configModeCallback(WiFiManager *myWiFiManager)
 {

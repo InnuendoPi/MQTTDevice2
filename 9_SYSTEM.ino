@@ -199,3 +199,43 @@ unsigned char convertCharToHex(char ch)
   }
   return returnType;
 }
+
+void sendAlarm(const uint8_t &setAlarm)
+{
+  if (!startBuzzer)
+    return;
+  switch (setAlarm)
+  {
+  case 1:
+    tone(PIN_BUZZER, 440, 50);
+    delay(150);
+    tone(PIN_BUZZER, 660, 50);
+    delay(150);
+    tone(PIN_BUZZER, 880, 50);
+    break;
+  case 2:
+    tone(PIN_BUZZER, 880, 50);
+    delay(150);
+    tone(PIN_BUZZER, 660, 50);
+    delay(150);
+    tone(PIN_BUZZER, 440, 50);
+    break;
+  case 3:
+    digitalWrite(PIN_BUZZER, HIGH);
+    delay(200);
+    digitalWrite(PIN_BUZZER, LOW);
+    break;
+  case 4:
+    for (int i = 0; i < 20; i++)
+    {
+      tone(PIN_BUZZER, 880, 50);
+      delay(150);
+      tone(PIN_BUZZER, 440, 50);
+      delay(150);
+    }
+    millis2wait(PAUSE1SEC);
+    break;
+  default:
+    break;
+  }
+}

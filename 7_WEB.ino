@@ -119,7 +119,7 @@ void mqttcallback(char *topic, unsigned char *payload, unsigned int length)
 void handleRequestMiscSet()
 {
   StaticJsonDocument<512> doc;
-
+  
   doc["MQTTHOST"] = mqtthost;
   doc["del_sen_act"] = wait_on_Sensor_error_actor / 1000;
   doc["del_sen_ind"] = wait_on_Sensor_error_induction / 1000;
@@ -149,14 +149,9 @@ void handleRequestMisc()
     message = mqtthost;
     goto SendMessage;
   }
-  if (request == "mdns_name")
+  if (request == "buzzer")
   {
-    message = nameMDNS;
-    goto SendMessage;
-  }
-  if (request == "mdns")
-  {
-    if (startMDNS)
+    if (startBuzzer)
     {
       message = "1";
     }
@@ -227,13 +222,7 @@ void handleRequestMisc()
   }
   if (request == "firmware")
   {
-    if (startMDNS)
-    {
-      message = nameMDNS;
-      message += " V";
-    }
-    else
-      message = "MQTTDevice V ";
+    message = "MQTTDevice V ";
     message += Version;
     goto SendMessage;
   }
@@ -323,17 +312,13 @@ void handleSetMisc()
     }
     if (server.argName(i) == "MQTTHOST")
       server.arg(i).toCharArray(mqtthost, 16);
-    if (server.argName(i) == "mdns_name")
-    {
-      server.arg(i).toCharArray(nameMDNS, 16);
-      checkChars(nameMDNS);
-    }
-    if (server.argName(i) == "mdns")
+    
+    if (server.argName(i) == "buzzer")
     {
       if (server.arg(i) == "1")
-        startMDNS = true;
+        startBuzzer = true;
       else
-        startMDNS = false;
+        startBuzzer = false;
     }
     if (server.argName(i) == "enable_mqtt")
     {

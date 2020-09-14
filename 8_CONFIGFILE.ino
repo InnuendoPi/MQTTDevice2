@@ -14,6 +14,8 @@ bool loadConfig()
   {
     DEBUG_MSG("%s\n", "Config file size is too large");
     DEBUG_MSG("%s\n", "------ loadConfig aborted ------");
+    if (startBuzzer)
+      sendAlarm(4);
     return false;
   }
 
@@ -22,6 +24,8 @@ bool loadConfig()
   if (error)
   {
     DEBUG_MSG("Conf: Error Json %s\n", error.c_str());
+    if (startBuzzer)
+      sendAlarm(4);
     return false;
   }
 
@@ -182,18 +186,16 @@ bool loadConfig()
     StopOnWLANError = false;
     DEBUG_MSG("%s\n", "Switch off induction on error disabled");
   }
-  if (miscObj.containsKey("mdns_name"))
-    strlcpy(nameMDNS, miscObj["mdns_name"], sizeof(nameMDNS));
 
-  if (miscObj["mdns"] == "1")
+  if (miscObj["buzzer"] == "1")
   {
-    startMDNS = true;
-    DEBUG_MSG("mDNS activated: %s\n", nameMDNS);
+    startBuzzer = true;
+    DEBUG_MSG("%s\n", "Buzzer activated");
   }
   else
   {
-    startMDNS = false;
-    DEBUG_MSG("%s\n", "mDNS disabled");
+    startBuzzer = false;
+    DEBUG_MSG("%s\n", "Buzzer disabled");
   }
 
   if (miscObj.containsKey("upsen"))
@@ -265,6 +267,9 @@ bool loadConfig()
   }
   else
     TickerInfluxDB.stop();
+
+  if (startBuzzer)
+    sendAlarm(1);
 
   return true;
 }
@@ -419,11 +424,10 @@ bool saveConfig()
     DEBUG_MSG("%s\n", "Switch off induction on error disabled");
   }
 
-  miscObj["mdns_name"] = nameMDNS;
-  if (startMDNS)
-    miscObj["mdns"] = "1";
+  if (startBuzzer)
+    miscObj["buzzer"] = "1";
   else
-    miscObj["mdns"] = "0";
+    miscObj["buzzer"] = "0";
 
   miscObj["STARTDB"] = startDB;
   miscObj["DBSERVER"] = dbServer;
@@ -470,6 +474,8 @@ bool saveConfig()
     DEBUG_MSG("JSON memory usage: %d\n", memoryUsed);
     DEBUG_MSG("%s\n", "Failed to write config file - config too large");
     DEBUG_MSG("%s\n", "------ saveConfig aborted ------");
+    if (startBuzzer)
+      sendAlarm(4);
     return false;
   }
 
@@ -478,6 +484,8 @@ bool saveConfig()
   {
     DEBUG_MSG("%s\n", "Failed to open config file for writing");
     DEBUG_MSG("%s\n", "------ saveConfig aborted ------");
+    if (startBuzzer)
+      sendAlarm(4);
     return false;
   }
   serializeJson(doc, configFile);
@@ -487,5 +495,7 @@ bool saveConfig()
   DEBUG_MSG("ESP8266 device IP Address: %s\n", WiFi.localIP().toString().c_str());
   DEBUG_MSG("Configured WLAN SSID: %s\n", Network.c_str());
   DEBUG_MSG("%s\n", "---------------------------------");
+  if (startBuzzer)
+    sendAlarm(1);
   return true;
 }
