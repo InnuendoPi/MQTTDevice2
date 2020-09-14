@@ -172,7 +172,7 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
 
     **Piezo Buzzer:**
 
-    Ein Piezo Buzzer kann nur an PIN D8 (GPIO15) angeschlossen werden. Ein Piezo Buzzer ist optional. Die Firmware unterstützt 4 verschiedene Signale: ON, OFF, OK und ERROR
+    Ein Piezo Buzzer kann nur an PIN D0 angeschlossen werden. Ein Piezo Buzzer ist optional. Die Firmware unterstützt 4 verschiedene Signale: ON, OFF, OK und ERROR
 
     **Grafana Einstellungen**
 
