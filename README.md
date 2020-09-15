@@ -12,6 +12,7 @@ Version 2.11
 - Removed:  mDNS Support
 - Removed:  Eingebettete Grafana Charts von Web-Interface
 - Fixed:    WebUpdate Loop
+- Optimze:  OLED Darstellung
 - Optimize: Heap Speicher
 - Update:   max. 5 Aktoren und 4 Sensoren
 - Added:    Support für OLED 1.3" SH1106 (siehe Dokumentation)

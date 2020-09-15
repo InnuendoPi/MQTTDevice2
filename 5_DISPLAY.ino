@@ -242,11 +242,27 @@ void showDispWlan() // Show WLAN icon
 {
   if (oledDisplay.wlanOK)
     display.drawBitmap(77, 3, wlan_logo, 20, 20, WHITE);
+  else
+  {
+    showDispErr("WLAN ERROR");
+    unsigned long val = 2*wait_on_error_mqtt - (millis() - wlanconnectlasttry);
+    if (val > wait_on_error_wlan)
+      return;
+    showDispErr2(String(val/1000));
+  }
 }
 void showDispMqtt() // SHow MQTT icon
 {
   if (oledDisplay.mqttOK)
     display.drawBitmap(102, 3, mqtt_logo, 20, 20, WHITE);
+  else
+  {
+    showDispErr("MQTT ERROR");
+    unsigned long val = 2*wait_on_error_mqtt - (millis() - mqttconnectlasttry);
+    if (val > wait_on_error_mqtt )
+      return;
+    showDispErr2(String(val/1000));
+  }
 }
 void showDispCbpi() // SHow CBPI icon
 {
@@ -330,12 +346,33 @@ void showDispTime(const String &value) // Show time value in the upper left with
 
 void showDispIP(const String &value) // Show IP address under time value with fontsize 1
 {
-  display.setCursor(5, 30);
+  display.setCursor(5, 27);
   display.setTextSize(1);
   display.setTextColor(WHITE);
   display.print("IP ");
   display.print(value);
 }
+
+void showDispErr(const String &value) // Show IP address under time value with fontsize 1
+{
+  display.setCursor(5, 39);
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.print(value);
+  display.display();
+}
+
+void showDispErr2(const String &value) // Show IP address under time value with fontsize 1
+{
+  display.setCursor(70, 39);
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.print(" -");
+  display.print(value);
+  display.print("sec");
+  display.display();
+}
+
 
 void showDispSet(const String &value) // Show current station mode
 {

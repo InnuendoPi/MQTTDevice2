@@ -25,7 +25,10 @@ void listenerSystem(int event, int parm) // System event listener
     {
       if (StopOnWLANError && wlan_state)
       {
-        sendAlarm(ALARM_ERROR);
+        if (startBuzzer)
+          sendAlarm(ALARM_ERROR);
+        // if (useDisplay)
+        //   showDispErr("WLAN ERROR")
         DEBUG_MSG("EM WLAN: WLAN Verbindung verloren! StopOnWLANError: %d WLAN state: %d\n", StopOnWLANError, wlan_state);
         wlan_state = false;
         mqtt_state = false; // MQTT in error state - required to restore values
@@ -47,7 +50,10 @@ void listenerSystem(int event, int parm) // System event listener
     {
       if (StopOnMQTTError && mqtt_state)
       {
-        sendAlarm(ALARM_ERROR);
+        if (startBuzzer)
+          sendAlarm(ALARM_ERROR);
+        // if (useDisplay)
+        //   showDispErr("MQTT ERROR")
         DEBUG_MSG("EM MQTTER: MQTT Broker %s nicht erreichbar! StopOnMQTTError: %d mqtt_state: %d\n", mqtthost, StopOnMQTTError, mqtt_state);
         cbpiEventActors(EM_ACTER);
         cbpiEventInduction(EM_INDER);
