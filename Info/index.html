@@ -17,10 +17,10 @@
           <h1 id="firmware" class="text-center"></h1>
         </div>
         <div class="col-md-auto">
-          <a href="/edit" class="btn btn-outline-primary" id="btn_edit">Dateiexplorer</a>
-          <button type="button" class="btn btn-outline-primary" id="btn_visual">Visualisierung</button>
+          <a href="/Edit" class="btn btn-outline-primary" id="btn_Edit">Explorer</a>
+          <button type="button" class="btn btn-outline-primary" id="btn_visual">Visualisation</button>
           <button type="button" class="btn btn-outline-danger" id="btn_update">Update</button>
-          <button type="button" class="btn btn-outline-danger" id="btn_reboot">Neustart</button>
+          <button type="button" class="btn btn-outline-danger" id="btn_reboot">Reboot</button>
         </div>
       </div>
     </div>
@@ -30,8 +30,8 @@
       <div class="row">
         <div class="col-md-12">
           <div class="card">
-            <div class="card-header">Sensoren <a href="" class="badge badge-warning" data-target="#sensor_modal"
-                data-toggle="modal" data-value="-1" style="float:right">Neu</a>
+            <div class="card-header">Sensors <a href="" class="badge badge-warning" data-target="#sensor_modal"
+                data-toggle="modal" data-value="-1" style="float:right">New</a>
             </div>
             <div class="card-body">
 			  <ul class="list-group" id="listSensors"></ul>
@@ -46,8 +46,8 @@
       <div class="row">
         <div class="col-md-12">
           <div class="card">
-            <div class="card-header">Aktoren <a href="" class="badge badge-warning" data-target="#actor_modal"
-                data-toggle="modal" data-value="-1" style="float:right">Neu</a></div>
+            <div class="card-header">Actors <a href="" class="badge badge-warning" data-target="#actor_modal"
+                data-toggle="modal" data-value="-1" style="float:right">New</a></div>
             <div class="card-body">
               <ul class="list-group" id="listActors">
               </ul>
@@ -62,8 +62,8 @@
       <div class="row">
         <div class="col-md-12">
           <div class="card">
-            <div class="card-header">Induktionskochfeld GGM IDS2 <a href="" class="badge badge-warning" data-target="#induction_modal"
-                data-toggle="modal" data-value="-1" style="float:right">bearbeiten</a></div>
+            <div class="card-header">Induction GGM IDS2 <a href="" class="badge badge-warning" data-target="#induction_modal"
+                data-toggle="modal" data-value="-1" style="float:right">Edit</a></div>
             <div class="card-body">
               <ul class="list-group" id="inductionCooker">
               </ul>
@@ -79,7 +79,7 @@
         <div class="col-md-12">
           <div class="card">
             <div class="card-header">OLED Display <a href="" class="badge badge-warning" data-target="#display_modal"
-                data-toggle="modal" data-value="-1" style="float:right">bearbeiten</a></div>
+                data-toggle="modal" data-value="-1" style="float:right">Edit</a></div>
             <div class="card-body">
               <ul class="list-group" id="oledDisplay">
               </ul>
@@ -94,8 +94,8 @@
       <div class="row">
         <div class="col-md-12">
           <div class="card">
-            <div class="card-header">Einstellungen <a href="" class="badge badge-warning" data-target="#misc_modal"
-                data-toggle="modal" data-value="-1" style="float:right">bearbeiten</a></div>
+            <div class="card-header">Settings <a href="" class="badge badge-warning" data-target="#misc_modal"
+                data-toggle="modal" data-value="-1" style="float:right">Edit</a></div>
             <div class="card-body">
               <ul class="list-group" id="miscSettings">
               </ul>
@@ -109,7 +109,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Aktor bearbeiten</h5> <button type="button" class="close" data-dismiss="modal">
+          <h5 class="modal-title">Actor edit</h5> <button type="button" class="close" data-dismiss="modal">
             <span>×</span>
           </button>
         </div>
@@ -128,20 +128,20 @@
           </div>
           <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="modal_actor_inverted" />
-            <label class="form-check-label" for="modal_actor_inverted">GPIO invertieren</label>
+            <label class="form-check-label" for="modal_actor_inverted">GPIO inverted</label>
           </div>
           <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="modal_actor_switchable" />
-            <label class="form-check-label" for="modal_actor_switchable">Aktiviere Event handling</label>
+            <label class="form-check-label" for="modal_actor_switchable">Activate Event handling</label>
           </div>
 		  <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="modal_actor_grafana" />
-            <label class="form-check-label" for="modal_actor_grafana">Aktiviere Grafana</label>
+            <label class="form-check-label" for="modal_actor_grafana">Activate Grafana</label>
           </div>
         </div>
-        <div class="modal-footer"> <button type="button" class="btn btn-primary" id="modal_actor_btn_save">Speichern</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button> <button type="button"
-            class="btn btn-danger" id="modal_actor_btn_delete">Aktor löschen</button></div>
+        <div class="modal-footer"> <button type="button" class="btn btn-primary" id="modal_actor_btn_save">Save</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> <button type="button"
+            class="btn btn-danger" id="modal_actor_btn_delete">Delete actor</button></div>
       </div>
     </div>
   </div>
@@ -149,14 +149,14 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Sensor bearbeiten</h5> <button type="button" class="close" data-dismiss="modal">
+          <h5 class="modal-title">Sensor edit</h5> <button type="button" class="close" data-dismiss="modal">
             <span>×</span>
           </button>
         </div>
         <div class="modal-body">
           <form>
             <div class="form-group">
-              <label for="modal_sensor_address">Adresse</label>
+              <label for="modal_sensor_address">Address</label>
               <select class="form-control" id="modal_sensor_address"></select>
               <button type="button" class="btn btn-primary" id="modal_sensor_address_refresh"><i
                   class="fa fa-fw fa-refresh"></i></button>
@@ -175,13 +175,13 @@
             </div>
             <div class="form-check">
               <input class="form-check-input" type="checkbox" value="" id="modal_sensor_sw" />
-              <label class="form-check-label" for="modal_sensor_sw">Aktiviere Event handling</label>
+              <label class="form-check-label" for="modal_sensor_sw">Activate Event handling</label>
             </div>
           </form>
         </div>
-        <div class="modal-footer"> <button type="button" class="btn btn-primary" id="modal_sensor_btn_save">Speichern</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
-          <button type="button" class="btn btn-danger" id="modal_sensor_btn_delete">Sensor löschen</button>
+        <div class="modal-footer"> <button type="button" class="btn btn-primary" id="modal_sensor_btn_save">Save</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger" id="modal_sensor_btn_delete">Delete sensor</button>
         </div>
       </div>
     </div>
@@ -190,46 +190,46 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title"> Induktionskochfeld bearbeiten</h5> <button type="button" class="close" data-dismiss="modal">
+          <h5 class="modal-title"> Induction edit</h5> <button type="button" class="close" data-dismiss="modal">
             <span>×</span>
           </button>
         </div>
         <div class="modal-body">
           <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="modal_induction_enabled" />
-            <label class="form-check-label" for="modal_induction_enabled"> Aktiviere Induktionskochfeld</label>
+            <label class="form-check-label" for="modal_induction_enabled"> Activate Induction GGM IDS2</label>
           </div>
           <div class="form-group">
             <label for="modal_induction_script">MQTT Topic</label>
             <input type="text" class="form-control" placeholder="" id="modal_induction_script" />
           </div>
           <div class="form-group">
-            <label for="modal_induction_pinwhite">PIN Weiß (Relais)</label>
+            <label for="modal_induction_pinwhite">PIN White (Relais)</label>
             <select class="form-control" id="modal_induction_pinwhite"></select>
           </div>
           <div class="form-group">
-            <label for="modal_induction_pinyellow">PIN Gelb (Command Channel)</label>
+            <label for="modal_induction_pinyellow">PIN Yellow (Command Channel)</label>
             <select class="form-control" id="modal_induction_pinyellow"></select>
           </div>
           <div class="form-group">
-            <label for="modal_induction_pinblue">PIN Blau (Backchannel)</label>
+            <label for="modal_induction_pinblue">PIN Blue (Backchannel)</label>
             <select class="form-control" id="modal_induction_pinblue"></select>
           </div>
           <div class="form-group">
-            <label for="modal_induction_delay">Lüfternachlauf bei Abschaltung (Sek)</label>
+            <label for="modal_induction_delay">Fan delay after power off (sec)</label>
             <input type="text" class="form-control" placeholder="" id="modal_induction_delay" />
           </div>
           <div class="form-group">
-            <label for="modal_induction_pl">Event Handling Induktionskochfeld (0 = Induktion aus ... 100 = keine Änderung)</label>
+            <label for="modal_induction_pl">Event Handling Induction (0 = Induction switched off ... 100 = no changes)</label>
             <input type="text" class="form-control" placeholder="" id="modal_induction_pl" />
           </div>
 		  <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="modal_induction_grafana" />
-            <label class="form-check-label" for="modal_induction_grafana">Aktiviere Grafana</label>
+            <label class="form-check-label" for="modal_induction_grafana">Activate Grafana</label>
           </div>
         </div>
-        <div class="modal-footer"> <button type="button" class="btn btn-primary" id="modal_induction_btn_save">Speichern</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+        <div class="modal-footer"> <button type="button" class="btn btn-primary" id="modal_induction_btn_save">Save</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
@@ -238,26 +238,26 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">OLED Display bearbeiten</h5> <button type="button" class="close" data-dismiss="modal">
+          <h5 class="modal-title">OLED Display edit</h5> <button type="button" class="close" data-dismiss="modal">
             <span>×</span>
           </button>
         </div>
         <div class="modal-body">
           <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="modal_display_enabled" />
-            <label class="form-check-label" for="modal_display_enabled">Aktiviere OLED display</label>
+            <label class="form-check-label" for="modal_display_enabled">Activate OLED display</label>
           </div>
           <div class="form-group">
-            <label for="modal_display_address">OLED Display Adresse</label>
+            <label for="modal_display_address">OLED Display Address</label>
             <select class="form-control" id="modal_display_address"></select>
           </div>
           <div class="form-group">
-            <label for="modal_display_update">Display Update Intervall (Sek)</label>
+            <label for="modal_display_update">Display Update Intervall (sek)</label>
             <input type="text" class="form-control" placeholder="" id="modal_display_update" />
           </div>
         </div>
-        <div class="modal-footer"> <button type="button" class="btn btn-primary" id="modal_display_btn_save">Speichern</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+        <div class="modal-footer"> <button type="button" class="btn btn-primary" id="modal_display_btn_save">Save</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
@@ -266,7 +266,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Einstellungen</h5> <button type="button" class="close" data-dismiss="modal">
+          <h5 class="modal-title">Settings</h5> <button type="button" class="close" data-dismiss="modal">
             <span>×</span></button>
         </div>
         <div class="modal-body">
@@ -277,7 +277,7 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" id="misc2-tab" data-toggle="tab" href="#misc2" role="tab" aria-controls="misc2"
-                aria-selected="true">Intervalle</a>
+                aria-selected="true">Intervalls</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" id="misc3-tab" data-toggle="tab" href="#misc3" role="tab" aria-controls="misc3"
@@ -297,71 +297,71 @@
               </div>
 			  <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="modal_misc_buzzer" />
-                <label class="form-check-label" for="modal_misc_buzzer">Aktiviere Buzzer</label>
+                <label class="form-check-label" for="modal_misc_buzzer">Activate Buzzer</label>
               </div>
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="modal_misc_db_enable" />
-                <label class="form-check-label" for="modal_misc_db_enable">Aktiviere Visualisierung Grafana (Neustart erforderlich!)</label>
+                <label class="form-check-label" for="modal_misc_db_enable">Activate Visualisation Grafana (requires reboot!)</label>
               </div>
 			  <div class="form-group">
                 <label for="modal_misc_db_server">Influx Datenbank Server IP</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_db_server" />
               </div>
 			  <div class="form-group">
-                <label for="modal_misc_db_database">Datenbank Name (mqttdevice)</label>
+                <label for="modal_misc_db_database">Databse Name (mqttdevice)</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_db_database" />
               </div>
 			  <div class="form-group">
-                <label for="modal_misc_db_user">Datenbank Benutzer</label>
+                <label for="modal_misc_db_user">Database user</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_db_user" />
               </div>
 			  <div class="form-group">
-                <label for="modal_misc_db_pass">Datenbank Benutzer Password</label>
+                <label for="modal_misc_db_pass">Database password</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_db_pass" />
               </div>
             </div>
             <div class="tab-pane fade" id="misc2" role="tabpanel" aria-labelledby="misc2-tab">
               <br />
               <div class="form-group">
-                <label for="modal_misc_upsen">Sensoren Update Intervall (Sek)</label>
+                <label for="modal_misc_upsen">Sensors Update Intervall (sec)</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_upsen" />
               </div>
               <div class="form-group">
-                <label for="modal_misc_upact">Aktoren Update Intervall (Sek)</label>
+                <label for="modal_misc_upact">Actors Update Intervall (sec)</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_upact" />
               </div>
               <div class="form-group">
-                <label for="modal_misc_upind">Induktionskochfeld Update Intervall (Sek)</label>
+                <label for="modal_misc_upind">Induction Update Intervall (sec)</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_upind" />
               </div>
             </div>
             <div class="tab-pane fade" id="misc3" role="tabpanel" aria-labelledby="misc3-tab">
               <br />
               <div class="form-group">
-                <label for="modal_misc_del_sen_act">Verzögerung für Aktoren bevor Sensoren ein Event auslösen (Sek)</label>
+                <label for="modal_misc_del_sen_act">Delay switch off actors in a sensor event (sec)</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_del_sen_act" />
               </div>
               <div class="form-group">
-                <label for="modal_misc_del_sen_ind">Verzögerung für das Induktionskochfeld bevor Sensoren ein Event auslösen (Sek)</label>
+                <label for="modal_misc_del_sen_ind">Delay switch off induction in a sensor event (sec)</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_del_sen_ind" />
               </div>
               <div class="form-group">
-                <label for="modal_misc_delay_mqtt">Verzögerung bei MQTT Fehlern (Sek)</label>
+                <label for="modal_misc_delay_mqtt">Delay MQTT error events (sec)</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_delay_mqtt" />
               </div>
               <div class="form-group">
-                <label for="modal_misc_delay_wlan">Verzögerung bei WLAN Fehlern (Sek)</label>
+                <label for="modal_misc_delay_wlan">Delay WLAN error events (sec)</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_delay_wlan" />
               </div>
               <br />
               <label class="form-check-label">Event handling</label>
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="modal_misc_onErrorMQTT" />
-                <label class="form-check-label" for="modal_misc_onErrorMQTT">Aktiviere MQTT Event handling</label>
+                <label class="form-check-label" for="modal_misc_onErrorMQTT">Activate MQTT Event handling (global on/off)</label>
               </div>
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="modal_misc_onErrorWLAN" />
-                <label class="form-check-label" for="modal_misc_onErrorWLAN">Aktiviere WLAN Event handling</label>
+                <label class="form-check-label" for="modal_misc_onErrorWLAN">Activate WLAN Event handling (global on/off)</label>
               </div>
             </div>
             <div class="tab-pane fade" id="misc4" role="tabpanel" aria-labelledby="misc4-tab">
@@ -370,17 +370,17 @@
               <br />
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="modal_misc_reset" />
-                <label class="form-check-label" for="modal_misc_reset">Lösche WLAN Einstellungen (Reset to AP Mode)</label>
+                <label class="form-check-label" for="modal_misc_reset">Delete WLAN settings (reset to AP Mode)</label>
               </div>
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="modal_misc_clear" />
-                <label class="form-check-label" for="modal_misc_clear">Lösche alle Einstellungen (Reset to defaults)</label>
+                <label class="form-check-label" for="modal_misc_clear">Delete all settings (reset to defaults)</label>
               </div>
             </div>
           </div>
         </div>
-        <div class="modal-footer"> <button type="button" class="btn btn-primary" id="modal_misc_btn_save">Speichern</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+        <div class="modal-footer"> <button type="button" class="btn btn-primary" id="modal_misc_btn_save">Save</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
@@ -393,13 +393,13 @@
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
-          <p>Datei Upload oder Web Update?</p>
-          <p>MQTTDevice startet automatisch neu!</p>
+          <p>File Upload or Web Update?</p>
+          <p>MQTTDevice automatically reboots!</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" id="modal-btn-file">Upload</button>
           <button type="button" class="btn btn-secondary" id="modal-btn-web">WebUpdate</button>
-          <button type="button" class="btn btn-primary" id="modal-btn-abbruch">Zurück</button>
+          <button type="button" class="btn btn-primary" id="modal-btn-abbruch">back</button>
         </div>
       </div>
     </div>
@@ -408,18 +408,18 @@
     <div class="modal-dialog modal-sm">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title" id="myModalLabelVis">Visualisierung</h4>
+          <h4 class="modal-title" id="myModalLabelVis">Visualisation</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <label for="modal_misc_vis_tag">Sud-ID für Visualisierung</label>
+            <label for="modal_misc_vis_tag">Sud-ID (tag) for visualisation</label>
             <input type="text" class="form-control" placeholder="" id="modal_misc_vis_tag" />
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" id="modal-btn-start">Starten</button>
-          <button type="button" class="btn btn-primary" id="modal-btn-stop">Stoppen</button>
+          <button type="button" class="btn btn-default" id="modal-btn-start">Start</button>
+          <button type="button" class="btn btn-primary" id="modal-btn-stop">Stop</button>
         </div>
       </div>
     </div>
@@ -436,16 +436,16 @@
           sensor += element.name;
           sensor += "<span class='badge";
           if (element.value == "ERR") {
-            sensor += " badge-danger'>Fehler";
+            sensor += " badge-danger'>Error";
           }
           else if (element.value == "CRC") {
-            sensor += " badge-danger'>CRC Fehler";
+            sensor += " badge-danger'>CRC error";
           }
           else if (element.value == "DER") {
-            sensor += " badge-danger'>Gerätefehler";
+            sensor += " badge-danger'>Device error";
           }
           else if (element.value == "UNP") {
-            sensor += " badge-danger'>nicht verbunden";
+            sensor += " badge-danger'>unplugged";
           }
           else {
             sensor += " badge-light'>"
@@ -458,18 +458,18 @@
               sensor += " badge-success'>Events ok";
             }
             else {
-              sensor += " badge-danger'>Event aktiv";
+              sensor += " badge-danger'>Event active";
             }
           }
           else {
-            sensor += " badge-dark'>Events deaktiviert";
+            sensor += " badge-dark'>Events off";
           }
           sensor += "</span> ";
           sensor += "<span class='badge badge-info'> "
           sensor += element.mqtt;
           sensor += " </span> <a href='' class='badge badge-warning' data-toggle='modal' data-target='#sensor_modal' data-value='";
           sensor += index;
-          sensor += "'> bearbeiten </a> </li>";
+          sensor += "'> edit </a> </li>";
           content += sensor;
         });
         $('#listSensors').html(content);
@@ -500,18 +500,18 @@
               actor += " badge-success'>Events ok";
             }
             else {
-              actor += " badge-danger'>Event aktiv";
+              actor += " badge-danger'>Event active";
             }
           }
           else {
-            actor += " badge-dark'>Events deaktivert";
+            actor += " badge-dark'>Events off";
           }
           actor += "</span> ";
           actor += "<span class='badge badge-info'>";
           actor += element.mqtt;
           actor += "</span><a href='' class='badge badge-warning' data-toggle='modal' data-target='#actor_modal' data-value='";
           actor += index;
-          actor += "'>bearbeiten</a></li>";
+          actor += "'>Edit</a></li>";
           content += actor;
         });
         $('#listActors').html(content);
@@ -522,59 +522,59 @@
           inductionRender += "Relais Status<span class='badge";
           if (data.state != true && data.relayOn) {
             inductionRender += " badge-danger'> ON";
-            inductionRender += "</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Leistung von CBPi angefordert<span class='badge badge-danger'>";
+            inductionRender += "</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>requested power from CBPi<span class='badge badge-danger'>";
             inductionRender += data.power;
-            inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Aktuelle Leistung<span class='badge badge-danger'> P";
+            inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>actual power<span class='badge badge-danger'> P";
             inductionRender += data.powerLevel;
 			if (data.pl != "100") {
-			inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Event Leistung Reduzierung auf<span class='badge badge-success'> P";
+			inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Event power reduced to<span class='badge badge-success'> P";
             inductionRender += data.pl;
 			inductionRender += "%</span> </li>";
 			}
 			else {
 			inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Events<span class='badge badge-dark'> ";
-            inductionRender += "deaktiviert";
+            inductionRender += "off";
 			inductionRender += "</span> </li>";
 			}
           }
           else if (data.relayOn && data.state == true) {
             inductionRender += " badge-success'> ON";
-            inductionRender += "</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Leistung von CBPi angefordert<span class='badge badge-success'>";
+            inductionRender += "</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>requested power from CBPi<span class='badge badge-success'>";
             inductionRender += data.power;
-            inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Aktuelle Leistung<span class='badge badge-success'> P";
+            inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>actual power<span class='badge badge-success'> P";
             inductionRender += data.powerLevel;
 			if (data.pl != "100") {
-			inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Event Leistung Reduzierung auf<span class='badge badge-success'> P";
+			inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Event power reduced to <span class='badge badge-success'> P";
             inductionRender += data.pl;
 			inductionRender += "%</span> </li>";
 			}
 			else {
 			inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Events<span class='badge badge-dark'> ";
-            inductionRender += "deaktiviert";
+            inductionRender += "off";
 			inductionRender += "</span> </li>";
 			}
           }
           else {
             inductionRender += " badge-dark'> OFF";
-            inductionRender += "</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Leistung von CBPi angefordert<span class='badge badge-dark'>";
+            inductionRender += "</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>requested power from CBPi<span class='badge badge-dark'>";
             inductionRender += data.power;
-            inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Aktuelle Leistung<span class='badge badge-dark'> P";
+            inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>actual power<span class='badge badge-dark'> P";
             inductionRender += data.powerLevel;
 			if (data.pl != "100") {
-			inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Event Leistung Reduzierung auf<span class='badge badge-success'> P";
+			inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Event power reduced to <span class='badge badge-success'> P";
             inductionRender += data.pl;
 			inductionRender += "%</span> </li>";
 			}
 			else {
 			inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Events<span class='badge badge-dark'> ";
-            inductionRender += "deaktiviert";
+            inductionRender += "off";
 			inductionRender += "</span> </li>";
 			}
           }
         }
         else {
-          inductionRender += "Induktionskochfeld<span class='badge";
-		  inductionRender += " badge-dark'> Deaktiviert";
+          inductionRender += "Induction<span class='badge";
+		  inductionRender += " badge-dark'> off";
 		  inductionRender += " </span> </li>";
         }
         $('#inductionCooker').html(inductionRender);
@@ -586,14 +586,14 @@
 		if (data.enabled) {
           
           if (data.displayOn) {
-            displayRender += " badge-success'> Ein";
+            displayRender += " badge-success'> On";
           }
           else {
-            displayRender += " badge-dark'> Aus";
+            displayRender += " badge-dark'> Off";
           }
         }
         else {
-		      displayRender += " badge-dark'> Deaktiviert";
+		      displayRender += " badge-dark'> Off";
         }
         displayRender += " </span> </li>";
         $('#oledDisplay').html(displayRender);
@@ -603,12 +603,12 @@
         let miscRender = "<li class='list-group-item d-flex justify-content-between align-items-center'> ";
         miscRender += " MQTT broker IP <span class='badge'>";
         miscRender += data.MQTTHOST;
-		miscRender += "</span></li> <li class='list-group-item d-flex justify-content-between align-items-center'> MQTT Verbindung <span class='badge";
+		miscRender += "</span></li> <li class='list-group-item d-flex justify-content-between align-items-center'> MQTT connected <span class='badge";
 		if (data.enable_mqtt) {
-          miscRender += " badge-success'> Events aktiviert";
+          miscRender += " badge-success'> Events on";
         }
         else {
-          miscRender += " badge-dark'> Events deaktiviert";
+          miscRender += " badge-dark'> Events off";
         }
 		miscRender += "</span><span class='badge";
 		if (data.mqtt_state) {
@@ -617,12 +617,12 @@
         else {
            miscRender += " badge-danger'> Offline";
 		}
-		miscRender += "</span></li> <li class='list-group-item d-flex justify-content-between align-items-center'> WLAN Verbindung <span class='badge ";
+		miscRender += "</span></li> <li class='list-group-item d-flex justify-content-between align-items-center'> WLAN connected <span class='badge ";
 		if (data.enable_wlan) {
-            miscRender += " badge-success'> Events aktiviert";
+            miscRender += " badge-success'> Events on";
         }
         else {
-          miscRender += " badge-dark'> Events deaktiviert";
+          miscRender += " badge-dark'> Events off";
         }
 		miscRender += "</span><span class='badge";
 		if (data.wlan_state) {
@@ -631,19 +631,19 @@
         else {
            miscRender += " badge-danger'> Offline";
         }
-		miscRender += "</span></li>  <li class='list-group-item d-flex justify-content-between align-items-center'> Visualisierung Grafana <span class='badge ";
+		miscRender += "</span></li>  <li class='list-group-item d-flex justify-content-between align-items-center'> Visualisation Grafana <span class='badge ";
         if (data.startdb) {
-          miscRender += " badge-success'> Aktiviert";
+          miscRender += " badge-success'> On";
         }
         else {
-          miscRender += " badge-dark'> Deaktiviert";
+          miscRender += " badge-dark'> Off";
         }
         miscRender += " </span> </li>";
         $('#miscSettings').html(miscRender);
 		
 		if (data.alertstate)
 		{
-		  alert("*** SYSINFO: WebUpdate abgeschlossen");
+		  alert("*** SYSINFO: WebUpdate finished");
 		  location.reload();
 		}
       });
@@ -699,7 +699,7 @@
       });
 
       $("#modal-btn-web").on("click", function () {
-		document.getElementById("firmware").innerHTML = "WebUpdate gestartet ...";
+		document.getElementById("firmware").innerHTML = "WebUpdate started ...";
 		$("#mi-modal-upd").modal('hide');
 		onload = setInterval(refresh, 120000);
         callback("1");
