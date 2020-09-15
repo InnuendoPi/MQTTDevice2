@@ -6,10 +6,13 @@ Dokumentation: <https://innuendopi.github.io/MQTTDevice2/>
 
 ## Changelog
 
-Version 2.10
+Version 2.11
 
 - Added:    Support für Piezo Buzzer an D0
 - Removed:  mDNS Support
+- Removed:  Eingebettete Grafana Charts von Web-Interface
+- Fixed:    WebUpdate Loop
+- Optimize: Heap Speicher
 - Update:   max. 5 Aktoren und 4 Sensoren
 - Added:    Support für OLED 1.3" SH1106 (siehe Dokumentation)
 - Remarked: OLED 0.96" SSD1306 (siehe Dokumentation)

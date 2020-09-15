@@ -1,7 +1,7 @@
 //    Name:		MQTTDevice
 //    Erstellt:	2020
 //    Author:	Innuendo
-   
+
 //    Sketch für ESP8266
 //    Kommunikation via MQTT mit CraftBeerPi v3
 
@@ -45,7 +45,7 @@ extern "C"
 #endif
 
 // Version
-#define Version "2.10"
+#define Version "2.11"
 
 // Definiere Pausen
 #define PAUSE1SEC 1000
@@ -84,17 +84,6 @@ int CMD[6][33] = {
     {1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0},  // P4
     {1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0}}; // P5
 unsigned char PWR_STEPS[] = {0, 20, 40, 60, 80, 100};                                                     // Prozentuale Abstufung zwischen den Stufen
-// String errorMessages[10] = {
-//     "E0",
-//     "E1",
-//     "E2",
-//     "E3",
-//     "E4",
-//     "E5",
-//     "E6",
-//     "E7",
-//     "E8",
-//     "EC"};
 
 bool pins_used[17];
 const unsigned char numberOfPins = 9;
@@ -109,9 +98,8 @@ unsigned char numberOfSensorsFound = 0;
 unsigned char numberOfActors = 0; // Gesamtzahl der Aktoren
 #define numberOfActorsMax 5       // Maximale Anzahl an Aktoren
 char mqtthost[16];                // MQTT Server
-int mqtt_chip_key = ESP.getChipId(); // Device Name
-char mqtt_clientid[16];             // AP-Mode und Gerätename
-bool alertState = false;            // WebUpdate Status
+char mqtt_clientid[16];           // AP-Mode und Gerätename
+bool alertState = false;          // WebUpdate Status
 
 // Zeitserver Einstellungen
 #define NTP_OFFSET 60 * 60                // Offset Winterzeit in Sekunden
@@ -150,27 +138,27 @@ EventManager gEM; //  Eventmanager Objekt Queues
 #define EM_UNPL 3    // Sensor unplugged
 #define EM_SENER 4   // Sensor all errors
 #define EM_ACTER 10  // Bei Fehler Behandlung von Aktoren
-#define EM_INDER 10  // Bei Fehler Behandlung Induktion 
+#define EM_INDER 10  // Bei Fehler Behandlung Induktion
 #define EM_ACTOFF 11 // Aktor ausschalten
 #define EM_INDOFF 11 // Induktion ausschalten
 
 // Event handling Status Variablen
-bool StopOnWLANError = false;         // Event handling für WLAN Fehler
-bool StopOnMQTTError = false;         // Event handling für MQTT Fehler
+bool StopOnWLANError = false;     // Event handling für WLAN Fehler
+bool StopOnMQTTError = false;     // Event handling für MQTT Fehler
 unsigned long mqttconnectlasttry; // Zeitstempel bei Fehler MQTT
 unsigned long wlanconnectlasttry; // Zeitstempel bei Fehler WLAN
-bool mqtt_state = true;               // Status MQTT
-bool wlan_state = true;               // Status WLAN
+bool mqtt_state = true;           // Status MQTT
+bool wlan_state = true;           // Status WLAN
 
 // Event handling Zeitintervall für Reconnects WLAN und MQTT
-#define tickerWLAN 20000        // für Ticker Objekt WLAN in ms
-#define tickerMQTT 20000        // für Ticker Objekt MQTT in ms
+#define tickerWLAN 20000 // für Ticker Objekt WLAN in ms
+#define tickerMQTT 20000 // für Ticker Objekt MQTT in ms
 
 // Event handling Standard Verzögerungen
-unsigned long  wait_on_error_mqtt = 120000; // How long should device wait between tries to reconnect WLAN      - approx in ms
-unsigned long  wait_on_error_wlan = 120000; // How long should device wait between tries to reconnect WLAN      - approx in ms
-unsigned long  wait_on_Sensor_error_actor = 120000;     // How long should actors wait between tries to reconnect sensor    - approx in ms
-unsigned long  wait_on_Sensor_error_induction = 120000; // How long should induction wait between tries to reconnect sensor - approx in ms
+unsigned long wait_on_error_mqtt = 120000;             // How long should device wait between tries to reconnect WLAN      - approx in ms
+unsigned long wait_on_error_wlan = 120000;             // How long should device wait between tries to reconnect WLAN      - approx in ms
+unsigned long wait_on_Sensor_error_actor = 120000;     // How long should actors wait between tries to reconnect sensor    - approx in ms
+unsigned long wait_on_Sensor_error_induction = 120000; // How long should induction wait between tries to reconnect sensor - approx in ms
 
 // Ticker Objekte
 InnuTicker TickerSen;
@@ -190,8 +178,8 @@ int DISP_UPDATE = 5000; //  NTP and display update
 
 bool shouldSaveConfig = false; // WiFiManager
 
-unsigned long lastSenAct = 0;      // Timestap actors on sensor error
-unsigned long lastSenInd = 0;      // Timestamp induction on sensor error
+unsigned long lastSenAct = 0; // Timestap actors on sensor error
+unsigned long lastSenInd = 0; // Timestamp induction on sensor error
 
 int sensorsStatus = 0;
 int actorsStatus = 0;
@@ -202,7 +190,7 @@ int inductionStatus = 0;
 InfluxDBClient dbClient;
 bool startDB = false;
 bool startVis = false;
-char dbServer[28] = "http://192.168.100.30:8086";     // InfluxDB Server IP
+char dbServer[28] = "http://192.168.100.30:8086"; // InfluxDB Server IP
 char dbUser[5] = "";
 char dbPass[5] = "";
 char dbDatabase[11] = "mqttdevice";
@@ -226,12 +214,12 @@ const int address[numberOfAddress] = {0x3C, 0x3D};
 // #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
-#include "icons.h"              // Icons CraftbeerPi, WLAN und MQTT
+#include "icons.h" // Icons CraftbeerPi, WLAN und MQTT
 // Welchen Chip hat das Display? SSD1306 oder Adafruit_SH1106
 // Wichtig: Für Displays mit SH1106 wird folgende lib benötigt
 // https://github.com/kferrari/Adafruit_SH1106
 
-// Display mit SSD1306 
+// Display mit SSD1306
 //#include <Adafruit_SSD1306.h>
 //Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
@@ -239,12 +227,12 @@ const int address[numberOfAddress] = {0x3C, 0x3D};
 #include <Adafruit_SH1106.h>
 Adafruit_SH1106 display(OLED_RESET);
 
-// #define ALARM_ON 1
-// #define ALARM_OFF 2
-// #define ALARM_OK 3
-// #define ALARM_ERROR 4
-const int PIN_BUZZER = D8;          // Buzzer
-bool startBuzzer = false;           // Aktiviere Buzzer
+#define ALARM_ON 1
+#define ALARM_OFF 2
+#define ALARM_OK 3
+#define ALARM_ERROR 4
+const int PIN_BUZZER = D8; // Buzzer
+bool startBuzzer = false;  // Aktiviere Buzzer
 
 void configModeCallback(WiFiManager *myWiFiManager)
 {

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -32,28 +33,9 @@
           <div class="card">
             <div class="card-header">Sensoren <a href="" class="badge badge-warning" data-target="#sensor_modal"
                 data-toggle="modal" data-value="-1" style="float:right">Neu</a>
-              <ul class="nav nav-tabs" id="senTab" role="tablist">
-                <li class="nav-item">
-                  <a class="nav-link active" id="sen1-tab" data-toggle="tab" href="#sen1" role="tab"
-                    aria-controls="sen1" aria-selected="true">Sensoren</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" id="sen2-tab" data-toggle="tab" href="#sen2" role="tab" aria-controls="sen2"
-                    aria-selected="true">Charts</a>
-                </li>
-              </ul>
             </div>
             <div class="card-body">
-              <div class="tab-content" id="senTabContent">
-                <div class="tab-pane fade show active" id="sen1" role="tabpanel" aria-labelledby="sen1-tab">
-                  <ul class="list-group" id="listSensors"></ul>
-                </div>
-                <div class="tab-pane fade" id="sen2" role="tabpanel" aria-labelledby="sen2-tab">
-                  <div class="embed-responsive">
-                    <ul class="list-group" id="listeSenName"></ul>
-                  </div>
-                </div>
-              </div>
+			  <ul class="list-group" id="listSensors"></ul>
             </div>
           </div>
         </div>
@@ -337,10 +319,6 @@
 			  <div class="form-group">
                 <label for="modal_misc_db_pass">Datenbank Benutzer Password</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_db_pass" />
-              </div>
-			  <div class="form-group">
-                <label for="modal_misc_db_url">URL Dashboard</label>
-                <input type="text" class="form-control" placeholder="" id="modal_misc_db_url" />
               </div>
             </div>
             <div class="tab-pane fade" id="misc2" role="tabpanel" aria-labelledby="misc2-tab">
@@ -1159,7 +1137,6 @@
 	  var dbuser;
 	  var dbpass;
 	  var dbup;
-	  var dburl;
 
       $.ajax({
         url: '/reqMisc?req=MQTTHOST',
@@ -1351,16 +1328,6 @@
           dbup = data;
         }
       });
-	  $.ajax({
-        url: '/reqMisc?req=dburl',
-        type: 'get',
-        dataType: 'html',
-        async: false,
-        cache: false,
-        success: function (data) {
-          dburl = data;
-        }
-      });
 
       var modal = $(this)
       modal.find('#modal_misc_address').val(mqttaddress)
@@ -1386,7 +1353,6 @@
 	  modal.find('#modal_misc_db_user').val(dbuser)
 	  modal.find('#modal_misc_db_pass').val(dbpass)
 	  modal.find('#modal_misc_db_up').val(dbup)
-	  modal.find('#modal_misc_db_url').val(dburl)
 
       var modal = $(this)
     });
@@ -1406,9 +1372,9 @@
 	  var dbuser = modal.find('#modal_misc_db_user').val()
 	  var dbpass = modal.find('#modal_misc_db_pass').val()
 	  var dbup = modal.find('#modal_misc_db_up').val()
-	  var dburl = modal.find('#modal_misc_db_url').val()
+	  //var dburl = modal.find('#modal_misc_db_url').val()
   	  // Alle & durch ! ersetzen - senden an ESP funktioniert sonst nicht 
-	  var dburl2 = dburl.replace(/&/g, "!");
+	  //var dburl2 = dburl.replace(/&/g, "!");
 	  if (modal.find('#modal_misc_buzzer').prop("checked") == true) {
         var buzzer = "1"
       } else {
@@ -1444,7 +1410,7 @@
       }
 
       $.ajax({
-        url: '/setMisc?reset=' + reset + '&clear=' + clear + '&MQTTHOST=' + mqttaddress + '&enable_mqtt=' + enable_mqtt + '&delay_mqtt=' + delay_mqtt + '&enable_wlan=' + enable_wlan + '&delay_wlan=' + delay_wlan + '&del_sen_act=' + del_sen_act + '&del_sen_ind=' + del_sen_ind + '&buzzer=' + buzzer + '&upsen=' + upsen + '&upact=' + upact + '&upind=' + upind + '&startdb=' + startdb + '&dbserver=' + dbserver + '&dbdatabase=' + dbdatabase + '&dbuser=' + dbuser + '&dbpass=' + dbpass + '&dbup=' + dbup  + '&dburl=' + dburl2,
+        url: '/setMisc?reset=' + reset + '&clear=' + clear + '&MQTTHOST=' + mqttaddress + '&enable_mqtt=' + enable_mqtt + '&delay_mqtt=' + delay_mqtt + '&enable_wlan=' + enable_wlan + '&delay_wlan=' + delay_wlan + '&del_sen_act=' + del_sen_act + '&del_sen_ind=' + del_sen_ind + '&buzzer=' + buzzer + '&upsen=' + upsen + '&upact=' + upact + '&upind=' + upind + '&startdb=' + startdb + '&dbserver=' + dbserver + '&dbdatabase=' + dbdatabase + '&dbuser=' + dbuser + '&dbpass=' + dbpass + '&dbup=' + dbup,
 		type: 'POST',
         dataType: 'html',
         async: false,
@@ -1464,7 +1430,7 @@
         window.location.reload(true);
       });;
     });
-
+	/*
     $(function () {
       var tcpurl = "";
       var startdb;
@@ -1480,6 +1446,7 @@
           startdb = data;
         }
       });
+	  
 	  $.ajax({
 		  url: '/reqMisc?req=dburl',
 		  type: 'get',
@@ -1490,6 +1457,7 @@
 			dburl = data;
 		  }
 	  });
+	  
       if (startdb == 1) {
           let content = "";
           content += "<div class='list-group'>";
@@ -1503,6 +1471,7 @@
           $('#listeSenName').html(content);
       }
     });
+	*/
 
     $(function () {
       var firmware;

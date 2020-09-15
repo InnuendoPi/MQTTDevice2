@@ -206,26 +206,26 @@ void sendAlarm(const uint8_t &setAlarm)
     return;
   switch (setAlarm)
   {
-  case 1:
+  case ALARM_ON:
     tone(PIN_BUZZER, 440, 50);
     delay(150);
     tone(PIN_BUZZER, 660, 50);
     delay(150);
     tone(PIN_BUZZER, 880, 50);
     break;
-  case 2:
+  case ALARM_OFF:
     tone(PIN_BUZZER, 880, 50);
     delay(150);
     tone(PIN_BUZZER, 660, 50);
     delay(150);
     tone(PIN_BUZZER, 440, 50);
     break;
-  case 3:
+  case ALARM_OK:
     digitalWrite(PIN_BUZZER, HIGH);
     delay(200);
     digitalWrite(PIN_BUZZER, LOW);
     break;
-  case 4:
+  case ALARM_ERROR:
     for (int i = 0; i < 20; i++)
     {
       tone(PIN_BUZZER, 880, 50);

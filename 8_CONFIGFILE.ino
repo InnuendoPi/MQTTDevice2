@@ -15,7 +15,7 @@ bool loadConfig()
     DEBUG_MSG("%s\n", "Config file size is too large");
     DEBUG_MSG("%s\n", "------ loadConfig aborted ------");
     if (startBuzzer)
-      sendAlarm(4);
+      sendAlarm(ALARM_ERROR);
     return false;
   }
 
@@ -25,7 +25,7 @@ bool loadConfig()
   {
     DEBUG_MSG("Conf: Error Json %s\n", error.c_str());
     if (startBuzzer)
-      sendAlarm(4);
+      sendAlarm(ALARM_ERROR);
     return false;
   }
 
@@ -269,7 +269,7 @@ bool loadConfig()
     TickerInfluxDB.stop();
 
   if (startBuzzer)
-    sendAlarm(1);
+    sendAlarm(ALARM_ON);
 
   return true;
 }
@@ -475,7 +475,7 @@ bool saveConfig()
     DEBUG_MSG("%s\n", "Failed to write config file - config too large");
     DEBUG_MSG("%s\n", "------ saveConfig aborted ------");
     if (startBuzzer)
-      sendAlarm(4);
+      sendAlarm(ALARM_ERROR);
     return false;
   }
 
@@ -485,7 +485,7 @@ bool saveConfig()
     DEBUG_MSG("%s\n", "Failed to open config file for writing");
     DEBUG_MSG("%s\n", "------ saveConfig aborted ------");
     if (startBuzzer)
-      sendAlarm(4);
+      sendAlarm(ALARM_ERROR);
     return false;
   }
   serializeJson(doc, configFile);
@@ -496,6 +496,6 @@ bool saveConfig()
   DEBUG_MSG("Configured WLAN SSID: %s\n", Network.c_str());
   DEBUG_MSG("%s\n", "---------------------------------");
   if (startBuzzer)
-    sendAlarm(1);
+    sendAlarm(ALARM_ON);
   return true;
 }

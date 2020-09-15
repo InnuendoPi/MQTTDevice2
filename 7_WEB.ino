@@ -119,7 +119,7 @@ void mqttcallback(char *topic, unsigned char *payload, unsigned int length)
 void handleRequestMiscSet()
 {
   StaticJsonDocument<512> doc;
-  
+
   doc["MQTTHOST"] = mqtthost;
   doc["del_sen_act"] = wait_on_Sensor_error_actor / 1000;
   doc["del_sen_ind"] = wait_on_Sensor_error_induction / 1000;
@@ -259,27 +259,6 @@ void handleRequestMisc()
     message = (upInflux / 1000);
     goto SendMessage;
   }
-  if (request == "dburl")
-  {
-    File urlFile = SPIFFS.open("/urlChart.txt", "r");
-    if (!urlFile)
-    {
-      DEBUG_MSG("%s\n", "Failed to open urlFile\n");
-      //http://192.168.xxx.xxx:3000/d/xxxxxxx/mqttdevice?orgId=1&refresh=5s&kiosk=tv
-      message = "about:blank";
-    }
-    else
-    {
-      String line = "";
-      while (urlFile.available())
-      {
-        line += char(urlFile.read());
-      }
-      urlFile.close();
-      message = line;
-    }
-    goto SendMessage;
-  }
 
 SendMessage:
   server.send(200, "text/plain", message);
@@ -312,7 +291,7 @@ void handleSetMisc()
     }
     if (server.argName(i) == "MQTTHOST")
       server.arg(i).toCharArray(mqtthost, 16);
-    
+
     if (server.argName(i) == "buzzer")
     {
       if (server.arg(i) == "1")
@@ -414,15 +393,6 @@ void handleSetMisc()
       {
         upInflux = server.arg(i).toInt() * 1000;
       }
-    }
-    if (server.argName(i) == "dburl")
-    {
-      DEBUG_MSG("server.arg: %s\n", server.arg(i).c_str());
-      File urlFile = SPIFFS.open("/urlChart.txt", "w");
-      String line = server.arg(i);
-      line.replace("!", "&"); // Ersetzen von &-Zeichen in index.html rückgängig machen
-      int bytesWritten = urlFile.print(line);
-      urlFile.close();
     }
     yield();
   }

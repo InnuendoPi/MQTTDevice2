@@ -99,7 +99,7 @@ void upCerts()
         int httpCode = https.GET();
         if (httpCode > 0)
         {
-            Serial.printf("*** SYSINFO: [HTTPS] GET certs.ar Antwort: %d\n", httpCode);
+            // Serial.printf("*** SYSINFO: [HTTPS] GET certs.ar Antwort: %d\n", httpCode);
             if (httpCode == HTTP_CODE_OK)
             {
                 int len = https.getSize();
@@ -209,7 +209,7 @@ void updateSys()
         }
         fsUploadFile.close();
         int i = line.toInt();
-        if (i > 2)
+        if (i > 3)
         {
             SPIFFS.remove("/update.txt");
             Serial.println("*** SYSINFO: ERROR Cert Update");
@@ -238,7 +238,7 @@ void updateSys()
         }
         fsUploadFile.close();
         int i = line.toInt();
-        if (i > 2)
+        if (i > 3)
         {
             SPIFFS.remove("/update2.txt");
             Serial.println("*** SYSINFO: ERROR Index Update");
@@ -266,7 +266,7 @@ void updateSys()
         }
         fsUploadFile.close();
         int i = line.toInt();
-        if (i > 2)
+        if (i > 3)
         {
             SPIFFS.remove("/update3.txt");
             Serial.println("*** SYSINFO: ERROR Firmware Update");

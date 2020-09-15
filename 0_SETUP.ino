@@ -9,7 +9,7 @@ void setup()
   Serial.println();
   Serial.println();
   // Setze Namen für das MQTTDevice
-  snprintf(mqtt_clientid, 16, "ESP8266-%08X", mqtt_chip_key);
+  snprintf(mqtt_clientid, 16, "ESP8266-%08X", ESP.getChipId());
   Serial.printf("*** SYSINFO: Starte MQTTDevice %s\n", mqtt_clientid);
 
   // WiFi Manager
@@ -19,9 +19,7 @@ void setup()
   wifiManager.setAPCallback(configModeCallback);
   wifiManager.setSaveConfigCallback(saveConfigCallback);
   WiFiManagerParameter cstm_mqtthost("host", "MQTT Server IP (CBPi)", mqtthost, 16);
-  // WiFiManagerParameter p_hint("<small>*Sobald das MQTTDevice im WLAN eingebunden ist, öffne im Browser http://mqttdevice (mDNS)</small>");
   wifiManager.addParameter(&cstm_mqtthost);
-  // wifiManager.addParameter(&p_hint);
   wifiManager.autoConnect(mqtt_clientid);
   WiFi.setSleepMode(WIFI_NONE_SLEEP);
   WiFi.mode(WIFI_STA);
@@ -92,7 +90,7 @@ void setup()
   {
     pins_used[PIN_BUZZER] = true;
     pinMode(PIN_BUZZER, OUTPUT);
-    // digitalWrite(PIN_BUZZER, LOW);
+    digitalWrite(PIN_BUZZER, LOW);
   }
 
   // Starte MQTT
@@ -100,7 +98,7 @@ void setup()
   cbpiEventSystem(EM_MQTTSUB); // MQTT Subscribe
 
   cbpiEventSystem(EM_LOG); // webUpdate log
-  
+
   // Verarbeite alle Events Setup
   gEM.processAllEvents();
 
@@ -145,10 +143,11 @@ void setupServer()
   });
   server.on("/edit", HTTP_PUT, handleFileCreate);    // Datei erstellen
   server.on("/edit", HTTP_DELETE, handleFileDelete); // Datei löschen
-  server.on("/edit", HTTP_POST, []() {
-    server.send(200, "text/plain", "");
-  },
-            handleFileUpload);
+  server.on(
+      "/edit", HTTP_POST, []() {
+        server.send(200, "text/plain", "");
+      },
+      handleFileUpload);
 
   server.onNotFound(handleWebRequests); // Sonstiges
 
