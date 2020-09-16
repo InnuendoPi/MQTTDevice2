@@ -148,7 +148,7 @@ Der Dateiexplorer ist erreichbar über den Webbrowser <http://mqttdevice/edit>
 Getestete Hardware Stand 09.2020
 
 | Anzahl | Link |
-| ------ | ---- |
+| ------------ | ---- |
 | ESP8266 D1 Mini | <https://www.amazon.de/dp/B01N9RXGHY/ref=cm_sw_em_r_mt_dp_0KzyFbK6YG2BE> |
 | Relais Board 4 Kanal | <https://www.amazon.de/dp/B078Q8S9S9/ref=cm_sw_em_r_mt_dp_PHzyFbSR1PKCH> |
 | Relais Board 1 Kanal | <https://www.amazon.de/dp/B07CNR7K9B/ref=cm_sw_em_r_mt_dp_FIzyFbKXXYE0H> |
