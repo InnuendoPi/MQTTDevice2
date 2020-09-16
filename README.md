@@ -8,7 +8,7 @@ Dokumentation: <https://innuendopi.github.io/MQTTDevice2/>
 
 Version 2.11
 
-- Added:    Support für Piezo Buzzer an D0
+- Added:    Support für Piezo Buzzer an D8
 - Removed:  mDNS Support
 - Removed:  Eingebettete Grafana Charts von Web-Interface
 - Fixed:    WebUpdate Loop
