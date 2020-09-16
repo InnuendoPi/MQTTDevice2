@@ -143,6 +143,21 @@ Der Dateiexplorer ist erreichbar über den Webbrowser <http://mqttdevice/edit>
 
     Auf Datei auswählen klicken, die config.txt auswählen und Upload auswählen
 
+**Unterstützte und getestete Hardware:**
+
+Getestete Hardware Stand 09.2020
+
+| Anzahl | Link |
+| ------ | ---- |
+| ESP8266 D1 Mini | <https://www.amazon.de/dp/B01N9RXGHY/ref=cm_sw_em_r_mt_dp_0KzyFbK6YG2BE> |
+| Relais Board 4 Kanal | <https://www.amazon.de/dp/B078Q8S9S9/ref=cm_sw_em_r_mt_dp_PHzyFbSR1PKCH> |
+| Relais Board 1 Kanal | <https://www.amazon.de/dp/B07CNR7K9B/ref=cm_sw_em_r_mt_dp_FIzyFbKXXYE0H> |
+| OLED Display 1.3" | <https://www.amazon.de/dp/B078J78R45/ref=cm_sw_em_r_mt_dp_5FzyFbS1ABDDM> |
+| Piezo Buzzer | <https://www.amazon.de/dp/B07DPR4BTN/ref=cm_sw_em_r_mt_dp_aKzyFbJ0ZVK67> |
+
+*Die Links zu amazon sind rein informativ als Suchhilfe*
+*für allgemein bekannte Anbieter zu verstehen*
+
 ---
 
 ## Verwenden der Firmware
