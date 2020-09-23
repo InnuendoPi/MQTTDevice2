@@ -56,7 +56,7 @@ void upIn()
                             len -= c;
                         }
                     }
-                    delay(5);
+                    delay(1);
                 }
 
                 Serial.println("*** SYSINFO: Index Update abgeschlossen.");
@@ -125,10 +125,10 @@ void upCerts()
                             len -= c;
                         }
                     }
-                    delay(5);
+                    delay(1);
                 }
-                Serial.println("*** SYSINFO: Certs Update abgeschlossen.");
                 fsUploadFile.close();
+                Serial.println("*** SYSINFO: Certs Update abgeschlossen.");
                 SPIFFS.remove("/update.txt");
                 fsUploadFile = SPIFFS.open("/update2.txt", "w");
                 int bytesWritten = fsUploadFile.print("0");
@@ -226,7 +226,6 @@ void updateSys()
         Serial.print("*** SYSINFO Starte Cert Update Free Heap: ");
         Serial.println(ESP.getFreeHeap());
         upCerts();
-
     }
     if (SPIFFS.exists("/update2.txt"))
     {

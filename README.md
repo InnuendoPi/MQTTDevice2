@@ -28,3 +28,5 @@ Bibliotheken: (Stand ab Version 2.12, 09.2020)
 - ArduinoJSON 6.16
 - InfluxDB 3.3.0
 - WiFiManager 0.15.0
+
+Flash size 4MB (FS:2MB OTA:~1019kB)
