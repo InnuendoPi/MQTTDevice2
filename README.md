@@ -6,28 +6,25 @@ Dokumentation: <https://innuendopi.github.io/MQTTDevice2/>
 
 ## Changelog
 
-Version 2.11
+Version 2.12
 
+- Update:   ESP8266 2.7.4 (weiterhin SPIFFS)
+- Update:   Bibliotheken aktualisiert
 - Added:    Support für Piezo Buzzer an D8
-- Removed:  mDNS Support
-- Removed:  Eingebettete Grafana Charts von Web-Interface
 - Fixed:    WebUpdate Loop
-- Optimze:  OLED Darstellung
+- Optimize: OLED Darstellung
 - Optimize: Heap Speicher
 - Update:   max. 5 Aktoren und 4 Sensoren
 - Added:    Support für OLED 1.3" SH1106 (siehe Dokumentation)
-- Remarked: OLED 0.96" SSD1306 (siehe Dokumentation)
-- Update:   Bibliotheken aktualisiert
 - Fixed:    Umstellung Sommer/Winterzeit
-- Update:   Libs InfluxDB, ArduinoJson, Adafruit_SSD1306
-- Update:   Influx CheckDBConnect: bei einem Verbindungsfehler wird der Task Vis gestoppt
-- Added:    nach einem WebUpdate erscheint eine Info
-- Reworked: Neuer Button Visualisierung Start/Stop
-- Added:    Datenbank Tag Sud-ID für Visualisierung hinzugefügt
-- Reworked: Updates
 - Added:    Visualisierung Grafana, Influx Datenbank
-- Fixed:    Typo Display Update
-- Removed:  Visualisierung TCPServer
-- Add:      Überprüfung der Eingaben im Web Interface (int, float, char)
-- Add:      Versionsanzeige im Web Interface mit mDNS Namen
-- Fixed:    Fehler Update mDNS behoben
+
+Bibliotheken: (Stand ab Version 2.12, 09.2020)
+
+- ESP8266 2.7.4 (SPIFFS)
+- Arduino IDE 1.8.13
+- Visual Code 1.48.2
+- PubSubClient 2.7.0
+- ArduinoJSON 6.16
+- InfluxDB 3.3.0
+- WiFiManager 0.15.0

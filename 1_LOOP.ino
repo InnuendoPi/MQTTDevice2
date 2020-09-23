@@ -13,7 +13,7 @@ void loop()
     TickerInd.update();
   if (useDisplay)           // Display Ticker
     TickerDisp.update();
-  if (startDB && startVis)              // InfluxDB Ticker
+  if (startDB && startVis)  // InfluxDB Ticker
     TickerInfluxDB.update();
 
   TickerNTP.update();       // NTP Ticker

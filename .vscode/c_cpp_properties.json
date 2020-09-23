@@ -6,7 +6,7 @@
                 "${workspaceFolder}\\**",
                 "C:\\Arduino\\libraries\\**",
                 "C:\\Users\\pn010.TEAM\\AppData\\Local\\Arduino15\\packages\\esp8266\\tools\\**",
-                "C:\\Users\\pn010.TEAM\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.6.3\\**"
+                "C:\\Users\\pn010.TEAM\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.7.4\\**"
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": false,

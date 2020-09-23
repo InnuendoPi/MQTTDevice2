@@ -146,6 +146,7 @@ void handleFileList() {
     output += (isDir) ? "dir" : "file";
     output += "\",\"name\":\"";
     output += String(entry.name()).substring(1);
+    // output += String(entry.name()).substring(0); // Änderung für LittleFS
     output += "\"}";
     entry.close();
   }

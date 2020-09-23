@@ -1,4 +1,3 @@
-//    Name:		MQTTDevice
 //    Erstellt:	2020
 //    Author:	Innuendo
 
@@ -9,7 +8,7 @@
 //    Unterstützung für GPIO Aktoren
 //    Unterstützung für GGM IDS2 Induktionskochfeld
 //    Unterstützung für Web Update
-//    Unterstützung für OLED Display 126x64 I2C (D1+D2)
+//    Unterstützung für OLED Display 126x64 I2C SH1106
 
 #include <OneWire.h>           // OneWire Bus Kommunikation
 #include <DallasTemperature.h> // Vereinfachte Benutzung der DS18B20 Sensoren
@@ -18,12 +17,12 @@
 #include <ESP8266HTTPUpdateServer.h>
 #include <WiFiManager.h>  // WiFiManager zur Einrichtung
 #include <DNSServer.h>    // Benötigt für WiFiManager
-#include <PubSubClient.h> // MQTT Kommunikation
-#include <FS.h>           // SPIFFS Zugriff
-#include <ArduinoJson.h>  // Lesen und schreiben von JSON Dateien
+#include <PubSubClient.h> // MQTT Kommunikation 2.7.0
+#include <FS.h>           // SPIFFS Zugriff -> ESP8266 2.6.3
+// #include "LittleFS.h"     // LittleFS Zugriff -> ESP 2.7.4
+#include <ArduinoJson.h>  // Lesen und schreiben von JSON Dateien 6.16
 #include <WiFiUdp.h>      // WiFi
 #include <EventManager.h> // Eventmanager
-#include <ArduinoOTA.h>   // OTA
 #include <ESP8266HTTPClient.h>
 #include <ESP8266httpUpdate.h>
 #include <WiFiClientSecure.h>
@@ -32,7 +31,7 @@
 #include "InnuTicker.h"
 #include <CertStoreBearSSL.h>
 #include <InfluxDbClient.h>
-
+//#define SPIFFS LittleFS
 extern "C"
 {
 #include "user_interface.h"
@@ -45,7 +44,7 @@ extern "C"
 #endif
 
 // Version
-#define Version "2.11"
+#define Version "2.12"
 
 // Definiere Pausen
 #define PAUSE1SEC 1000
