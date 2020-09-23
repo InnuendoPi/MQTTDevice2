@@ -190,8 +190,11 @@ public:
   }
 };
 
-// Initialisierung des Arrays max 5
+// Initialisierung des Arrays max 8
 Actor actors[numberOfActorsMax] = {
+    Actor("", "", "", "", "", "0"),
+    Actor("", "", "", "", "", "0"),
+    Actor("", "", "", "", "", "0"),
     Actor("", "", "", "", "", "0"),
     Actor("", "", "", "", "", "0"),
     Actor("", "", "", "", "", "0"),

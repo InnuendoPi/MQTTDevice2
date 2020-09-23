@@ -9,10 +9,10 @@ MQTTDevice ist ein Arduino Sketch für die Module ESP8266 Wemos D1 mini. Damit i
 **Was bietet diese Firmware?**
 
 * Ein Web Interface (WebIf) für die Konfiguration
-* Sensoren (max 4)
+* Sensoren (max 6)
   * Suche nach angeschlossenen Sensoren basierend auf OneWire Adressen
   * Das Leseintervall der Sensordaten und das Offset sind konfigurierbar (in Sek)
-* Aktoren (max 5)
+* Aktoren (max 8)
   * PIN Auswahl (GPIO)
   * PINs in Verwendung werden ausgeblendet
   * Invertierte GPIO

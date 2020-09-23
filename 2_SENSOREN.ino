@@ -144,8 +144,10 @@ public:
   }
 };
 
-// Initialisierung des Arrays -> max 4 Sensoren
+// Initialisierung des Arrays -> max 6 Sensoren
 TemperatureSensor sensors[numberOfSensorsMax] = {
+    TemperatureSensor("", "", "", 0.0, ""),
+    TemperatureSensor("", "", "", 0.0, ""),
     TemperatureSensor("", "", "", 0.0, ""),
     TemperatureSensor("", "", "", 0.0, ""),
     TemperatureSensor("", "", "", 0.0, ""),

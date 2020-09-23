@@ -14,7 +14,7 @@ Version 2.12
 - Fixed:    WebUpdate Loop
 - Optimize: OLED Darstellung
 - Optimize: Heap Speicher
-- Update:   max. 5 Aktoren und 4 Sensoren
+- Update:   max. 8 Aktoren und 6 Sensoren
 - Added:    Support für OLED 1.3" SH1106 (siehe Dokumentation)
 - Fixed:    Umstellung Sommer/Winterzeit
 - Added:    Visualisierung Grafana, Influx Datenbank
@@ -30,3 +30,8 @@ Bibliotheken: (Stand ab Version 2.12, 09.2020)
 - WiFiManager 0.15.0
 
 Flash size 4MB (FS:2MB OTA:~1019kB)
+SSL support Basic SSL ciphers
+Exceptions Lagacy
+IwIP variant v2 lower mem
+
+Für Debug Ausgaben muss der Debug Port auf Serial eingestellt werden. Für spezielle Debug Ausgaben entsprechend den Debug Level einstellen (default none).
