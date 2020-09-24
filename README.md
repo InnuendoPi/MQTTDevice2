@@ -24,7 +24,7 @@ Bibliotheken: (Stand ab Version 2.15, 09.2020)
 - ESP8266 2.7.4 (SPIFFS)
 - Arduino IDE 1.8.13
 - Visual Code 1.48.2
-- PubSubClient 2.7.0
+- PubSubClient 2.8.0
 - ArduinoJSON 6.16
 - InfluxDB 3.3.0
 - WiFiManager 0.15.0

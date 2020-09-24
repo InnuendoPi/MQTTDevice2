@@ -17,7 +17,6 @@
 #include <ESP8266HTTPUpdateServer.h>
 #include <WiFiManager.h>  // WiFiManager zur Einrichtung
 #include <DNSServer.h>    // Benötigt für WiFiManager
-#include <PubSubClient.h> // MQTT Kommunikation 2.7.0
 #include <FS.h>           // SPIFFS Zugriff -> ESP8266 2.6.3
 // #include "LittleFS.h"     // LittleFS Zugriff -> ESP 2.7.4
 #include <ArduinoJson.h>  // Lesen und schreiben von JSON Dateien 6.16
@@ -30,6 +29,7 @@
 #include <WiFiClientSecureBearSSL.h>
 #include <NTPClient.h>
 #include "InnuTicker.h"
+#include <PubSubClient.h> // MQTT Kommunikation 2.7.0
 #include <CertStoreBearSSL.h>
 #include <InfluxDbClient.h>
 //#define SPIFFS LittleFS
