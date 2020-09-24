@@ -174,6 +174,9 @@ void listenerSystem(int event, int parm) // System event listener
       TickerMQTT.stop();
     }
     break;
+  case EM_MDNS: // check MDSN (24)
+    mdns.update();
+    break;
   case EM_SETNTP: // NTP Update (25)
     timeClient.begin();
     timeClient.forceUpdate();
@@ -181,6 +184,15 @@ void listenerSystem(int event, int parm) // System event listener
     break;
   case EM_NTP: // NTP Update (25) -> In Ticker Objekt ausgelagert!
     timeClient.update();
+    break;
+  case EM_MDNSET: // MDNS setup (26)
+    if (startMDNS && nameMDNS[0] != '\0' && WiFi.status() == WL_CONNECTED)
+    {
+      if (mdns.begin(nameMDNS))
+        Serial.printf("*** SYSINFO: mDNS Name %s mit IP %s verbunden\n", nameMDNS, WiFi.localIP().toString().c_str());
+      else
+        Serial.println("*** SYSINFO: mMDNS Fehler beim Start");
+    }
     break;
   case EM_DISPUP: // Display screen output update (30)
     if (oledDisplay.dispEnabled)
@@ -199,7 +211,7 @@ void listenerSystem(int event, int parm) // System event listener
         line = char(fsUploadFile.read());
       }
       fsUploadFile.close();
-      Serial.printf("*** SYSINFO: Update Zertifikate Anzahl Versuche %s\n", line.c_str());
+      Serial.printf("*** SYSINFO: Update Index Anzahl Versuche %s\n", line.c_str());
       SPIFFS.remove("/log1.txt");
     }
     if (SPIFFS.exists("/log2.txt")) // WebUpdate Index
@@ -211,7 +223,7 @@ void listenerSystem(int event, int parm) // System event listener
         line = char(fsUploadFile.read());
       }
       fsUploadFile.close();
-      Serial.printf("*** SYSINFO: Update Index Anzahl Versuche %s\n", line.c_str());
+      Serial.printf("*** SYSINFO: Update Zertifikate Anzahl Versuche %s\n", line.c_str());
       SPIFFS.remove("/log2.txt");
     }
     if (SPIFFS.exists("/log3.txt")) // WebUpdate Firmware

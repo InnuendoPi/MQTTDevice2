@@ -19,7 +19,9 @@ void setup()
   wifiManager.setAPCallback(configModeCallback);
   wifiManager.setSaveConfigCallback(saveConfigCallback);
   WiFiManagerParameter cstm_mqtthost("host", "MQTT Server IP (CBPi)", mqtthost, 16);
+  // WiFiManagerParameter p_hint("<small>*Sobald das MQTTDevice im WLAN eingebunden ist, öffne im Browser http://mqttdevice (mDNS)</small>");
   wifiManager.addParameter(&cstm_mqtthost);
+  // wifiManager.addParameter(&p_hint);
   wifiManager.autoConnect(mqtt_clientid);
   WiFi.setSleepMode(WIFI_NONE_SLEEP);
   WiFi.mode(WIFI_STA);
@@ -73,9 +75,14 @@ void setup()
   // Starte Sensoren
   DS18B20.begin();
 
-  Serial.print("*** SYSINFO: ESP8266 IP Addresse: ");
-  Serial.println(WiFi.localIP().toString());
-
+  // Starte mDNS
+  if (startMDNS)
+    cbpiEventSystem(EM_MDNSET);
+  else
+  {
+    Serial.print("*** SYSINFO: ESP8266 IP Addresse: ");
+    Serial.println(WiFi.localIP().toString());
+  }
   // Starte OLED Display
   dispStartScreen();
 

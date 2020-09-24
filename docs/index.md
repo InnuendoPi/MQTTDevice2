@@ -21,6 +21,7 @@ MQTTDevice ist ein Arduino Sketch für die Module ESP8266 Wemos D1 mini. Damit i
   * das Induktionskochfeld GGM IDS2 kann direkt gesteuert werden
 * OLED Display Integration
 * WebUpdate Firmware
+* mDNS Support
 * Update Firmware und SPIFFS über Datei Upload
 * Event handling
 * Brautag Visualisierung mit Grafana
@@ -188,6 +189,10 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
     **Piezo Buzzer:**
 
     Ein Piezo Buzzer kann nur an PIN D8 angeschlossen werden. Ein Piezo Buzzer ist optional. Die Firmware unterstützt 4 verschiedene Signale: ON, OFF, OK und ERROR
+
+    **mDNS:**
+
+    Ein mDNS Name kann anstelle der IP Adresse vom ESP8266 im Webbrowser verwendet werden (<http://mDNSname>). Der Name ist frei wählbar. Der mDNS Name muss im Netzwerk eindeutig sein und darf keine Leer- oder Sonderzeichen enthalten.
 
     **Grafana Einstellungen**
 

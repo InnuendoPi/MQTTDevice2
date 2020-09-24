@@ -21,6 +21,7 @@
 #include <FS.h>           // SPIFFS Zugriff -> ESP8266 2.6.3
 // #include "LittleFS.h"     // LittleFS Zugriff -> ESP 2.7.4
 #include <ArduinoJson.h>  // Lesen und schreiben von JSON Dateien 6.16
+#include <ESP8266mDNS.h>  // mDNS
 #include <WiFiUdp.h>      // WiFi
 #include <EventManager.h> // Eventmanager
 #include <ESP8266HTTPClient.h>
@@ -44,7 +45,7 @@ extern "C"
 #endif
 
 // Version
-#define Version "2.12"
+#define Version "2.15"
 
 // Definiere Pausen
 #define PAUSE1SEC 1000
@@ -62,6 +63,7 @@ WiFiManager wifiManager;
 WiFiClient espClient;
 PubSubClient pubsubClient(espClient);
 ESP8266HTTPUpdateServer httpUpdate;
+MDNSResponder mdns;
 
 // Induktion Signallaufzeiten
 const int SIGNAL_HIGH = 5120;
@@ -122,7 +124,9 @@ EventManager gEM; //  Eventmanager Objekt Queues
 #define EM_WLAN 20
 #define EM_OTA 21
 #define EM_MQTT 22
+#define EM_MDNS 24
 #define EM_NTP 25
+#define EM_MDNSET 26
 #define EM_MQTTCON 27
 #define EM_MQTTSUB 28
 #define EM_SETNTP 29
@@ -175,6 +179,9 @@ int ACT_UPDATE = 5000;  //  actors update delay loop
 int IND_UPDATE = 5000;  //  induction update delay loop
 int DISP_UPDATE = 5000; //  NTP and display update
 
+// Systemstart
+bool startMDNS = true; // Standard mDNS Name ist ESP8266- mit mqtt_chip_key
+char nameMDNS[16] = "MQTTDevice";
 bool shouldSaveConfig = false; // WiFiManager
 
 unsigned long lastSenAct = 0; // Timestap actors on sensor error

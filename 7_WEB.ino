@@ -161,6 +161,23 @@ void handleRequestMisc()
     }
     goto SendMessage;
   }
+  if (request == "mdns_name")
+  {
+    message = nameMDNS;
+    goto SendMessage;
+  }
+  if (request == "mdns")
+  {
+    if (startMDNS)
+    {
+      message = "1";
+    }
+    else
+    {
+      message = "0";
+    }
+    goto SendMessage;
+  }
   if (request == "enable_mqtt")
   {
     if (StopOnMQTTError)
@@ -222,7 +239,14 @@ void handleRequestMisc()
   }
   if (request == "firmware")
   {
-    message = "MQTTDevice V ";
+    if (startMDNS)
+    {
+      message = nameMDNS;
+      message += " V";
+    }
+    else
+      message = "MQTTDevice V ";
+    
     message += Version;
     goto SendMessage;
   }
@@ -298,6 +322,18 @@ void handleSetMisc()
         startBuzzer = true;
       else
         startBuzzer = false;
+    }
+     if (server.argName(i) == "mdns_name")
+    {
+      server.arg(i).toCharArray(nameMDNS, 16);
+      checkChars(nameMDNS);
+    }
+    if (server.argName(i) == "mdns")
+    {
+      if (server.arg(i) == "1")
+        startMDNS = true;
+      else
+        startMDNS = false;
     }
     if (server.argName(i) == "enable_mqtt")
     {

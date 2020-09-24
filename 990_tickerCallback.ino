@@ -103,4 +103,5 @@ void tickerWLANCallback() // Ticker helper function calling Event WLAN Error
 void tickerNTPCallback() // Ticker helper function calling Event WLAN Error
 {
   timeClient.update();
+  Serial.printf("*** SYSINFO: %s\n", timeClient.getFormattedTime().c_str());
 }

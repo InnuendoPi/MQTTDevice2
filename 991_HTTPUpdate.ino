@@ -61,12 +61,10 @@ void upIn()
 
                 Serial.println("*** SYSINFO: Index Update abgeschlossen.");
                 fsUploadFile.close();
-                SPIFFS.remove("/update2.txt");
-                fsUploadFile = SPIFFS.open("/update3.txt", "w");
+                SPIFFS.remove("/update.txt");
+                fsUploadFile = SPIFFS.open("/update2.txt", "w");
                 int bytesWritten = fsUploadFile.print("0");
                 fsUploadFile.close();
-                SPIFFS.end(); // unmount SPIFFS
-                ESP.restart();
             }
             else
                 return;
@@ -129,12 +127,10 @@ void upCerts()
                 }
                 fsUploadFile.close();
                 Serial.println("*** SYSINFO: Certs Update abgeschlossen.");
-                SPIFFS.remove("/update.txt");
-                fsUploadFile = SPIFFS.open("/update2.txt", "w");
+                SPIFFS.remove("/update2.txt");
+                fsUploadFile = SPIFFS.open("/update3.txt", "w");
                 int bytesWritten = fsUploadFile.print("0");
                 fsUploadFile.close();
-                SPIFFS.end(); // unmount SPIFFS
-                ESP.restart();
             }
             else
                 return;
@@ -212,7 +208,7 @@ void updateSys()
         if (i > 3)
         {
             SPIFFS.remove("/update.txt");
-            Serial.println("*** SYSINFO: ERROR Cert Update");
+            Serial.println("*** SYSINFO: ERROR Index Update");
             return;
         }
         fsUploadFile = SPIFFS.open("/update.txt", "w");
@@ -222,10 +218,9 @@ void updateSys()
         fsUploadFile = SPIFFS.open("/log1.txt", "w");
         bytesWritten = fsUploadFile.print((i));
         fsUploadFile.close();
-
-        Serial.print("*** SYSINFO Starte Cert Update Free Heap: ");
+        Serial.print("*** SYSINFO Starte Index Update Free Heap: ");
         Serial.println(ESP.getFreeHeap());
-        upCerts();
+        upIn();
     }
     if (SPIFFS.exists("/update2.txt"))
     {
@@ -240,7 +235,7 @@ void updateSys()
         if (i > 3)
         {
             SPIFFS.remove("/update2.txt");
-            Serial.println("*** SYSINFO: ERROR Index Update");
+            Serial.println("*** SYSINFO: ERROR Cert Update");
             return;
         }
         fsUploadFile = SPIFFS.open("/update2.txt", "w");
@@ -250,10 +245,9 @@ void updateSys()
         fsUploadFile = SPIFFS.open("/log2.txt", "w");
         bytesWritten = fsUploadFile.print((i));
         fsUploadFile.close();
-
-        Serial.print("*** SYSINFO Starte Index Update Free Heap: ");
+        Serial.print("*** SYSINFO Starte Cert Update Free Heap: ");
         Serial.println(ESP.getFreeHeap());
-        upIn();
+        upCerts();
     }
     if (SPIFFS.exists("/update3.txt"))
     {

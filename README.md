@@ -6,7 +6,7 @@ Dokumentation: <https://innuendopi.github.io/MQTTDevice2/>
 
 ## Changelog
 
-Version 2.12
+Version 2.15
 
 - Update:   ESP8266 2.7.4 (weiterhin SPIFFS)
 - Update:   Bibliotheken aktualisiert
@@ -19,7 +19,7 @@ Version 2.12
 - Fixed:    Umstellung Sommer/Winterzeit
 - Added:    Visualisierung Grafana, Influx Datenbank
 
-Bibliotheken: (Stand ab Version 2.12, 09.2020)
+Bibliotheken: (Stand ab Version 2.15, 09.2020)
 
 - ESP8266 2.7.4 (SPIFFS)
 - Arduino IDE 1.8.13
@@ -30,7 +30,7 @@ Bibliotheken: (Stand ab Version 2.12, 09.2020)
 - WiFiManager 0.15.0
 
 Flash size 4MB (FS:2MB OTA:~1019kB)
-SSL support Basic SSL ciphers
+SSL support all SSL ciphers (most comp)
 Exceptions Lagacy
 IwIP variant v2 lower mem
 

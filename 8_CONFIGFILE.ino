@@ -197,6 +197,19 @@ bool loadConfig()
     startBuzzer = false;
     DEBUG_MSG("%s\n", "Buzzer disabled");
   }
+  if (miscObj.containsKey("mdns_name"))
+    strlcpy(nameMDNS, miscObj["mdns_name"], sizeof(nameMDNS));
+
+  if (miscObj["mdns"] == "1")
+  {
+    startMDNS = true;
+    DEBUG_MSG("mDNS activated: %s\n", nameMDNS);
+  }
+  else
+  {
+    startMDNS = false;
+    DEBUG_MSG("%s\n", "mDNS disabled");
+  }
 
   if (miscObj.containsKey("upsen"))
     SEN_UPDATE = miscObj["upsen"];
@@ -429,6 +442,12 @@ bool saveConfig()
   else
     miscObj["buzzer"] = "0";
 
+  miscObj["mdns_name"] = nameMDNS;
+  if (startMDNS)
+    miscObj["mdns"] = "1";
+  else
+    miscObj["mdns"] = "0";
+    
   miscObj["STARTDB"] = startDB;
   miscObj["DBSERVER"] = dbServer;
   miscObj["DB"] = dbDatabase;
