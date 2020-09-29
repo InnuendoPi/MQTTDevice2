@@ -197,8 +197,8 @@ InfluxDBClient dbClient;
 bool startDB = false;
 bool startVis = false;
 char dbServer[28] = "http://192.168.100.30:8086"; // InfluxDB Server IP
-char dbUser[5] = "";
-char dbPass[5] = "";
+char dbUser[15] = "";
+char dbPass[15] = "";
 char dbDatabase[11] = "mqttdevice";
 char dbVisTag[15] = "";
 unsigned long upInflux = 15000;
