@@ -480,12 +480,6 @@ Wenn der Brauvorgang abgeschlossen ist, wird das Schreiben der Daten mit einem K
 
 Mit dieser Vorgehensweise beinhaltet die Visualisierung nur die relevanten Daten für den Brauvorgang.
 
-Die URL für das Dashboard kann in Grafana über die Funktion Export ausgelesen werden.
-
-Beispiel für die URL Dashboard: <http://192.168.178.100:3000/d/xxxxxxx/mqttdevice?orgId=1&refresh=5s&kiosk=tv>
-
-![Grafana](img/grafana.png)
-
 **Installation Datenbank:**
 
 Installation der Datenbank InfluxDB:
