@@ -120,9 +120,14 @@ void sendData()
         else
             dbData.addField("Powerlevel", 0);
         DEBUG_MSG("Sende an InfluxDB: %s\n", dbData.toLineProtocol().c_str());
+        Serial.print("Sende an InfluxDB: ");
+        Serial.println(dbData.toLineProtocol().c_str());
+
         if (!dbClient.writePoint(dbData))
         {
             DEBUG_MSG("InfluxDB Schreibfehler: %s\n", dbClient.getLastErrorMessage().c_str());
+            Serial.print("InfluxDB Schreibfehler:  ");
+            Serial.println(dbClient.getLastErrorMessage().c_str());
         }
     }
 }
@@ -138,11 +143,15 @@ bool checkDBConnect()
     if (dbClient.validateConnection())
     {
         DEBUG_MSG("Verbunden mit InfluxDB: %s\n", dbClient.getServerUrl().c_str());
+        Serial.print("Verbunden mit InfluxDB: ");
+        Serial.println(dbClient.getServerUrl().c_str());
         return true;
     }
     else 
     {
         DEBUG_MSG("Verbindung zu InfluxDB Datenbank fehlgeschlagen: %s\n", dbClient.getLastErrorMessage().c_str());
+        Serial.print("Verbindung mit InfluxDB fehlgeschlagen: ");
+        Serial.println(dbClient.getServerUrl().c_str());
         return false;
     }
 }
