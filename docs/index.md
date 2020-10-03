@@ -76,7 +76,7 @@ Diese zwei Topics werden nun beispielhaft auf dem MQTTDevice eingerichtet.
 *Hinweis 1: falls ein CraftbeerPi3 MQTT Plugin bereits vorhanden ist (bspw. die ältere Version cbpi-mqttCompressor), muss das Plugin ersetzt werden. Dazu die Version cbpi-mqttPub in den Plugins Ordner kopieren und den Ordner cbpi-mqttCompressor löschen.*
 
 *Hinweis 2: wenn das Induktionskochfeld GGM IDS2 eingesetzt wird, sollte das CraftbberPi3 Plugin cbpi-PIDArduinoPowerOutput verwendet werden: <https://github.com/InnuendoPi/cbpi-PIDArduinoPowerOutput>*
-*Zur Konfiguration der PID Einstellungen empfiehlt ist das Plugin cbpi-PIDAutoTunePowerOutput <https://github.com/InnuendoPi/cbpi_PIDAutoTunePowerOutput> sehr hilfreich*
+*Zur Konfiguration der PID Einstellungen ist das Plugin cbpi-PIDAutoTunePowerOutput <https://github.com/InnuendoPi/cbpi_PIDAutoTunePowerOutput> sehr hilfreich*
 
 **MQTTDevice flashen:**
 
