@@ -1,7 +1,8 @@
 # Changelog
 
-Version 2.17
+Version 2.18
 
+- Fixed:    Fehler beim Speichern negativer Sensor Offset behoben
 - Update:   Bibliotheken aktualisiert
 - Update:   ESP8266 2.7.4 (weiterhin SPIFFS)
 - Added:    Support für Piezo Buzzer an D8
