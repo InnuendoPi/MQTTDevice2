@@ -52,7 +52,9 @@ bool loadConfig()
   }
 
   if (numberOfActors == 0)
+  {
     DEBUG_MSG("Actors: %d\n", numberOfActors);
+  }
   DEBUG_MSG("%s\n", "--------------------");
 
   JsonArray sensorsArray = doc["sensors"];
@@ -82,8 +84,9 @@ bool loadConfig()
   }
 
   if (numberOfSensors == 0)
+  {
     DEBUG_MSG("Sensors: %d\n", numberOfSensors);
-
+  }
   DEBUG_MSG("%s\n", "--------------------");
 
   JsonArray indArray = doc["induction"];
@@ -250,10 +253,13 @@ bool loadConfig()
     upInflux = miscObj["DBUP"];
 
   if (startDB)
+  {
     DEBUG_MSG("InfluxDB Server URL %s User: %s Pass: %s Update %d\n", dbServer, dbUser, dbPass, upInflux);
+  }
   else
+  {
     DEBUG_MSG("InfluxDB Server: %d\n", startDB);
-
+  }
   if (miscObj.containsKey("MQTTHOST"))
   {
     strlcpy(mqtthost, miscObj["MQTTHOST"], sizeof(mqtthost));
@@ -320,8 +326,9 @@ bool saveConfig()
     DEBUG_MSG("Actor #: %d Name: %s MQTT: %s PIN: %s INV: %s SW: %s GRAF: %s\n", (i + 1), actors[i].name_actor.c_str(), actors[i].argument_actor.c_str(), PinToString(actors[i].pin_actor).c_str(), actors[i].getInverted().c_str(), actors[i].getSwitchable().c_str(), actors[i].getGrafana().c_str());
   }
   if (numberOfActors == 0)
+  {
     DEBUG_MSG("Actors: %d\n", numberOfActors);
-
+  }
   DEBUG_MSG("%s\n", "--------------------");
 
   // Write Sensors
@@ -447,7 +454,7 @@ bool saveConfig()
     miscObj["mdns"] = "1";
   else
     miscObj["mdns"] = "0";
-    
+
   miscObj["STARTDB"] = startDB;
   miscObj["DBSERVER"] = dbServer;
   miscObj["DB"] = dbDatabase;
@@ -455,9 +462,13 @@ bool saveConfig()
   miscObj["DBPASS"] = dbPass;
   miscObj["DBUP"] = upInflux;
   if (startDB)
+  {
     DEBUG_MSG("InfluxDB Server URL %s User: %s Pass: %s Update %d\n", dbServer, dbUser, dbPass, upInflux);
+  }
   else
+  {
     DEBUG_MSG("InfluxDB Server: %d\n", startDB);
+  }
 
   miscObj["MQTTHOST"] = mqtthost;
   miscObj["upsen"] = SEN_UPDATE;

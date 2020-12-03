@@ -39,13 +39,13 @@ extern "C"
 }
 
 #ifdef DEBUG_ESP_PORT
-#define DEBUG_MSG(...) DEBUG_ESP_PORT.printf(__VA_ARGS__)
+#define DEBUG_MSG(...) DEBUG_ESP_PORT.printf("%s ", timeClient.getFormattedTime().c_str());DEBUG_ESP_PORT.printf(__VA_ARGS__)
 #else
 #define DEBUG_MSG(...)
 #endif
 
 // Version
-#define Version "2.18"
+#define Version "2.19"
 
 // Definiere Pausen
 #define PAUSE1SEC 1000

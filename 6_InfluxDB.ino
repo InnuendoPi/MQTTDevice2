@@ -25,9 +25,13 @@ public:
             kettle_topic.toCharArray(subscribemsg, 50);
             pubsubClient.subscribe(subscribemsg);
             if (!pubsubClient.subscribe(subscribemsg))
+            {
                 DEBUG_MSG("%s\n", "InfluxMQTT Fehler");
+            }
             else
+            {
                 DEBUG_MSG("InfluxMQTT: Subscribing to %s\n", subscribemsg);
+            }
         }
     }
     void mqtt_unsubscribe()
@@ -141,7 +145,7 @@ bool checkDBConnect()
         DEBUG_MSG("Verbunden mit InfluxDB: %s\n", dbClient.getServerUrl().c_str());
         return true;
     }
-    else 
+    else
     {
         DEBUG_MSG("Verbindung zu InfluxDB Datenbank fehlgeschlagen: %s\n", dbClient.getLastErrorMessage().c_str());
         return false;

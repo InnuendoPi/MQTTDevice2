@@ -10,15 +10,15 @@ Eine ausführliche Dokumentation liegt auf github pages: <https://innuendopi.git
 
 ## Sketch Information
 
-Bibliotheken: (Stand ab Version 2.17, 09.2020)
+Bibliotheken: (Stand ab Version 2.197, 12.2020)
 
 - ESP8266 2.7.4 (SPIFFS)
 - Arduino IDE 1.8.13
 - Visual Code 1.48.2
 - PubSubClient 2.8.0
-- ArduinoJSON 6.16
-- InfluxDB 3.4.0
-- WiFiManager 0.15.0
+- ArduinoJSON 6.17
+- InfluxDB 3.6
+- WiFiManager 2.0
 
 Board Konfiguration:
 Flash size 4MB (FS:2MB OTA:~1019kB)

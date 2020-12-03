@@ -12,32 +12,38 @@ void setup()
   snprintf(mqtt_clientid, 16, "ESP8266-%08X", ESP.getChipId());
   Serial.printf("*** SYSINFO: Starte MQTTDevice %s\n", mqtt_clientid);
 
-  // WiFi Manager
   wifiManager.setDebugOutput(false);
   wifiManager.setMinimumSignalQuality(10);
   wifiManager.setConfigPortalTimeout(300);
   wifiManager.setAPCallback(configModeCallback);
   wifiManager.setSaveConfigCallback(saveConfigCallback);
+
   WiFiManagerParameter cstm_mqtthost("host", "MQTT Server IP (CBPi)", mqtthost, 16);
-  // WiFiManagerParameter p_hint("<small>*Sobald das MQTTDevice im WLAN eingebunden ist, öffne im Browser http://mqttdevice (mDNS)</small>");
+  WiFiManagerParameter p_hint("<small>*Sobald das MQTTDevice mit deinem WLAN verbunden ist, öffne im Browser http://mqttdevice </small>");
   wifiManager.addParameter(&cstm_mqtthost);
-  // wifiManager.addParameter(&p_hint);
+  wifiManager.addParameter(&p_hint);
   wifiManager.autoConnect(mqtt_clientid);
   WiFi.setSleepMode(WIFI_NONE_SLEEP);
   WiFi.mode(WIFI_STA);
+  WiFi.persistent(true);
   WiFi.setAutoConnect(true);
   WiFi.setAutoReconnect(true);
 
   // Lade Dateisystem
   if (SPIFFS.begin())
   {
-    DEBUG_MSG("*** SYSINFO Starte Setup SPIFFS Free Heap: %d\n", ESP.getFreeHeap());
+    Serial.printf("*** SYSINFO Starte Setup SPIFFS Free Heap: %d\n", ESP.getFreeHeap());
 
     // Prüfe WebUpdate
     updateSys();
 
     // Erstelle Ticker Objekte
     setTicker();
+
+    // Starte NTP
+    timeClient.begin();
+    timeClient.forceUpdate();
+    TickerNTP.start();
 
     if (shouldSaveConfig) // WiFiManager
     {
@@ -52,10 +58,6 @@ void setup()
   }
   else
     Serial.println("*** SYSINFO: Fehler - Dateisystem SPIFFS konnte nicht eingebunden werden!");
-
-  // Starte NTP
-  cbpiEventSystem(EM_SETNTP);
-  TickerNTP.start();
 
   // Lege Event Queues an
   gEM.addListener(EventManager::kEventUser0, listenerSystem);
@@ -80,8 +82,7 @@ void setup()
     cbpiEventSystem(EM_MDNSET);
   else
   {
-    Serial.print("*** SYSINFO: ESP8266 IP Addresse: ");
-    Serial.println(WiFi.localIP().toString());
+    Serial.printf("*** SYSINFO: ESP8266 IP Addresse: %s Time: %s RSSI: %d\n", WiFi.localIP().toString().c_str(), timeClient.getFormattedTime().c_str(), WiFi.RSSI());
   }
   // Starte OLED Display
   dispStartScreen();
@@ -109,7 +110,7 @@ void setup()
   // Verarbeite alle Events Setup
   gEM.processAllEvents();
 
-  Serial.printf("*** SYSINFO: %s\n", timeClient.getFormattedTime().c_str());
+  // Serial.printf("*** SYSINFO: %s\n", timeClient.getFormattedTime().c_str());
 }
 
 void setupServer()

@@ -12,8 +12,7 @@ void listenerSystem(int event, int parm) // System event listener
                   //  Wenn WiFi.status() != WL_CONNECTED (wlan_state false nach maxRetries und Delay) ist, ist ein check mqtt überflüssig
 
     oledDisplay.wlanOK = false;
-    WiFi.mode(WIFI_STA);
-    WiFi.begin();
+    WiFi.reconnect();
     if (WiFi.status() == WL_CONNECTED)
     {
       wlan_state = true;
@@ -111,6 +110,8 @@ void listenerSystem(int event, int parm) // System event listener
     {
       if (TickerWLAN.state() != RUNNING)
       {
+        WiFi.mode(WIFI_OFF);
+        WiFi.mode(WIFI_STA);
         TickerWLAN.resume();
         wlanconnectlasttry = millis();
       }
@@ -132,7 +133,7 @@ void listenerSystem(int event, int parm) // System event listener
     {
       if (TickerMQTT.state() != RUNNING)
       {
-        DEBUG_MSG("%s\n", "MQTT Error! Starte TickerMQTT!");
+        DEBUG_MSG("%s\n", "MQTT Error: Starte TickerMQTT");
         TickerMQTT.resume();
         mqttconnectlasttry = millis();
       }
@@ -189,9 +190,9 @@ void listenerSystem(int event, int parm) // System event listener
     if (startMDNS && nameMDNS[0] != '\0' && WiFi.status() == WL_CONNECTED)
     {
       if (mdns.begin(nameMDNS))
-        Serial.printf("*** SYSINFO: mDNS Name %s mit IP %s verbunden\n", nameMDNS, WiFi.localIP().toString().c_str());
+        Serial.printf("*** SYSINFO: mDNS gestartet als %s verbunden an %s Time: %s RSSI=%d\n", nameMDNS, WiFi.localIP().toString().c_str(), timeClient.getFormattedTime().c_str(), WiFi.RSSI());
       else
-        Serial.println("*** SYSINFO: mMDNS Fehler beim Start");
+        Serial.printf("*** SYSINFO: Fehler Start mDNS! IP Adresse: %s Time: %s RSSI: %d\n", WiFi.localIP().toString().c_str(), timeClient.getFormattedTime().c_str(), WiFi.RSSI());
     }
     break;
   case EM_DISPUP: // Display screen output update (30)

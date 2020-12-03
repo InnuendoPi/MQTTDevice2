@@ -1,7 +1,9 @@
 # Changelog
 
-Version 2.18
+Version 2.19
 
+- Fixed:    WLAN reconnect
+- Added:    DEBUG_MSG mit Zeitstempel
 - Fixed:    Fehler beim Speichern negativer Sensor Offset behoben
 - Update:   Bibliotheken aktualisiert
 - Update:   ESP8266 2.7.4 (weiterhin SPIFFS)
