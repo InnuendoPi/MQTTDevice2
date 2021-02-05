@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 
 <head>
   <meta charset="utf-8">
-  <title>MQTT Device</title>
+  <title>MQTTDevice2</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="font-awesome.min.css" type="text/css">
-  <link rel="stylesheet" href="theme.css" type="text/css">
+  <link rel="stylesheet" href="bootstrap.min.css">
+  <link rel="stylesheet" href="styles.min.css">
 </head>
 
 <body onload="setInterval(refresh, 3000)">
@@ -17,10 +17,10 @@
           <h1 id="firmware" class="text-center"></h1>
         </div>
         <div class="col-md-auto">
-          <a href="/edit" class="btn btn-outline-primary" id="btn_edit">Dateiexplorer</a>
-          <button type="button" class="btn btn-outline-primary" id="btn_visual">Visualisierung</button>
-          <button type="button" class="btn btn-outline-danger" id="btn_update">Update</button>
-          <button type="button" class="btn btn-outline-danger" id="btn_reboot">Neustart</button>
+          <a href="/edit" class="btn btn-outline-link" id="btn_edit">Dateiexplorer</a>
+          <button type="button" class="btn btn-outline-link" id="btn_visual">Visualisierung</button>
+          <button type="button" class="btn btn-outline-link" id="btn_update">Update</button>
+          <button type="button" class="btn btn-outline-link" id="btn_reboot">Neustart</button>
         </div>
       </div>
     </div>
@@ -34,7 +34,7 @@
                 data-toggle="modal" data-value="-1" style="float:right">Neu</a>
             </div>
             <div class="card-body">
-			  <ul class="list-group" id="listSensors"></ul>
+              <ul class="list-group" id="listSensors"></ul>
             </div>
           </div>
         </div>
@@ -62,8 +62,9 @@
       <div class="row">
         <div class="col-md-12">
           <div class="card">
-            <div class="card-header">Induktionskochfeld GGM IDS2 <a href="" class="badge badge-warning" data-target="#induction_modal"
-                data-toggle="modal" data-value="-1" style="float:right">bearbeiten</a></div>
+            <div class="card-header">Induktionskochfeld GGM IDS2 <a href="" class="badge badge-warning"
+                data-target="#induction_modal" data-toggle="modal" data-value="-1" style="float:right">bearbeiten</a>
+            </div>
             <div class="card-body">
               <ul class="list-group" id="inductionCooker">
               </ul>
@@ -134,14 +135,15 @@
             <input class="form-check-input" type="checkbox" value="" id="modal_actor_switchable" />
             <label class="form-check-label" for="modal_actor_switchable">Aktiviere Event handling</label>
           </div>
-		  <div class="form-check">
+          <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="modal_actor_grafana" />
             <label class="form-check-label" for="modal_actor_grafana">Aktiviere Grafana</label>
           </div>
         </div>
-        <div class="modal-footer"> <button type="button" class="btn btn-primary" id="modal_actor_btn_save">Speichern</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button> <button type="button"
-            class="btn btn-danger" id="modal_actor_btn_delete">Aktor löschen</button></div>
+        <div class="modal-footer"> <button type="button" class="btn btn-outline-success"
+            id="modal_actor_btn_save">Speichern</button>
+          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Schließen</button> <button type="button"
+            class="btn btn-outline-danger" id="modal_actor_btn_delete">Aktor löschen</button></div>
       </div>
     </div>
   </div>
@@ -179,9 +181,10 @@
             </div>
           </form>
         </div>
-        <div class="modal-footer"> <button type="button" class="btn btn-primary" id="modal_sensor_btn_save">Speichern</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
-          <button type="button" class="btn btn-danger" id="modal_sensor_btn_delete">Sensor löschen</button>
+        <div class="modal-footer"> <button type="button" class="btn btn-outline-success"
+            id="modal_sensor_btn_save">Speichern</button>
+          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Schließen</button>
+          <button type="button" class="btn btn-outline-danger" id="modal_sensor_btn_delete">Sensor löschen</button>
         </div>
       </div>
     </div>
@@ -190,7 +193,8 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title"> Induktionskochfeld bearbeiten</h5> <button type="button" class="close" data-dismiss="modal">
+          <h5 class="modal-title"> Induktionskochfeld bearbeiten</h5> <button type="button" class="close"
+            data-dismiss="modal">
             <span>×</span>
           </button>
         </div>
@@ -220,16 +224,18 @@
             <input type="text" class="form-control" placeholder="" id="modal_induction_delay" />
           </div>
           <div class="form-group">
-            <label for="modal_induction_pl">Event Handling Induktionskochfeld (0 = Induktion aus ... 100 = keine Änderung)</label>
+            <label for="modal_induction_pl">Event Handling Induktionskochfeld (0 = Induktion aus ... 100 = keine
+              Änderung)</label>
             <input type="text" class="form-control" placeholder="" id="modal_induction_pl" />
           </div>
-		  <div class="form-check">
+          <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="modal_induction_grafana" />
             <label class="form-check-label" for="modal_induction_grafana">Aktiviere Grafana</label>
           </div>
         </div>
-        <div class="modal-footer"> <button type="button" class="btn btn-primary" id="modal_induction_btn_save">Speichern</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+        <div class="modal-footer"> <button type="button" class="btn btn-outline-success"
+            id="modal_induction_btn_save">Speichern</button>
+          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Schließen</button>
         </div>
       </div>
     </div>
@@ -256,8 +262,9 @@
             <input type="text" class="form-control" placeholder="" id="modal_display_update" />
           </div>
         </div>
-        <div class="modal-footer"> <button type="button" class="btn btn-primary" id="modal_display_btn_save">Speichern</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+        <div class="modal-footer"> <button type="button" class="btn btn-outline-success"
+            id="modal_display_btn_save">Speichern</button>
+          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Schließen</button>
         </div>
       </div>
     </div>
@@ -295,11 +302,11 @@
                 <label for="modal_misc_address">IP Adresse MQTT Server (CBPi)</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_address" />
               </div>
-			  <div class="form-check">
+              <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="modal_misc_buzzer" />
                 <label class="form-check-label" for="modal_misc_buzzer">Aktiviere Buzzer</label>
               </div>
-			  <div class="form-check">
+              <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="modal_misc_mdns" />
                 <label class="form-check-label" for="modal_misc_mdns">Aktiviere mDNS</label>
               </div>
@@ -309,21 +316,22 @@
               </div>
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="modal_misc_db_enable" />
-                <label class="form-check-label" for="modal_misc_db_enable">Aktiviere Visualisierung Grafana (Neustart erforderlich!)</label>
+                <label class="form-check-label" for="modal_misc_db_enable">Aktiviere Visualisierung Grafana (Neustart
+                  erforderlich!)</label>
               </div>
-			  <div class="form-group">
+              <div class="form-group">
                 <label for="modal_misc_db_server">Influx Datenbank Server IP</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_db_server" />
               </div>
-			  <div class="form-group">
+              <div class="form-group">
                 <label for="modal_misc_db_database">Datenbank Name (mqttdevice)</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_db_database" />
               </div>
-			  <div class="form-group">
+              <div class="form-group">
                 <label for="modal_misc_db_user">Datenbank Benutzer</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_db_user" />
               </div>
-			  <div class="form-group">
+              <div class="form-group">
                 <label for="modal_misc_db_pass">Datenbank Benutzer Password</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_db_pass" />
               </div>
@@ -346,11 +354,13 @@
             <div class="tab-pane fade" id="misc3" role="tabpanel" aria-labelledby="misc3-tab">
               <br />
               <div class="form-group">
-                <label for="modal_misc_del_sen_act">Verzögerung für Aktoren bevor Sensoren ein Event auslösen (Sek)</label>
+                <label for="modal_misc_del_sen_act">Verzögerung für Aktoren bevor Sensoren ein Event auslösen
+                  (Sek)</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_del_sen_act" />
               </div>
               <div class="form-group">
-                <label for="modal_misc_del_sen_ind">Verzögerung für das Induktionskochfeld bevor Sensoren ein Event auslösen (Sek)</label>
+                <label for="modal_misc_del_sen_ind">Verzögerung für das Induktionskochfeld bevor Sensoren ein Event
+                  auslösen (Sek)</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_del_sen_ind" />
               </div>
               <div class="form-group">
@@ -378,46 +388,53 @@
               <br />
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="modal_misc_reset" />
-                <label class="form-check-label" for="modal_misc_reset">Lösche WLAN Einstellungen (Reset to AP Mode)</label>
+                <label class="form-check-label" for="modal_misc_reset">Lösche WLAN Einstellungen (Reset to AP
+                  Mode)</label>
               </div>
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="modal_misc_clear" />
-                <label class="form-check-label" for="modal_misc_clear">Lösche alle Einstellungen (Reset to defaults)</label>
+                <label class="form-check-label" for="modal_misc_clear">Lösche alle Einstellungen (Reset to
+                  defaults)</label>
               </div>
             </div>
           </div>
         </div>
-        <div class="modal-footer"> <button type="button" class="btn btn-primary" id="modal_misc_btn_save">Speichern</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+        <div class="modal-footer"> <button type="button" class="btn btn-outline-success"
+            id="modal_misc_btn_save">Speichern</button>
+          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Schließen</button>
         </div>
       </div>
     </div>
   </div>
-  <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="mi-modal-upd">
-    <div class="modal-dialog modal-sm">
+  <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true"
+    id="mi-modal-upd">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title" id="myModalLabelUpd">Firmware Update</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
           <p>Datei Upload oder Web Update?</p>
           <p>MQTTDevice startet automatisch neu!</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" id="modal-btn-file">Upload</button>
-          <button type="button" class="btn btn-secondary" id="modal-btn-web">WebUpdate</button>
-          <button type="button" class="btn btn-primary" id="modal-btn-abbruch">Zurück</button>
+          <button type="button" class="btn btn-outline-warning" id="modal-btn-file">Upload</button>
+          <button type="button" class="btn btn-outline-primary" id="modal-btn-web">WebUpdate</button>
+          <button type="button" class="btn btn-outline-secondary" id="modal-btn-abbruch">Zurück</button>
         </div>
       </div>
     </div>
   </div>
-  <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabelVis" aria-hidden="true" id="mi-modal-vis">
+  <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabelVis" aria-hidden="true"
+    id="mi-modal-vis">
     <div class="modal-dialog modal-sm">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title" id="myModalLabelVis">Visualisierung</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
           <div class="form-group">
@@ -426,14 +443,14 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" id="modal-btn-start">Starten</button>
-          <button type="button" class="btn btn-primary" id="modal-btn-stop">Stoppen</button>
+          <button type="button" class="btn btn-outline-warning" id="modal-btn-start">Starten</button>
+          <button type="button" class="btn btn-outline-secondary" id="modal-btn-stop">Stoppen</button>
         </div>
       </div>
     </div>
   </div>
-  <script src="./jquery-3.4.1.min.js"></script>
-  <script src="./bootstrap.bundle.js"></script>
+  <script src="./jquery.min.js"></script>
+  <script src="./bootstrap.bundle.min.js"></script>
   <script type="text/javascript">
 
     function refresh() {
@@ -534,16 +551,16 @@
             inductionRender += data.power;
             inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Aktuelle Leistung<span class='badge badge-danger'> P";
             inductionRender += data.powerLevel;
-			if (data.pl != "100") {
-			inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Event Leistung Reduzierung auf<span class='badge badge-success'> P";
-            inductionRender += data.pl;
-			inductionRender += "%</span> </li>";
-			}
-			else {
-			inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Events<span class='badge badge-dark'> ";
-            inductionRender += "deaktiviert";
-			inductionRender += "</span> </li>";
-			}
+            if (data.pl != "100") {
+              inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Event Leistung Reduzierung auf<span class='badge badge-success'> P";
+              inductionRender += data.pl;
+              inductionRender += "%</span> </li>";
+            }
+            else {
+              inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Events<span class='badge badge-dark'> ";
+              inductionRender += "deaktiviert";
+              inductionRender += "</span> </li>";
+            }
           }
           else if (data.relayOn && data.state == true) {
             inductionRender += " badge-success'> ON";
@@ -551,16 +568,16 @@
             inductionRender += data.power;
             inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Aktuelle Leistung<span class='badge badge-success'> P";
             inductionRender += data.powerLevel;
-			if (data.pl != "100") {
-			inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Event Leistung Reduzierung auf<span class='badge badge-success'> P";
-            inductionRender += data.pl;
-			inductionRender += "%</span> </li>";
-			}
-			else {
-			inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Events<span class='badge badge-dark'> ";
-            inductionRender += "deaktiviert";
-			inductionRender += "</span> </li>";
-			}
+            if (data.pl != "100") {
+              inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Event Leistung Reduzierung auf<span class='badge badge-success'> P";
+              inductionRender += data.pl;
+              inductionRender += "%</span> </li>";
+            }
+            else {
+              inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Events<span class='badge badge-dark'> ";
+              inductionRender += "deaktiviert";
+              inductionRender += "</span> </li>";
+            }
           }
           else {
             inductionRender += " badge-dark'> OFF";
@@ -568,22 +585,22 @@
             inductionRender += data.power;
             inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Aktuelle Leistung<span class='badge badge-dark'> P";
             inductionRender += data.powerLevel;
-			if (data.pl != "100") {
-			inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Event Leistung Reduzierung auf<span class='badge badge-success'> P";
-            inductionRender += data.pl;
-			inductionRender += "%</span> </li>";
-			}
-			else {
-			inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Events<span class='badge badge-dark'> ";
-            inductionRender += "deaktiviert";
-			inductionRender += "</span> </li>";
-			}
+            if (data.pl != "100") {
+              inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Event Leistung Reduzierung auf<span class='badge badge-success'> P";
+              inductionRender += data.pl;
+              inductionRender += "%</span> </li>";
+            }
+            else {
+              inductionRender += "%</span> </li> <li class='list-group-item d-flex justify-content-between align-items-center'>Events<span class='badge badge-dark'> ";
+              inductionRender += "deaktiviert";
+              inductionRender += "</span> </li>";
+            }
           }
         }
         else {
           inductionRender += "Induktionskochfeld<span class='badge";
-		  inductionRender += " badge-dark'> Deaktiviert";
-		  inductionRender += " </span> </li>";
+          inductionRender += " badge-dark'> Deaktiviert";
+          inductionRender += " </span> </li>";
         }
         $('#inductionCooker').html(inductionRender);
       });
@@ -591,8 +608,8 @@
       $.get("/reqDisplay", function (data) {
         let displayRender = "<li class='list-group-item d-flex justify-content-between align-items-center'> ";
         displayRender += "OLED Display Status <span class='badge";
-		if (data.enabled) {
-          
+        if (data.enabled) {
+
           if (data.displayOn) {
             displayRender += " badge-success'> Ein";
           }
@@ -601,7 +618,7 @@
           }
         }
         else {
-		      displayRender += " badge-dark'> Deaktiviert";
+          displayRender += " badge-dark'> Deaktiviert";
         }
         displayRender += " </span> </li>";
         $('#oledDisplay').html(displayRender);
@@ -611,35 +628,35 @@
         let miscRender = "<li class='list-group-item d-flex justify-content-between align-items-center'> ";
         miscRender += " MQTT broker IP <span class='badge'>";
         miscRender += data.MQTTHOST;
-		miscRender += "</span></li> <li class='list-group-item d-flex justify-content-between align-items-center'> MQTT Verbindung <span class='badge";
-		if (data.enable_mqtt) {
+        miscRender += "</span></li> <li class='list-group-item d-flex justify-content-between align-items-center'> MQTT Verbindung <span class='badge";
+        if (data.enable_mqtt) {
           miscRender += " badge-success'> Events aktiviert";
         }
         else {
           miscRender += " badge-dark'> Events deaktiviert";
         }
-		miscRender += "</span><span class='badge";
-		if (data.mqtt_state) {
-            miscRender += " badge-success'> Online";
-		}
+        miscRender += "</span><span class='badge";
+        if (data.mqtt_state) {
+          miscRender += " badge-success'> Online";
+        }
         else {
-           miscRender += " badge-danger'> Offline";
-		}
-		miscRender += "</span></li> <li class='list-group-item d-flex justify-content-between align-items-center'> WLAN Verbindung <span class='badge ";
-		if (data.enable_wlan) {
-            miscRender += " badge-success'> Events aktiviert";
+          miscRender += " badge-danger'> Offline";
+        }
+        miscRender += "</span></li> <li class='list-group-item d-flex justify-content-between align-items-center'> WLAN Verbindung <span class='badge ";
+        if (data.enable_wlan) {
+          miscRender += " badge-success'> Events aktiviert";
         }
         else {
           miscRender += " badge-dark'> Events deaktiviert";
         }
-		miscRender += "</span><span class='badge";
-		if (data.wlan_state) {
-            miscRender += " badge-success'> Online";
-		}
-        else {
-           miscRender += " badge-danger'> Offline";
+        miscRender += "</span><span class='badge";
+        if (data.wlan_state) {
+          miscRender += " badge-success'> Online";
         }
-		miscRender += "</span></li>  <li class='list-group-item d-flex justify-content-between align-items-center'> Visualisierung Grafana <span class='badge ";
+        else {
+          miscRender += " badge-danger'> Offline";
+        }
+        miscRender += "</span></li>  <li class='list-group-item d-flex justify-content-between align-items-center'> Visualisierung Grafana <span class='badge ";
         if (data.startdb) {
           miscRender += " badge-success'> Aktiviert";
         }
@@ -648,14 +665,13 @@
         }
         miscRender += " </span> </li>";
         $('#miscSettings').html(miscRender);
-		
-		if (data.alertstate)
-		{
-		  alert("*** SYSINFO: WebUpdate abgeschlossen");
-		  location.reload();
-		}
+
+        if (data.alertstate) {
+          alert("*** SYSINFO: WebUpdate abgeschlossen");
+          location.reload();
+        }
       });
-    }
+    } // refresh
 
     var modalConfirmVis = function (callback) {
       $("#btn_visual").on("click", function () {
@@ -678,38 +694,33 @@
         // start
         var vistag = $('#modal_misc_vis_tag').val()
         $.ajax({
-          url: '/visualisieren?vistag=' + vistag + '&startvis=1',
+          url: '/visualisieren?vistag=' + vistag + '&startvis=true',
           type: 'POST',
           async: false,
           cache: false
-        }).done(function (msg) {
-          window.location.reload(true);
-        });;
+        });
       }
       else {
         // stop
         var vistag = $('#modal_misc_vis_tag').val()
         $.ajax({
-          url: '/visualisieren?vistag=' + vistag + '&startvis=0',
+          url: '/visualisieren?vistag=' + vistag + '&startvis=false',
           type: 'POST',
           async: false,
           cache: false
-        }).done(function (msg) {
-          window.location.reload(true);
-        });;
+        });
       }
     });
 
-    var modalConfirmUpd = function (callback) 
-    {
+    var modalConfirmUpd = function (callback) {
       $("#btn_update").on("click", function () {
         $("#mi-modal-upd").modal('show');
       });
 
       $("#modal-btn-web").on("click", function () {
-		document.getElementById("firmware").innerHTML = "WebUpdate gestartet ...";
-		$("#mi-modal-upd").modal('hide');
-		onload = setInterval(refresh, 120000);
+        document.getElementById("firmware").innerHTML = "WebUpdate gestartet ...";
+        $("#mi-modal-upd").modal('hide');
+        onload = setInterval(refresh, 120000);
         callback("1");
       });
 
@@ -724,27 +735,23 @@
       });
     };
 
-    modalConfirmUpd(function (confirm) 
-    {
+    modalConfirmUpd(function (confirm) {
       if (confirm == "1") {
         $.ajax({
           url: '/startHTTPUpdate',
           type: 'POST',
           async: false,
           cache: false
-        }).done(function (msg) {
-          window.location.reload(true);
-        });;
+        });
       }
-      else if (confirm == "2")
-      {
+      else if (confirm == "2") {
         location.href = "/update";
       }
     });
 
     $('#actor_modal').on('show.bs.modal', function (event) {
-      var button = $(event.relatedTarget) // Button that triggered the modal
-      var actorid = button.data('value') // Extract info from data-* attributes
+      var button = $(event.relatedTarget); // Button that triggered the modal
+      var actorid = button.data('value'); // Extract info from data-* attributes
       var actorname;
       var actorscript;
       var actorpin;
@@ -801,40 +808,25 @@
           actorgraf = data;
         }
       });
-      var modal = $(this)
-      modal.attr('actor_id', actorid)
-      modal.find('#modal_actor_name').val(actorname)
-      modal.find('#modal_actor_script').val(actorscript)
-      $('#modal_actor_pin').load('/reqPins?id=' + actorid)
-      if (actorinverted == "1") { modal.find('#modal_actor_inverted').prop("checked", true) }
-      else { modal.find('#modal_actor_inverted').prop("checked", false) }
-      if (actorswitchable == "1") { modal.find('#modal_actor_switchable').prop("checked", true) }
-      else { modal.find('#modal_actor_switchable').prop("checked", false) }
-	  if (actorgraf == "1") { modal.find('#modal_actor_grafana').prop("checked", true) }
-      else { modal.find('#modal_actor_grafana').prop("checked", false) }
+      var modal = $(this);
+      modal.attr('actor_id', actorid);
+      modal.find('#modal_actor_name').val(actorname);
+      modal.find('#modal_actor_script').val(actorscript);
+      $('#modal_actor_pin').load('/reqPins?id=' + actorid);
+      
+      modal.find('#modal_actor_inverted').prop("checked", Boolean(Number(actorinverted)));
+      modal.find('#modal_actor_switchable').prop("checked", Boolean(Number(actorswitchable)));
+      modal.find('#modal_actor_grafana').prop("checked", Boolean(Number(actorgraf)));
     })
 
     $("#modal_actor_btn_save").click(function () {
-      var modal = $('#actor_modal')
-      var actorname = modal.find('#modal_actor_name').val()
-      var actorscript = modal.find('#modal_actor_script').val()
-      var actorpin = modal.find('#modal_actor_pin').val()
-      if (modal.find('#modal_actor_inverted').prop("checked") == true) {
-        var actorinverted = "1"
-      } else {
-        var actorinverted = "0"
-      }
-      if (modal.find('#modal_actor_switchable').prop("checked") == true) {
-        var actorswitchable = "1"
-      } else {
-        var actorswitchable = "0"
-      }
-	  if (modal.find('#modal_actor_grafana').prop("checked") == true) {
-        var actorgraf = "1"
-      } else {
-        var actorgraf = "0"
-      }
-
+      var modal = $('#actor_modal');
+      var actorname = modal.find('#modal_actor_name').val();
+      var actorscript = modal.find('#modal_actor_script').val();
+      var actorpin = modal.find('#modal_actor_pin').val();      
+      var actorinverted = modal.find('#modal_actor_inverted').prop("checked");
+      var actorswitchable = modal.find('#modal_actor_switchable').prop("checked");
+      var actorgraf = modal.find('#modal_actor_grafana').prop("checked");
       var actorid = modal.attr('actor_id')
       $.ajax({
         url: '/setActor?id=' + actorid + '&name=' + actorname + '&script=' + actorscript + '&pin=' + actorpin + '&inv=' + actorinverted + '&sw=' + actorswitchable + '&grafana=' + actorgraf,
@@ -843,12 +835,12 @@
         async: false,
         cache: false
       });
-      modal.modal('hide')
+      modal.modal('hide');
     });
 
     $("#modal_actor_btn_delete").click(function () {
-      var modal = $('#actor_modal')
-      var actorid = modal.attr('actor_id')
+      var modal = $('#actor_modal');
+      var actorid = modal.attr('actor_id');
       $.ajax({
         url: '/delActor?id=' + actorid,
         type: 'POST',
@@ -856,12 +848,12 @@
         async: false,
         cache: false
       });
-      modal.modal('hide')
+      modal.modal('hide');
     });
 
     $('#sensor_modal').on('show.bs.modal', function (event) {
-      var button = $(event.relatedTarget)
-      var sensorid = button.data('value')
+      var button = $(event.relatedTarget);
+      var sensorid = button.data('value');
       var sensorname;
       var sensorscript;
       var sensoroffset;
@@ -907,27 +899,23 @@
         }
       });
       $('#modal_sensor_address').load('/reqSearchSensorAdresses?id=' + sensorid);
-      var modal = $(this)
-      modal.find('#modal_sensor_name').val(sensorname)
-      modal.find('#modal_sensor_script').val(sensorscript)
-      modal.find('#modal_sensor_offset').val(sensoroffset)
-      if (sensorsw == "1") { modal.find('#modal_sensor_sw').prop("checked", true) }
-      else { modal.find('#modal_sensor_sw').prop("checked", false) }
-      modal.attr('sensor_id', sensorid)
-    })
+      var modal = $(this);
+      modal.find('#modal_sensor_name').val(sensorname);
+      modal.find('#modal_sensor_script').val(sensorscript);
+      modal.find('#modal_sensor_offset').val(sensoroffset);
+      modal.find('#modal_sensor_sw').prop("checked", Boolean(Number(sensorsw)));
+      modal.attr('sensor_id', sensorid);
+    });
 
     $("#modal_sensor_btn_save").click(function () {
-      var modal = $('#sensor_modal')
-      var sensorname = modal.find('#modal_sensor_name').val()
-      var sensorscript = modal.find('#modal_sensor_script').val()
-      var sensorid = modal.attr('sensor_id')
-      var sensoraddress = modal.find('#modal_sensor_address').val()
-      var sensoroffset = modal.find('#modal_sensor_offset').val()
-      if (modal.find('#modal_sensor_sw').prop("checked") == true) {
-        var sensorsw = "1"
-      } else {
-        var sensorsw = "0"
-      }
+      var modal = $('#sensor_modal');
+      var sensorname = modal.find('#modal_sensor_name').val();
+      var sensorscript = modal.find('#modal_sensor_script').val();
+      var sensorid = modal.attr('sensor_id');
+      var sensoraddress = modal.find('#modal_sensor_address').val();
+      var sensoroffset = modal.find('#modal_sensor_offset').val();
+      var sensorsw = modal.find('#modal_sensor_sw').prop("checked");
+
       $.ajax({
         url: '/setSensor?id=' + sensorid + '&name=' + sensorname + '&topic=' + sensorscript + '&address=' + sensoraddress + '&offset=' + sensoroffset + '&sw=' + sensorsw,
         type: 'POST',
@@ -935,12 +923,12 @@
         async: false,
         cache: false
       });
-      modal.modal('hide')
+      modal.modal('hide');
     });
 
     $("#modal_sensor_btn_delete").click(function () {
-      var modal = $('#sensor_modal')
-      var sensorid = modal.attr('sensor_id')
+      var modal = $('#sensor_modal');
+      var sensorid = modal.attr('sensor_id');
       $.ajax({
         url: '/delSensor?id=' + sensorid,
         type: 'POST',
@@ -948,16 +936,17 @@
         async: false,
         cache: false
       });
-      modal.modal('hide')
+      modal.modal('hide');
     });
 
     $("#modal_sensor_address_refresh").click(function () {
-      var sensorid = modal.attr('sensor_id')
-      $('#modal_sensor_address').load('/reqSearchSensorAdresses?id=' + sensor)
+      var modal = $('#sensor_modal');
+      var sensorid = modal.attr('sensor_id');
+      $('#modal_sensor_address').load('/reqSearchSensorAdresses?id=' + sensorid);
     });
 
     $('#induction_modal').on('show.bs.modal', function (event) {
-      var button = $(event.relatedTarget)
+      var button = $(event.relatedTarget);
       var mqtttopic;
       var isEnabled;
       var pin_white;
@@ -1018,41 +1007,29 @@
         }
       });
 
-      $('#modal_induction_pinwhite').load('/reqIndu?req=pins&id=0')
-      $('#modal_induction_pinyellow').load('/reqIndu?req=pins&id=1')
-      $('#modal_induction_pinblue').load('/reqIndu?req=pins&id=2')
+      $('#modal_induction_pinwhite').load('/reqIndu?req=pins&id=0');
+      $('#modal_induction_pinyellow').load('/reqIndu?req=pins&id=1');
+      $('#modal_induction_pinblue').load('/reqIndu?req=pins&id=2');
 
-      var modal = $(this)
-      modal.find('#modal_induction_script').val(mqtttopic)
-      modal.find('#modal_induction_delay').val(delay)
-      modal.find('#modal_induction_pl').val(pl)
-      if (isEnabled == "1") { modal.find('#modal_induction_enabled').prop("checked", true) }
-      else { modal.find('#modal_induction_enabled').prop("checked", false) }
-	  if (indgraf == "1") { modal.find('#modal_induction_grafana').prop("checked", true) }
-      else { modal.find('#modal_induction_grafana').prop("checked", false) }
-      var modal = $(this)
-
+      var modal = $(this);
+      modal.find('#modal_induction_script').val(mqtttopic);
+      modal.find('#modal_induction_delay').val(delay);
+      modal.find('#modal_induction_pl').val(pl);
+      
+      modal.find('#modal_induction_enabled').prop("checked", Boolean(Number(isEnabled)));
+      modal.find('#modal_induction_grafana').prop("checked", Boolean(Number(indgraf)));
     });
 
     $("#modal_induction_btn_save").click(function () {
-      var modal = $('#induction_modal')
-
-      var mqtttopic = modal.find('#modal_induction_script').val()
-      var pin_white = modal.find('#modal_induction_pinwhite').val()
-      var pin_blue = modal.find('#modal_induction_pinblue').val()
-      var pin_yellow = modal.find('#modal_induction_pinyellow').val()
-      var delay = modal.find('#modal_induction_delay').val()
-      var pl = modal.find('#modal_induction_pl').val()
-      if (modal.find('#modal_induction_enabled').prop("checked") == true) {
-        var isenabled = "1"
-      } else {
-        var isenabled = "0"
-      }
-      if (modal.find('#modal_induction_grafana').prop("checked") == true) {
-        var indgraf = "1"
-      } else {
-        var indgraf = "0"
-      }
+      var modal = $('#induction_modal');
+      var mqtttopic = modal.find('#modal_induction_script').val();
+      var pin_white = modal.find('#modal_induction_pinwhite').val();
+      var pin_blue = modal.find('#modal_induction_pinblue').val();
+      var pin_yellow = modal.find('#modal_induction_pinyellow').val();
+      var delay = modal.find('#modal_induction_delay').val();
+      var pl = modal.find('#modal_induction_pl').val();
+      var isenabled = modal.find('#modal_induction_enabled').prop("checked");
+      var indgraf = modal.find('#modal_induction_grafana').prop("checked");
 
       $.ajax({
         url: '/setIndu?enabled=' + isenabled + '&topic=' + mqtttopic + '&pinwhite=' + pin_white + '&pinyellow=' + pin_yellow + '&pinblue=' + pin_blue + '&delay=' + delay + '&pl=' + pl + '&grafana=' + indgraf,
@@ -1061,11 +1038,11 @@
         async: false,
         cache: false
       });
-      modal.modal('hide')
+      modal.modal('hide');
     });
 
     $('#display_modal').on('show.bs.modal', function (event) {
-      var button = $(event.relatedTarget)
+      var button = $(event.relatedTarget);
       var isEnabled;
       var address;
       var updisp;
@@ -1091,25 +1068,17 @@
         }
       });
 
-      var modal = $(this)
-      $('#modal_display_address').load('/reqDisp?req=address')
-      modal.find('#modal_display_update').val(updisp)
-      if (isEnabled == "1") { modal.find('#modal_display_enabled').prop("checked", true) }
-      else { modal.find('#modal_display_enabled').prop("checked", false) }
-
-      var modal = $(this)
+      $('#modal_display_address').load('/reqDisp?req=address');
+      var modal = $(this);
+      modal.find('#modal_display_update').val(updisp);
+      modal.find('#modal_display_enabled').prop("checked", Boolean(Number(isEnabled)));
     });
 
     $("#modal_display_btn_save").click(function () {
-      var modal = $('#display_modal')
-      var address = modal.find('#modal_display_address').val()
-      var updisp = modal.find('#modal_display_update').val()
-
-      if (modal.find('#modal_display_enabled').prop("checked") == true) {
-        var isenabled = "1"
-      } else {
-        var isenabled = "0"
-      }
+      var modal = $('#display_modal');
+      var address = modal.find('#modal_display_address').val();
+      var updisp = modal.find('#modal_display_update').val();
+      var isenabled = modal.find('#modal_display_enabled').prop("checked");
 
       $.ajax({
         url: '/setDisp?enabled=' + isenabled + '&address=' + address + '&updisp=' + updisp,
@@ -1118,34 +1087,34 @@
         async: false,
         cache: false
       });
-      modal.modal('hide')
+      modal.modal('hide');
     });
 
     $('#misc_modal').on('show.bs.modal', function (event) {
-      var button = $(event.relatedTarget)
+      var button = $(event.relatedTarget);
       var mqttaddress;
-	  var buzzer;
-	  var mdns;
+      var buzzer;
+      var mdns;
       var mdns_name;
       var reset;
       var clear;
       var enable_mqtt;
-	  var mqtt_state;
+      var mqtt_state;
       var delay_mqtt;
-      var enable_wlan
-	  var wlan_state;
+      var enable_wlan;
+      var wlan_state;
       var delay_wlan;
       var del_sen_act;
       var del_sen_ind;
       var upsen;
       var upact;
       var upind;
-	  var startdb;
-	  var dbserver;
-	  var dbdatabase;
-	  var dbuser;
-	  var dbpass;
-	  var dbup;
+      var startdb;
+      var dbserver;
+      var dbdatabase;
+      var dbuser;
+      var dbpass;
+      var dbup;
 
       $.ajax({
         url: '/reqMisc?req=MQTTHOST',
@@ -1157,7 +1126,7 @@
           mqttaddress = data;
         }
       });
-	  $.ajax({
+      $.ajax({
         url: '/reqMisc?req=mdns',
         type: 'get',
         dataType: 'html',
@@ -1176,7 +1145,7 @@
           mdns_name = data;
         }
       });
-	  $.ajax({
+      $.ajax({
         url: '/reqMisc?req=buzzer',
         type: 'get',
         dataType: 'html',
@@ -1185,7 +1154,7 @@
         success: function (data) {
           buzzer = data;
         }
-      }); 
+      });
       $.ajax({
         url: '/reqMisc?req=enable_mqtt',
         type: 'get',
@@ -1196,7 +1165,7 @@
           enable_mqtt = data;
         }
       });
-	  $.ajax({
+      $.ajax({
         url: '/reqMisc?req=mqtt_state',
         type: 'get',
         dataType: 'html',
@@ -1226,7 +1195,7 @@
           enable_wlan = data;
         }
       });
-	  $.ajax({
+      $.ajax({
         url: '/reqMisc?req=wlan_state',
         type: 'get',
         dataType: 'html',
@@ -1296,7 +1265,7 @@
           upind = data;
         }
       });
-  	  $.ajax({
+      $.ajax({
         url: '/reqMisc?req=dbserver',
         type: 'get',
         dataType: 'html',
@@ -1306,7 +1275,7 @@
           dbserver = data;
         }
       });
-	  $.ajax({
+      $.ajax({
         url: '/reqMisc?req=startdb',
         type: 'get',
         dataType: 'html',
@@ -1316,7 +1285,7 @@
           startdb = data;
         }
       });
-	  $.ajax({
+      $.ajax({
         url: '/reqMisc?req=dbdatabase',
         type: 'get',
         dataType: 'html',
@@ -1326,7 +1295,7 @@
           dbdatabase = data;
         }
       });
-	  $.ajax({
+      $.ajax({
         url: '/reqMisc?req=dbuser',
         type: 'get',
         dataType: 'html',
@@ -1336,7 +1305,7 @@
           dbuser = data;
         }
       });
-	  $.ajax({
+      $.ajax({
         url: '/reqMisc?req=dbpass',
         type: 'get',
         dataType: 'html',
@@ -1346,7 +1315,7 @@
           dbpass = data;
         }
       });
-	  $.ajax({
+      $.ajax({
         url: '/reqMisc?req=dbup',
         type: 'get',
         dataType: 'html',
@@ -1356,159 +1325,76 @@
           dbup = data;
         }
       });
-
-      var modal = $(this)
-      modal.find('#modal_misc_address').val(mqttaddress)
-	  modal.find('#modal_misc_mdns_name').val(mdns_name)
-      if (mdns == "1") { modal.find('#modal_misc_mdns').prop("checked", true) }
-      else { modal.find('#modal_misc_mdns').prop("checked", false) }
-	  if (buzzer == "1") { modal.find('#modal_misc_buzzer').prop("checked", true) }
-      else { modal.find('#modal_misc_buzzer').prop("checked", false) }
-      if (enable_mqtt == "1") { modal.find('#modal_misc_onErrorMQTT').prop("checked", true) }
-      else { modal.find('#modal_misc_onErrorMQTT').prop("checked", false) }
-      if (enable_wlan == "1") { modal.find('#modal_misc_onErrorWLAN').prop("checked", true) }
-      else { modal.find('#modal_misc_onErrorWLAN').prop("checked", false) }
-	  if (startdb == "1") { modal.find('#modal_misc_db_enable').prop("checked", true) }
-      else { modal.find('#modal_misc_db_enable').prop("checked", false) }
-      modal.find('#modal_misc_delay_mqtt').val(delay_mqtt)
-      modal.find('#modal_misc_delay_wlan').val(delay_wlan)
-      modal.find('#modal_misc_del_sen_act').val(del_sen_act)
-      modal.find('#modal_misc_del_sen_ind').val(del_sen_ind)
-      modal.find('#modal_misc_reset').prop("checked", false)
-      modal.find('#modal_misc_clear').prop("checked", false)
-      modal.find('#modal_misc_upsen').val(upsen)
-      modal.find('#modal_misc_upact').val(upact)
-      modal.find('#modal_misc_upind').val(upind)
-	  modal.find('#modal_misc_db_server').val(dbserver)
-	  modal.find('#modal_misc_db_database').val(dbdatabase)
-	  modal.find('#modal_misc_db_user').val(dbuser)
-	  modal.find('#modal_misc_db_pass').val(dbpass)
-	  modal.find('#modal_misc_db_up').val(dbup)
-
-      var modal = $(this)
+      var modal = $(this);
+      modal.find('#modal_misc_address').val(mqttaddress);
+      modal.find('#modal_misc_mdns_name').val(mdns_name);
+      modal.find('#modal_misc_mdns').prop("checked", Boolean(Number(mdns)));
+      modal.find('#modal_misc_buzzer').prop("checked", Boolean(Number(buzzer)));
+      modal.find('#modal_misc_onErrorMQTT').prop("checked", Boolean(Number(enable_mqtt)));
+      modal.find('#modal_misc_onErrorWLAN').prop("checked", Boolean(Number(enable_wlan)));
+      modal.find('#modal_misc_db_enable').prop("checked", Boolean(Number(startdb)));
+      modal.find('#modal_misc_delay_mqtt').val(delay_mqtt);
+      modal.find('#modal_misc_delay_wlan').val(delay_wlan);
+      modal.find('#modal_misc_del_sen_act').val(del_sen_act);
+      modal.find('#modal_misc_del_sen_ind').val(del_sen_ind);
+      modal.find('#modal_misc_reset').prop("checked", false);
+      modal.find('#modal_misc_clear').prop("checked", false);
+      modal.find('#modal_misc_upsen').val(upsen);
+      modal.find('#modal_misc_upact').val(upact);
+      modal.find('#modal_misc_upind').val(upind);
+      modal.find('#modal_misc_db_server').val(dbserver);
+      modal.find('#modal_misc_db_database').val(dbdatabase);
+      modal.find('#modal_misc_db_user').val(dbuser);
+      modal.find('#modal_misc_db_pass').val(dbpass);
+      modal.find('#modal_misc_db_up').val(dbup);
     });
 
     $("#modal_misc_btn_save").click(function () {
-      var modal = $('#misc_modal')
-      var mqttaddress = modal.find('#modal_misc_address').val()
-	  var mdns_name = modal.find('#modal_misc_mdns_name').val()
-      var delay_mqtt = modal.find('#modal_misc_delay_mqtt').val()
-      var delay_wlan = modal.find('#modal_misc_delay_wlan').val()
-      var del_sen_act = modal.find('#modal_misc_del_sen_act').val()
-      var del_sen_ind = modal.find('#modal_misc_del_sen_ind').val()
-      var upsen = modal.find('#modal_misc_upsen').val()
-      var upact = modal.find('#modal_misc_upact').val()
-      var upind = modal.find('#modal_misc_upind').val()
-	  var dbserver = modal.find('#modal_misc_db_server').val()
-	  var dbdatabase = modal.find('#modal_misc_db_database').val()
-	  var dbuser = modal.find('#modal_misc_db_user').val()
-	  var dbpass = modal.find('#modal_misc_db_pass').val()
-	  var dbup = modal.find('#modal_misc_db_up').val()
-	  //var dburl = modal.find('#modal_misc_db_url').val()
-  	  // Alle & durch ! ersetzen - senden an ESP funktioniert sonst nicht 
-	  //var dburl2 = dburl.replace(/&/g, "!");
-	  if (modal.find('#modal_misc_mdns').prop("checked") == true) {
-        var mdns = "1"
-      } else {
-        var mdns = "0"
-      }
-	  if (modal.find('#modal_misc_buzzer').prop("checked") == true) {
-        var buzzer = "1"
-      } else {
-        var buzzer = "0"
-      }
-      if (modal.find('#modal_misc_onErrorMQTT').prop("checked") == true) {
-        var enable_mqtt = "1"
-      } else {
-        var enable_mqtt = "0"
-      }
-      if (modal.find('#modal_misc_onErrorWLAN').prop("checked") == true) {
-        var enable_wlan = "1"
-      } else {
-        var enable_wlan = "0"
-      }
-      if (modal.find('#modal_misc_reset').prop("checked") == true) {
-        var reset = "1"
-      } else {
-        var reset = "0"
-      }
-      if (modal.find('#modal_misc_clear').prop("checked") == true) {
-        var clear = "1"
-      } else {
-        var clear = "0"
-      }
-	  if (modal.find('#modal_misc_db_enable').prop("checked") == true) 
-	  {
-        var startdb = "1"
-      } 
-	  else 
-	  {
-        var startdb = "0"
-      }
+      var modal = $('#misc_modal');
+      var mqttaddress = modal.find('#modal_misc_address').val();
+      var mdns_name = modal.find('#modal_misc_mdns_name').val();
+      var delay_mqtt = modal.find('#modal_misc_delay_mqtt').val();
+      var delay_wlan = modal.find('#modal_misc_delay_wlan').val();
+      var del_sen_act = modal.find('#modal_misc_del_sen_act').val();
+      var del_sen_ind = modal.find('#modal_misc_del_sen_ind').val();
+      var upsen = modal.find('#modal_misc_upsen').val();
+      var upact = modal.find('#modal_misc_upact').val();
+      var upind = modal.find('#modal_misc_upind').val();
+      var dbserver = modal.find('#modal_misc_db_server').val();
+      var dbdatabase = modal.find('#modal_misc_db_database').val();
+      var dbuser = modal.find('#modal_misc_db_user').val();
+      var dbpass = modal.find('#modal_misc_db_pass').val();
+      var dbup = modal.find('#modal_misc_db_up').val();
+      //var dburl = modal.find('#modal_misc_db_url').val()
+      // Alle & durch ! ersetzen - senden an ESP funktioniert sonst nicht 
+      //var dburl2 = dburl.replace(/&/g, "!");
+      
+      var mdns = modal.find('#modal_misc_mdns').prop("checked");
+      var buzzer = modal.find('#modal_misc_buzzer').prop("checked");
+      var enable_mqtt = modal.find('#modal_misc_onErrorMQTT').prop("checked");
+      var enable_wlan = modal.find('#modal_misc_onErrorWLAN').prop("checked");
+      var startdb = modal.find('#modal_misc_db_enable').prop("checked");
+      var clear = modal.find('#modal_misc_clear').prop("checked");
+      var reset = modal.find('#modal_misc_reset').prop("checked");
 
       $.ajax({
         url: '/setMisc?reset=' + reset + '&clear=' + clear + '&MQTTHOST=' + mqttaddress + '&enable_mqtt=' + enable_mqtt + '&delay_mqtt=' + delay_mqtt + '&enable_wlan=' + enable_wlan + '&delay_wlan=' + delay_wlan + '&del_sen_act=' + del_sen_act + '&del_sen_ind=' + del_sen_ind + '&mdns=' + mdns + '&mdns_name=' + mdns_name + '&buzzer=' + buzzer + '&upsen=' + upsen + '&upact=' + upact + '&upind=' + upind + '&startdb=' + startdb + '&dbserver=' + dbserver + '&dbdatabase=' + dbdatabase + '&dbuser=' + dbuser + '&dbpass=' + dbpass + '&dbup=' + dbup,
-		type: 'POST',
+        type: 'POST',
         dataType: 'html',
         async: false,
         cache: false
       });
-      modal.modal('hide')
+      modal.modal('hide');
     });
 
     $("#btn_reboot").click(function () {
       $.ajax({
         url: '/reboot',
         type: 'POST',
-        async: false,
+        async: true,
         cache: false
-      }).done(function (msg) {
-        //alert("Device says: " + msg + "\n Page will be reloaded now!");
-        window.location.reload(true);
-      });;
-    });
-	/*
-    $(function () {
-      var tcpurl = "";
-      var startdb;
-	  var dburl;
-      
-      $.ajax({
-        url: '/reqMisc?req=startdb',
-        type: 'get',
-        dataType: 'html',
-        async: false,
-        cache: false,
-        success: function (data) {
-          startdb = data;
-        }
       });
-	  
-	  $.ajax({
-		  url: '/reqMisc?req=dburl',
-		  type: 'get',
-		  dataType: 'html',
-		  async: false,
-		  cache: false,
-		  success: function (data) {
-			dburl = data;
-		  }
-	  });
-	  
-      if (startdb == 1) {
-          let content = "";
-          content += "<div class='list-group'>";
-			  let tcpurl = "<div class='list-group-item list-group-item-action d-flex align-items-start' style='height: 680px'>";
-			  tcpurl += "<object data=";
-			  tcpurl += dburl;
-			  tcpurl += "' width='600' height='400'</object></div>";
-              content += tcpurl;
-          content += "</div>";
-          //alert("content: " + content);
-          $('#listeSenName').html(content);
-      }
     });
-	*/
 
     $(function () {
       var firmware;
@@ -1527,4 +1413,5 @@
 
   </script>
 </body>
+
 </html>

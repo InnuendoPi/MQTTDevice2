@@ -30,9 +30,9 @@ void setup()
   WiFi.setAutoReconnect(true);
 
   // Lade Dateisystem
-  if (SPIFFS.begin())
+  if (LittleFS.begin())
   {
-    Serial.printf("*** SYSINFO Starte Setup SPIFFS Free Heap: %d\n", ESP.getFreeHeap());
+    Serial.printf("*** SYSINFO Starte Setup LittleFS Free Heap: %d\n", ESP.getFreeHeap());
 
     // Prüfe WebUpdate
     updateSys();
@@ -51,13 +51,13 @@ void setup()
       saveConfig();
     }
 
-    if (SPIFFS.exists("/config.txt")) // Lade Konfiguration
+    if (LittleFS.exists("/config.txt")) // Lade Konfiguration
       loadConfig();
     else
       Serial.println("*** SYSINFO: Konfigurationsdatei config.txt nicht vorhanden. Setze Standardwerte ...");
   }
   else
-    Serial.println("*** SYSINFO: Fehler - Dateisystem SPIFFS konnte nicht eingebunden werden!");
+    Serial.println("*** SYSINFO: Fehler - Dateisystem LittleFS konnte nicht eingebunden werden!");
 
   // Lege Event Queues an
   gEM.addListener(EventManager::kEventUser0, listenerSystem);

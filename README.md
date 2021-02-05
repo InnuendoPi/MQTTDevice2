@@ -1,20 +1,29 @@
 # MQTTDevice 2.0
 
-MQTTDevice2 ermöglicht die ANbindung von Sensoren, Aktoren und einem Induktionskochfeld per WLAN an [CraftBeerPi V3](https://github.com/Manuel83/craftbeerpi3).
+MQTTDevice2 ermöglicht die Anbindung von Sensoren, Aktoren und einem Induktionskochfeld per WLAN an [CraftBeerPi V3](https://github.com/Manuel83/craftbeerpi3).
 
-MQTTDevice2 ist ein Arduino Sketch für die Module ESP8266 Wemos D1 mini. Damit ist es möglich eine Kommunikation zwischen dem MQTT Broker mosquitto und einem ESP8266 herzustellen, um Sensoren und Aktoren mit CraftBeerPi V3 zu steuern.
+MQTTDevice2 ist ein Arduino Sketch für die Module ESP8266 Wemos D1 mini. Damit ist es möglich eine Kommunikation zwischen dem MQTT Broker mosquitto und einem ESP8266 herzustellen, um Sensoren und Aktoren mit CraftBeerPi V3 zu steuern. Zusätzlich unterstützt der Sketch eine Visualisierung von Temperaturen und Leistungen während der Braurasten mit Grafana.
+
+## Update Hinweis Version 2.50
+
+Beim Update auf Version 2.5 von 2.20 oder älter muss das Dateisystem ersetzt werden.
+Die Firmware und das Filesystem LittleFS müssen neu geflasht werden. Ein WebUpdate von 2.2x auf 2.50 oder neuer ist nicht möglich.
 
 ## Dokumentation
 
 Eine ausführliche Dokumentation liegt auf github pages: <https://innuendopi.github.io/MQTTDevice2/>
 
+## Unterstützung
+
+Unterstützung gibt es im Hobbybrauerforum <https://hobbybrauer.de/forum/>
+
 ## Sketch Information
 
-Bibliotheken: (Stand ab Version 2.197, 12.2020)
+Bibliotheken: (Stand ab Version 2.50, 02.2021)
 
-- ESP8266 2.7.4 (SPIFFS)
+- ESP8266 2.7.4 (LittleFS)
 - Arduino IDE 1.8.13
-- Visual Code 1.48.2
+- Visual Code 1.51.2 + modifiziertes ESP8266FS Plugin
 - PubSubClient 2.8.0
 - ArduinoJSON 6.17
 - InfluxDB 3.6

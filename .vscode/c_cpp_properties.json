@@ -6,7 +6,9 @@
                 "${workspaceFolder}\\**",
                 "C:\\Arduino\\libraries\\**",
                 "C:\\Users\\pn010.TEAM\\AppData\\Local\\Arduino15\\packages\\esp8266\\tools\\**",
-                "C:\\Users\\pn010.TEAM\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.7.4\\**"
+                "C:\\Users\\pn010.TEAM\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.7.4\\**",
+                "C:\\Program Files (x86)\\Arduino\\libraries\\**",
+                "c:\\Arduino\\libraries\\**"
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": false,
@@ -14,7 +16,8 @@
             },
             "defines": [
                 "_DEBUG",
-                "UNICODE"
+                "UNICODE",
+                "USBCON"
             ],
             "compilerPath": "C:/Program Files (x86)/Arduino/hardware/tools/avr/bin/avr-gcc.exe",
             "cStandard": "c11",

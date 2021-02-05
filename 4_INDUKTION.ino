@@ -34,7 +34,7 @@ public:
   bool induction_state = true;   // Error state induction
   bool setGrafana = false;
 
-  // MQTT Publish - not yet ready
+  // MQTT Publish
   // char induction_mqtttopic[50];      // Für MQTT Kommunikation
 
   induction()
@@ -61,16 +61,16 @@ public:
 
       if (isPin(PIN_INTERRUPT))
       {
-        //detachInterrupt(PIN_INTERRUPT);
-        //pinMode(PIN_INTERRUPT, OUTPUT);
-        digitalWrite(PIN_INTERRUPT, HIGH);
+        detachInterrupt(PIN_INTERRUPT);
+        pinMode(PIN_INTERRUPT, OUTPUT);
+
+        // digitalWrite(PIN_INTERRUPT, HIGH);
         pins_used[PIN_INTERRUPT] = false;
       }
       mqtt_unsubscribe();
     }
 
     // Neue Variablen Speichern
-
     PIN_WHITE = pinwhite;
     PIN_YELLOW = pinyellow;
     PIN_INTERRUPT = pinblue;
@@ -81,11 +81,10 @@ public:
     induction_state = true;
     setGrafana = new_grafana;
 
-    // MQTT Publish - not yet ready
+    // MQTT Publish
     //mqtttopic.toCharArray(induction_mqtttopic, mqtttopic.length() + 1);
 
     isEnabled = is_enabled;
-
     if (isEnabled)
     {
       // neue PINS aktiveren
@@ -105,8 +104,9 @@ public:
 
       if (isPin(PIN_INTERRUPT))
       {
-        pinMode(PIN_INTERRUPT, INPUT_PULLUP);
-        //attachInterrupt(digitalPinToInterrupt(PIN_INTERRUPT), readInputWrap, CHANGE);
+        attachInterrupt(digitalPinToInterrupt(PIN_INTERRUPT), readInputWrap, CHANGE);
+        
+        // pinMode(PIN_INTERRUPT, INPUT_PULLUP);
         pins_used[PIN_INTERRUPT] = true;
       }
       if (pubsubClient.connected())
@@ -141,7 +141,7 @@ public:
     }
   }
 
-  /*    //  Not yet ready
+  /*
           // MQTT Publish
           void publishmqtt() {
             if (client.connected()) {
@@ -306,7 +306,7 @@ public:
       {
         powerHigh = powerSampletime;
         powerLow = 0;
-      };
+      } // Test#1
     }
   }
 
@@ -369,12 +369,6 @@ public:
           }
           else
           { // Aufnahme vorbei.
-
-            /* Auswerten */
-            //newError = BtoI(13,4);          // Fehlercode auslesen.
-
-            /* von Vorne */
-            //timeLastReaction = millis();
             inputCurrent = 0;
             inputStarted = false;
           }
@@ -383,21 +377,11 @@ public:
     }
   }
 
-  unsigned long BtoI(int start, int numofbits)
-  { //binary array to integer conversion
-    unsigned long integer = 0;
-    //   unsigned long mask=1;
-    //   for (int i = numofbits+start-1; i >= start; i--) {
-    //     if (inputBuffer[i]) integer |= mask;
-    //     mask = mask << 1;
-    //   }
-    return integer;
-  }
-}
+};
 
-inductionCooker = induction();
+induction inductionCooker = induction();
 
-void readInputWrap()
+ICACHE_RAM_ATTR void readInputWrap()
 {
   inductionCooker.readInput();
 }
@@ -440,14 +424,7 @@ void handleRequestIndu()
 
   if (request == "isEnabled")
   {
-    if (inductionCooker.isEnabled)
-    {
-      message = "1";
-    }
-    else
-    {
-      message = "0";
-    }
+    message = inductionCooker.isEnabled;
     goto SendMessage;
   }
   if (request == "topic")
@@ -467,14 +444,7 @@ void handleRequestIndu()
   }
   if (request == "grafana")
   {
-    if (inductionCooker.setGrafana)
-    {
-      message = "1";
-    }
-    else
-    {
-      message = "0";
-    }
+    message = inductionCooker.setGrafana;
     goto SendMessage;
   }
   if (request == "pins")
@@ -532,7 +502,7 @@ void handleSetIndu()
   {
     if (server.argName(i) == "enabled")
     {
-      if (server.arg(i) == "1")
+      if (server.arg(i) == "true")
         is_enabled = true;
       else
         is_enabled = false;
@@ -566,7 +536,7 @@ void handleSetIndu()
     }
     if (server.argName(i) == "grafana")
     {
-      if (server.arg(i) == "1")
+      if (server.arg(i) == "true")
         new_grafana = true;
       else
         new_grafana = false;
@@ -576,4 +546,5 @@ void handleSetIndu()
 
   inductionCooker.change(pin_white, pin_yellow, pin_blue, topic, delayoff, is_enabled, pl, new_grafana);
   saveConfig();
+  server.send(201, "text/plain", "created");
 }

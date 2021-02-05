@@ -70,7 +70,7 @@ void turnDisplay()
       
       // Display mit SH1106
       display.SH1106_command(SH1106_DISPLAYOFF);
-      oledDisplay.dispEnabled = 0;
+      oledDisplay.dispEnabled = false;
       TickerDisp.stop();
     }
   }
@@ -83,7 +83,7 @@ void turnDisplay()
 
       // Display mit SH1106
       display.SH1106_command(SH1106_DISPLAYON);
-      oledDisplay.dispEnabled = 1;
+      oledDisplay.dispEnabled = true;
       TickerDisp.start();
     }
   }
@@ -96,7 +96,7 @@ void handleRequestDisplay()
   doc["displayOn"] = 0;
   doc["enabled"] = oledDisplay.dispEnabled;
   doc["updisp"] = DISP_UPDATE;
-  if (oledDisplay.dispEnabled == 1)
+  if (oledDisplay.dispEnabled)
     doc["displayOn"] = 1;
   else
     doc["displayOn"] = 0;
@@ -112,9 +112,7 @@ void handleRequestDisp()
   String message;
   if (request == "isEnabled")
   {
-    message = "0";
-    if (oledDisplay.dispEnabled)
-      message = "1";
+    message = oledDisplay.dispEnabled;
     goto SendMessage;
   }
   if (request == "address")
@@ -167,13 +165,13 @@ void handleSetDisp()
   {
     if (server.argName(i) == "enabled")
     {
-      if (server.arg(i) == "1")
+      if (server.arg(i) == "true")
       {
-        oledDisplay.dispEnabled = 1;
+        oledDisplay.dispEnabled = true;
       }
       else
       {
-        oledDisplay.dispEnabled = 0;
+        oledDisplay.dispEnabled = false;
       }
     }
     if (server.argName(i) == "address")
@@ -198,6 +196,7 @@ void handleSetDisp()
   }
   oledDisplay.change(address, oledDisplay.dispEnabled);
   saveConfig();
+  server.send(201, "text/plain", "created");
 }
 
 void dispStartScreen() // Show Startscreen
@@ -245,7 +244,7 @@ void showDispWlan() // Show WLAN icon
   else
   {
     showDispErr("WLAN ERROR");
-    unsigned long val = 2*wait_on_error_mqtt - (millis() - wlanconnectlasttry);
+    unsigned long val = 2*wait_on_error_wlan - (millis() - wlanconnectlasttry);
     if (val > wait_on_error_wlan)
       return;
     showDispErr2(String(val/1000));
@@ -292,8 +291,8 @@ void showDispSen() // Show Sensor status on the left
   display.print("S");
   display.print(oledDisplay.counter_sen + 1);
   display.print(" ");
-  if (sensors[oledDisplay.counter_sen].sens_err == 0)
-    display.print((int)(sensors[oledDisplay.counter_sen].sens_offset + sensors[oledDisplay.counter_sen].sens_value));
+  if (sensors[oledDisplay.counter_sen].getErr() == 0)
+    display.print((int)(sensors[oledDisplay.counter_sen].getOffset() + sensors[oledDisplay.counter_sen].getValue()));
   else
     display.print("Err");
 

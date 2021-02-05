@@ -6,7 +6,7 @@ void handleRoot()
 
 void handleWebRequests()
 {
-  if (loadFromSpiffs(server.uri()))
+  if (loadFromLittlefs(server.uri()))
   {
     return;
   }
@@ -25,7 +25,7 @@ void handleWebRequests()
   server.send(404, "text/plain", message);
 }
 
-bool loadFromSpiffs(String path)
+bool loadFromLittlefs(String path)
 {
   String dataType = "text/plain";
   if (path.endsWith("/"))
@@ -56,11 +56,11 @@ bool loadFromSpiffs(String path)
   else if (path.endsWith(".zip"))
     dataType = "application/zip";
 
-  if (!SPIFFS.exists(path.c_str()))
+  if (!LittleFS.exists(path.c_str()))
   {
     return false;
   }
-  File dataFile = SPIFFS.open(path.c_str(), "r");
+  File dataFile = LittleFS.open(path.c_str(), "r");
   if (server.hasArg("download"))
     dataType = "application/octet-stream";
   if (server.streamFile(dataFile, dataType) != dataFile.size())
@@ -151,14 +151,7 @@ void handleRequestMisc()
   }
   if (request == "buzzer")
   {
-    if (startBuzzer)
-    {
-      message = "1";
-    }
-    else
-    {
-      message = "0";
-    }
+    message = startBuzzer;
     goto SendMessage;
   }
   if (request == "mdns_name")
@@ -168,38 +161,17 @@ void handleRequestMisc()
   }
   if (request == "mdns")
   {
-    if (startMDNS)
-    {
-      message = "1";
-    }
-    else
-    {
-      message = "0";
-    }
+    message = startMDNS;
     goto SendMessage;
   }
   if (request == "enable_mqtt")
   {
-    if (StopOnMQTTError)
-    {
-      message = "1";
-    }
-    else
-    {
-      message = "0";
-    }
+    message = StopOnMQTTError;
     goto SendMessage;
   }
   if (request == "enable_wlan")
   {
-    if (StopOnWLANError)
-    {
-      message = "1";
-    }
-    else
-    {
-      message = "0";
-    }
+    message = StopOnWLANError;
     goto SendMessage;
   }
   if (request == "delay_mqtt")
@@ -246,7 +218,7 @@ void handleRequestMisc()
     }
     else
       message = "MQTTDevice V ";
-    
+
     message += Version;
     goto SendMessage;
   }
@@ -257,10 +229,7 @@ void handleRequestMisc()
   }
   if (request == "startdb")
   {
-    if (startDB)
-      message = "1";
-    else
-      message = "0";
+    message = startDB;
     goto SendMessage;
   }
   if (request == "dbdatabase")
@@ -294,7 +263,7 @@ void handleSetMisc()
   {
     if (server.argName(i) == "reset")
     {
-      if (server.arg(i) == "1")
+      if (server.arg(i) == "true")
       {
         WiFi.disconnect();
         wifiManager.resetSettings();
@@ -304,11 +273,9 @@ void handleSetMisc()
     }
     if (server.argName(i) == "clear")
     {
-      if (server.arg(i) == "1")
+      if (server.arg(i) == "true")
       {
-        SPIFFS.remove("/config.txt");
-        WiFi.disconnect();
-        wifiManager.resetSettings();
+        LittleFS.remove("/config.txt");
         delay(PAUSE2SEC);
         ESP.reset();
       }
@@ -318,26 +285,26 @@ void handleSetMisc()
 
     if (server.argName(i) == "buzzer")
     {
-      if (server.arg(i) == "1")
+      if (server.arg(i) == "true")
         startBuzzer = true;
       else
         startBuzzer = false;
     }
-     if (server.argName(i) == "mdns_name")
+    if (server.argName(i) == "mdns_name")
     {
       server.arg(i).toCharArray(nameMDNS, 16);
       checkChars(nameMDNS);
     }
     if (server.argName(i) == "mdns")
     {
-      if (server.arg(i) == "1")
+      if (server.arg(i) == "true")
         startMDNS = true;
       else
         startMDNS = false;
     }
     if (server.argName(i) == "enable_mqtt")
     {
-      if (server.arg(i) == "1")
+      if (server.arg(i) == "true")
         StopOnMQTTError = true;
       else
         StopOnMQTTError = false;
@@ -349,7 +316,7 @@ void handleSetMisc()
       }
     if (server.argName(i) == "enable_wlan")
     {
-      if (server.arg(i) == "1")
+      if (server.arg(i) == "true")
         StopOnWLANError = true;
       else
         StopOnWLANError = false;
@@ -403,7 +370,7 @@ void handleSetMisc()
     }
     if (server.argName(i) == "startdb")
     {
-      if (server.arg(i) == "1")
+      if (server.arg(i) == "true")
         startDB = true;
       else
         startDB = false;
@@ -433,6 +400,7 @@ void handleSetMisc()
     yield();
   }
   saveConfig();
+  server.send(201, "text/plain", "created");
 }
 
 // Some helper functions WebIf
@@ -447,7 +415,7 @@ void visualisieren()
     }
     if (server.argName(i) == "startvis")
     {
-      if (server.arg(i) == "1")
+      if (server.arg(i) == "true")
         startVis = true;
       else
         startVis = false;
@@ -471,9 +439,12 @@ void visualisieren()
   }
   else
     TickerInfluxDB.pause();
+
+  server.send(201, "text/plain", "created");
 }
 
 void rebootDevice()
 {
+  server.send(205, "text/plain", "reboot");
   cbpiEventSystem(EM_REBOOT);
 }

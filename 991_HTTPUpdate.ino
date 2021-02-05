@@ -26,7 +26,7 @@ void upIn()
                 static uint8_t buff[128] = {0};
 
                 // Open file for write
-                fsUploadFile = SPIFFS.open("/index.html", "w");
+                fsUploadFile = LittleFS.open("/index.html", "w");
                 if (!fsUploadFile)
                 {
                     //Serial.printf( F("file open failed"));
@@ -61,8 +61,8 @@ void upIn()
 
                 Serial.println("*** SYSINFO: Index Update abgeschlossen.");
                 fsUploadFile.close();
-                SPIFFS.remove("/update.txt");
-                fsUploadFile = SPIFFS.open("/update2.txt", "w");
+                LittleFS.remove("/update.txt");
+                fsUploadFile = LittleFS.open("/update2.txt", "w");
                 int bytesWritten = fsUploadFile.print("0");
                 fsUploadFile.close();
             }
@@ -74,7 +74,7 @@ void upIn()
             Serial.println("Abbruch!");
             Serial.printf("*** SYSINFO: Update index.html Fehler: %s\n", https.errorToString(httpCode).c_str());
             https.end();
-            SPIFFS.end(); // unmount SPIFFS
+            LittleFS.end(); // unmount LittleFS
             ESP.restart();
             return;
         }
@@ -102,7 +102,7 @@ void upCerts()
             {
                 int len = https.getSize();
                 static uint8_t buff[128] = {0};
-                fsUploadFile = SPIFFS.open("/certs.ar", "w");
+                fsUploadFile = LittleFS.open("/certs.ar", "w");
                 if (!fsUploadFile)
                 {
                     Serial.println("Abbruch!");
@@ -127,8 +127,8 @@ void upCerts()
                 }
                 fsUploadFile.close();
                 Serial.println("*** SYSINFO: Certs Update abgeschlossen.");
-                SPIFFS.remove("/update2.txt");
-                fsUploadFile = SPIFFS.open("/update3.txt", "w");
+                LittleFS.remove("/update2.txt");
+                fsUploadFile = LittleFS.open("/update3.txt", "w");
                 int bytesWritten = fsUploadFile.print("0");
                 fsUploadFile.close();
             }
@@ -140,7 +140,7 @@ void upCerts()
             Serial.println("Abbruch!");
             Serial.printf("*** SYSINFO: Update certs Fehler: %s\n", https.errorToString(httpCode).c_str());
             https.end();
-            SPIFFS.end(); // unmount SPIFFS
+            LittleFS.end(); // unmount LittleFS
             ESP.restart();
             return;
         }
@@ -153,12 +153,12 @@ void upCerts()
 void upFirm()
 {
     BearSSL::CertStore certStore;
-    int numCerts = certStore.initCertStore(SPIFFS, PSTR("/certs.idx"), PSTR("/certs.ar"));
+    int numCerts = certStore.initCertStore(LittleFS, PSTR("/certs.idx"), PSTR("/certs.ar"));
     Serial.print(F("Number of CA certs read: "));
     Serial.println(numCerts);
     if (numCerts == 0)
     {
-        Serial.println(F("*** SYSINFO: No certs found. Did you run certs-from-mozill.py and upload the SPIFFS directory before running?"));
+        Serial.println(F("*** SYSINFO: No certs found. Did you run certs-from-mozill.py and upload the LittleFS directory before running?"));
         return; // Can't connect to anything w/o certs!
     }
 
@@ -195,9 +195,9 @@ void upFirm()
 
 void updateSys()
 {
-    if (SPIFFS.exists("/update.txt"))
+    if (LittleFS.exists("/update.txt"))
     {
-        fsUploadFile = SPIFFS.open("/update.txt", "r");
+        fsUploadFile = LittleFS.open("/update.txt", "r");
         String line;
         while (fsUploadFile.available())
         {
@@ -207,24 +207,24 @@ void updateSys()
         int i = line.toInt();
         if (i > 3)
         {
-            SPIFFS.remove("/update.txt");
+            LittleFS.remove("/update.txt");
             Serial.println("*** SYSINFO: ERROR Index Update");
             return;
         }
-        fsUploadFile = SPIFFS.open("/update.txt", "w");
+        fsUploadFile = LittleFS.open("/update.txt", "w");
         i++;
         int bytesWritten = fsUploadFile.print(i);
         fsUploadFile.close();
-        fsUploadFile = SPIFFS.open("/log1.txt", "w");
+        fsUploadFile = LittleFS.open("/log1.txt", "w");
         bytesWritten = fsUploadFile.print((i));
         fsUploadFile.close();
         Serial.print("*** SYSINFO Starte Index Update Free Heap: ");
         Serial.println(ESP.getFreeHeap());
         upIn();
     }
-    if (SPIFFS.exists("/update2.txt"))
+    if (LittleFS.exists("/update2.txt"))
     {
-        fsUploadFile = SPIFFS.open("/update2.txt", "r");
+        fsUploadFile = LittleFS.open("/update2.txt", "r");
         String line;
         while (fsUploadFile.available())
         {
@@ -234,24 +234,24 @@ void updateSys()
         int i = line.toInt();
         if (i > 3)
         {
-            SPIFFS.remove("/update2.txt");
+            LittleFS.remove("/update2.txt");
             Serial.println("*** SYSINFO: ERROR Cert Update");
             return;
         }
-        fsUploadFile = SPIFFS.open("/update2.txt", "w");
+        fsUploadFile = LittleFS.open("/update2.txt", "w");
         i++;
         int bytesWritten = fsUploadFile.print(i);
         fsUploadFile.close();
-        fsUploadFile = SPIFFS.open("/log2.txt", "w");
+        fsUploadFile = LittleFS.open("/log2.txt", "w");
         bytesWritten = fsUploadFile.print((i));
         fsUploadFile.close();
         Serial.print("*** SYSINFO Starte Cert Update Free Heap: ");
         Serial.println(ESP.getFreeHeap());
         upCerts();
     }
-    if (SPIFFS.exists("/update3.txt"))
+    if (LittleFS.exists("/update3.txt"))
     {
-        fsUploadFile = SPIFFS.open("/update3.txt", "r");
+        fsUploadFile = LittleFS.open("/update3.txt", "r");
         String line;
         while (fsUploadFile.available())
         {
@@ -261,15 +261,15 @@ void updateSys()
         int i = line.toInt();
         if (i > 3)
         {
-            SPIFFS.remove("/update3.txt");
+            LittleFS.remove("/update3.txt");
             Serial.println("*** SYSINFO: ERROR Firmware Update");
             return;
         }
-        fsUploadFile = SPIFFS.open("/update3.txt", "w");
+        fsUploadFile = LittleFS.open("/update3.txt", "w");
         i++;
         int bytesWritten = fsUploadFile.print(i);
         fsUploadFile.close();
-        fsUploadFile = SPIFFS.open("/log3.txt", "w");
+        fsUploadFile = LittleFS.open("/log3.txt", "w");
         bytesWritten = fsUploadFile.print((i));
         fsUploadFile.close();
 
@@ -282,10 +282,10 @@ void updateSys()
 void startHTTPUpdate()
 {
     // Starte Updates
-    fsUploadFile = SPIFFS.open("/update.txt", "w");
+    fsUploadFile = LittleFS.open("/update.txt", "w");
     if (!fsUploadFile)
     {
-        DEBUG_MSG("%s\n", "*** Fehler WebUpdate Datei erstellen auf SPIFFS nicht möglich");
+        DEBUG_MSG("%s\n", "*** Fehler WebUpdate Datei erstellen auf LittleFS nicht möglich");
         return;
     }
     else
@@ -309,12 +309,12 @@ void update_started()
 void update_finished()
 {
     Serial.println("*** SYSINFO:  Firmware Update beendet");
-    SPIFFS.remove("/update3.txt");
+    LittleFS.remove("/update3.txt");
 }
 
 void update_error(int err)
 {
     Serial.printf("*** SYSINFO:  Firmware Update Fehler error code %d\n", err);
-    SPIFFS.end(); // unmount SPIFFS
+    LittleFS.end(); // unmount LittleFS
     ESP.restart();
 }

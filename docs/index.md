@@ -138,11 +138,11 @@ Der Dateiexplorer ist erreichbar über den Webbrowser <http://mqttdevice/edit>
 
 1. Backup
 
-    Auf die Datei config.txt klicken und aus dem PopUp Download auswählen.
+    Auf die Datei config.txt klicken (li Mouse Taste) und aus dem PopUp Download auswählen.
 
 2. Restore
 
-    Auf Datei auswählen klicken, die config.txt auswählen und Upload auswählen
+    Auf Datei auswählen klicken, die config.txt aus dem Backup auswählen und Upload anklicken
 
 **Unterstützte und getestete Hardware:**
 

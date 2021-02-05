@@ -95,7 +95,7 @@ void listenerSystem(int event, int parm) // System event listener
     if (inductionCooker.isInduon)
       cbpiEventInduction(EM_INDOFF);
     server.send(200, "text/plain", "rebooting...");
-    SPIFFS.end(); // unmount SPIFFS
+    LittleFS.end(); // unmount LittleFS
     ESP.restart();
     break;
   // System run & set events
@@ -203,9 +203,9 @@ void listenerSystem(int event, int parm) // System event listener
     sendData();
     break;
   case EM_LOG:
-    if (SPIFFS.exists("/log1.txt")) // WebUpdate Zertifikate
+    if (LittleFS.exists("/log1.txt")) // WebUpdate Zertifikate
     {
-      fsUploadFile = SPIFFS.open("/log1.txt", "r");
+      fsUploadFile = LittleFS.open("/log1.txt", "r");
       String line;
       while (fsUploadFile.available())
       {
@@ -213,11 +213,11 @@ void listenerSystem(int event, int parm) // System event listener
       }
       fsUploadFile.close();
       Serial.printf("*** SYSINFO: Update Index Anzahl Versuche %s\n", line.c_str());
-      SPIFFS.remove("/log1.txt");
+      LittleFS.remove("/log1.txt");
     }
-    if (SPIFFS.exists("/log2.txt")) // WebUpdate Index
+    if (LittleFS.exists("/log2.txt")) // WebUpdate Index
     {
-      fsUploadFile = SPIFFS.open("/log2.txt", "r");
+      fsUploadFile = LittleFS.open("/log2.txt", "r");
       String line;
       while (fsUploadFile.available())
       {
@@ -225,11 +225,11 @@ void listenerSystem(int event, int parm) // System event listener
       }
       fsUploadFile.close();
       Serial.printf("*** SYSINFO: Update Zertifikate Anzahl Versuche %s\n", line.c_str());
-      SPIFFS.remove("/log2.txt");
+      LittleFS.remove("/log2.txt");
     }
-    if (SPIFFS.exists("/log3.txt")) // WebUpdate Firmware
+    if (LittleFS.exists("/log3.txt")) // WebUpdate Firmware
     {
-      fsUploadFile = SPIFFS.open("/log3.txt", "r");
+      fsUploadFile = LittleFS.open("/log3.txt", "r");
       String line;
       while (fsUploadFile.available())
       {
@@ -237,7 +237,7 @@ void listenerSystem(int event, int parm) // System event listener
       }
       fsUploadFile.close();
       Serial.printf("*** SYSINFO: Update Firmware Anzahl Versuche %s\n", line.c_str());
-      SPIFFS.remove("/log3.txt");
+      LittleFS.remove("/log3.txt");
       alertState = true;
     }
     break;
@@ -298,28 +298,28 @@ void listenerSensors(int event, int parm) // Sensor event listener
     {
       for (int i = 0; i < numberOfSensors; i++)
       {
-        if (!sensors[i].sens_state)
+        if (!sensors[i].getState())
         {
           switch (parm)
           {
           case EM_CRCER:
             // Sensor CRC ceck failed
-            DEBUG_MSG("EM CRCER: Sensor %s crc check failed\n", sensors[i].sens_name.c_str());
+            DEBUG_MSG("EM CRCER: Sensor %s crc check failed\n", sensors[i].getName().c_str());
             break;
           case EM_DEVER:
             // -127°C device error
-            DEBUG_MSG("EM DEVER: Sensor %s device error\n", sensors[i].sens_name.c_str());
+            DEBUG_MSG("EM DEVER: Sensor %s device error\n", sensors[i].getName().c_str());
             break;
           case EM_UNPL:
             // sensor unpluged
-            DEBUG_MSG("EM UNPL: Sensor %s unplugged\n", sensors[i].sens_name.c_str());
+            DEBUG_MSG("EM UNPL: Sensor %s unplugged\n", sensors[i].getName().c_str());
             break;
           default:
             break;
           }
         }
 
-        if (sensors[i].sens_sw && !sensors[i].sens_state)
+        if (sensors[i].getSw() && !sensors[i].getState())
         {
           if (lastSenAct == 0)
           {

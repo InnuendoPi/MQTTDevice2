@@ -1,22 +1,24 @@
 class TemperatureSensor
 {
-public:
-  char sens_mqtttopic[50];       // Für MQTT Kommunikation
-  unsigned char sens_address[8]; // 1-Wire Adresse
-  String sens_name;              // Name für Anzeige auf Website
-  float sens_value = -127.0;     // Aktueller Wert
-  bool sens_isConnected;         // ist der Sensor verbunden
-  float sens_offset = 0.0;       // Offset - Temp kalibrieren
+  int sens_err = 0;
   bool sens_sw = false;          // Events aktivieren
   bool sens_state = true;        // Fehlerstatus ensor
-  int sens_err = 0;
+  bool sens_isConnected;         // ist der Sensor verbunden
+  float sens_offset = 0.0;       // Offset - Temp kalibrieren
+  float sens_value = -127.0;     // Aktueller Wert
+  String sens_name;              // Name für Anzeige auf Website
+  unsigned char sens_address[8]; // 1-Wire Adresse
+  char sens_mqtttopic[50];       // Für MQTT Kommunikation
+
+public:
+  // moved to private and get methods. change as set method
 
   String getSens_adress_string()
   {
     return SensorAddressToString(sens_address);
   }
 
-  TemperatureSensor(String new_address, String new_mqtttopic, String new_name, float new_offset, String new_sw)
+  TemperatureSensor(String new_address, String new_mqtttopic, String new_name, float new_offset, bool new_sw)
   {
     change(new_address, new_mqtttopic, new_name, new_offset, new_sw);
   }
@@ -73,12 +75,12 @@ public:
     publishmqtt();
   } // void Update
 
-  void change(const String &new_address, const String &new_mqtttopic, const String &new_name, float new_offset, const String &new_sw)
+  void change(const String &new_address, const String &new_mqtttopic, const String &new_name, float new_offset, const bool &new_sw)
   {
     new_mqtttopic.toCharArray(sens_mqtttopic, new_mqtttopic.length() + 1);
     sens_name = new_name;
     sens_offset = new_offset;
-    new_sw == "1" ? sens_sw = true : sens_sw = false;
+    sens_sw = new_sw;
 
     if (new_address.length() == 16)
     {
@@ -128,6 +130,35 @@ public:
       pubsubClient.publish(sens_mqtttopic, jsonMessage);
     }
   }
+  int getErr()
+  {
+    return sens_err;
+  }
+  bool getSw()
+  {
+    return sens_sw;
+  }
+  bool getState()
+  {
+    return sens_state;
+  }
+  float getOffset()
+  {
+    return sens_offset;
+  }
+  float getValue()
+  {
+    return sens_value;
+  }
+  String getName()
+  {
+    return sens_name;
+  }
+  String getTopic()
+  {
+    return sens_mqtttopic;
+  }
+
   char buf[5];
   char *getValueString()
   {
@@ -135,23 +166,16 @@ public:
     dtostrf(sens_value, 2, 1, buf);
     return buf;
   }
-  String getSwitchable()
-  {
-    if (sens_sw)
-      return "1";
-    else
-      return "0";
-  }
 };
 
 // Initialisierung des Arrays -> max 6 Sensoren
 TemperatureSensor sensors[numberOfSensorsMax] = {
-    TemperatureSensor("", "", "", 0.0, ""),
-    TemperatureSensor("", "", "", 0.0, ""),
-    TemperatureSensor("", "", "", 0.0, ""),
-    TemperatureSensor("", "", "", 0.0, ""),
-    TemperatureSensor("", "", "", 0.0, ""),
-    TemperatureSensor("", "", "", 0.0, "")};
+    TemperatureSensor("", "", "", 0.0, false),
+    TemperatureSensor("", "", "", 0.0, false),
+    TemperatureSensor("", "", "", 0.0, false),
+    TemperatureSensor("", "", "", 0.0, false),
+    TemperatureSensor("", "", "", 0.0, false),
+    TemperatureSensor("", "", "", 0.0, false)};
 
 // Funktion für Loop im Timer Objekt
 void handleSensors()
@@ -162,8 +186,8 @@ void handleSensors()
     sensors[i].Update();
 
     // get max sensorstatus
-    if (sensors[i].sens_sw && max_status < sensors[i].sens_err)
-      max_status = sensors[i].sens_err;
+    if (sensors[i].getSw() && max_status < sensors[i].getErr())
+      max_status = sensors[i].getErr();
 
     yield();
   }
@@ -213,11 +237,11 @@ void handleSetSensor()
       return;
   }
 
-  String new_mqtttopic = sensors[id].sens_mqtttopic;
-  String new_name = sensors[id].sens_name;
+  String new_mqtttopic = sensors[id].getTopic();
+  String new_name = sensors[id].getName();
   String new_address = sensors[id].getSens_adress_string();
-  float new_offset = sensors[id].sens_offset;
-  String new_sw = sensors[id].getSwitchable();
+  float new_offset = sensors[id].getOffset();
+  bool new_sw = sensors[id].getSw();
 
   for (int i = 0; i < server.args(); i++)
   {
@@ -239,7 +263,10 @@ void handleSetSensor()
     }
     if (server.argName(i) == "sw")
     {
-      new_sw = server.arg(i);
+      if (server.arg(i) == "true")
+        new_sw = true;
+      else
+        new_sw = false;
     }
     yield();
   }
@@ -258,10 +285,10 @@ void handleDelSensor()
   {
     if (i == (numberOfSensorsMax - 1)) // 5 - Array von 0 bis (numberOfSensorsMax-1)
     {
-      sensors[i].change("", "", "", 0.0, "");
+      sensors[i].change("", "", "", 0.0, false);
     }
     else
-      sensors[i].change(sensors[i + 1].getSens_adress_string(), sensors[i + 1].sens_mqtttopic, sensors[i + 1].sens_name, sensors[i + 1].sens_offset, sensors[i + 1].getSwitchable());
+      sensors[i].change(sensors[i + 1].getSens_adress_string(), sensors[i + 1].getTopic(), sensors[i + 1].getName(), sensors[i + 1].getOffset(), sensors[i + 1].getSw());
 
     yield();
   }
@@ -280,7 +307,8 @@ void handleRequestSensorAddresses()
   if (id != -1)
   {
     message += F("<option>");
-    message += SensorAddressToString(sensors[id].sens_address);
+    // message += SensorAddressToString(sensors[id].sens_address);
+    message += sensors[id].getSens_adress_string();
     message += F("</option><option disabled>──────────</option>");
   }
   for (int i = 0; i < numberOfSensorsFound; i++)
@@ -301,27 +329,27 @@ void handleRequestSensors()
   for (int i = 0; i < numberOfSensors; i++)
   {
     JsonObject sensorsObj = doc.createNestedObject();
-    sensorsObj["name"] = sensors[i].sens_name;
-    String str = sensors[i].sens_name;
+    sensorsObj["name"] = sensors[i].getName();
+    String str = sensors[i].getName();
     str.replace(" ", "%20"); // Erstze Leerzeichen für URL Charts
     sensorsObj["namehtml"] = str;
-    sensorsObj["offset"] = sensors[i].sens_offset;
-    sensorsObj["sw"] = sensors[i].getSwitchable();
-    sensorsObj["state"] = sensors[i].sens_state;
-    if (sensors[i].sens_value != -127.0)
+    sensorsObj["offset"] = sensors[i].getOffset();
+    sensorsObj["sw"] = sensors[i].getSw();
+    sensorsObj["state"] = sensors[i].getState();
+    if (sensors[i].getValue() != -127.0)
       sensorsObj["value"] = sensors[i].getValueString();
     else
     {
-      if (sensors[i].sens_err == 1)
+      if (sensors[i].getErr() == 1)
         sensorsObj["value"] = "CRC";
-      if (sensors[i].sens_err == 2)
+      if (sensors[i].getErr() == 2)
         sensorsObj["value"] = "DER";
-      if (sensors[i].sens_err == 3)
+      if (sensors[i].getErr() == 3)
         sensorsObj["value"] = "UNP";
       else
         sensorsObj["value"] = "ERR";
     }
-    sensorsObj["mqtt"] = sensors[i].sens_mqtttopic;
+    sensorsObj["mqtt"] = sensors[i].getTopic();
     yield();
   }
 
@@ -345,22 +373,22 @@ void handleRequestSensor()
   {
     if (request == "name")
     {
-      message = sensors[id].sens_name;
+      message = sensors[id].getName();
       goto SendMessage;
     }
     if (request == "offset")
     {
-      message = sensors[id].sens_offset;
+      message = sensors[id].getOffset();
       goto SendMessage;
     }
     if (request == "sw")
     {
-      message = sensors[id].getSwitchable();
+      message = sensors[id].getSw();
       goto SendMessage;
     }
     if (request == "script")
     {
-      message = sensors[id].sens_mqtttopic;
+      message = sensors[id].getTopic();
       goto SendMessage;
     }
     message = "not found";

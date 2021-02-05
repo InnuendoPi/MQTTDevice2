@@ -2,8 +2,6 @@
 #define TICKER_H
 
 #include "Arduino.h"
-
-// InnuTicker Zeitintervall
  
 // Ticker status
 //

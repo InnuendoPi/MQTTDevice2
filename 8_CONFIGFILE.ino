@@ -1,7 +1,7 @@
 bool loadConfig()
 {
   DEBUG_MSG("%s\n", "------ loadConfig started ------");
-  File configFile = SPIFFS.open("/config.txt", "r");
+  File configFile = LittleFS.open("/config.txt", "r");
   if (!configFile)
   {
     DEBUG_MSG("%s\n", "Failed to open config file\n");
@@ -41,12 +41,18 @@ bool loadConfig()
       String actorPin = actorObj["PIN"];
       String actorScript = actorObj["SCRIPT"];
       String actorName = actorObj["NAME"];
-      String actorInv = actorObj["INV"];
-      String actorSwitch = actorObj["SW"];
-      String actorGrafana = actorObj["GRAF"];
+      bool actorInv = false;
+      if (actorObj["INV"] == "1")
+        actorInv = true;
+      bool actorSwitch = false;
+      if (actorObj["SW"] == "1")
+        actorSwitch = true;
+      bool actorGrafana = false;
+      if (actorObj["GRAF"] == "1")
+        actorGrafana = true;
 
       actors[i].change(actorPin, actorScript, actorName, actorInv, actorSwitch, actorGrafana);
-      DEBUG_MSG("Actor #: %d Name: %s MQTT: %s PIN: %s INV: %s SW: %s GRAF: %s\n", (i + 1), actorName.c_str(), actorScript.c_str(), actorPin.c_str(), actorInv.c_str(), actorSwitch.c_str(), actorGrafana.c_str());
+      DEBUG_MSG("Actor #: %d Name: %s MQTT: %s PIN: %s INV: %d SW: %d GRAF: %d\n", (i + 1), actorName.c_str(), actorScript.c_str(), actorPin.c_str(), actorInv, actorSwitch, actorGrafana);
       i++;
     }
   }
@@ -70,17 +76,20 @@ bool loadConfig()
       String sensorsAddress = sensorsObj["ADDRESS"];
       String sensorsScript = sensorsObj["SCRIPT"];
       String sensorsName = sensorsObj["NAME"];
-      String sensorsSwitch = sensorsObj["SW"];
+      bool sensorsSwitch = false;
+      if (sensorsObj["SW"] == "1")
+        sensorsSwitch = true;
+
       float sensorsOffset = 0.0;
       if (sensorsObj.containsKey("OFFSET"))
         sensorsOffset = sensorsObj["OFFSET"];
 
       sensors[i].change(sensorsAddress, sensorsScript, sensorsName, sensorsOffset, sensorsSwitch);
-      DEBUG_MSG("Sensor #: %d Name: %s Address: %s MQTT: %s Offset: %f SW: %s\n", (i + 1), sensorsName.c_str(), sensorsAddress.c_str(), sensorsScript.c_str(), sensorsOffset, sensorsSwitch.c_str());
+      DEBUG_MSG("Sensor #: %d Name: %s Address: %s MQTT: %s Offset: %f SW: %d\n", (i + 1), sensorsName.c_str(), sensorsAddress.c_str(), sensorsScript.c_str(), sensorsOffset, sensorsSwitch);
       i++;
     }
     else
-      sensors[i].change("", "", "", 0.0, "");
+      sensors[i].change("", "", "", 0.0, false);
   }
 
   if (numberOfSensors == 0)
@@ -94,12 +103,15 @@ bool loadConfig()
   if (indObj.containsKey("ENABLED"))
   {
     inductionStatus = 1;
-    String indEnabled = indObj["ENABLED"];
+    bool indEnabled = true;
+    bool indGrafana = false;
     String indPinWhite = indObj["PINWHITE"];
     String indPinYellow = indObj["PINYELLOW"];
     String indPinBlue = indObj["PINBLUE"];
     String indScript = indObj["TOPIC"];
-    String indGrafana = indObj["GRAF"];
+    if (indObj["GRAF"] == "1")
+      indGrafana = true;
+
     long indDelayOff = DEF_DELAY_IND; //default delay
     int indPowerLevel = 100;
     if (indObj.containsKey("PL"))
@@ -109,7 +121,7 @@ bool loadConfig()
       indDelayOff = indObj["DELAY"];
 
     inductionCooker.change(StringToPin(indPinWhite), StringToPin(indPinYellow), StringToPin(indPinBlue), indScript, indDelayOff, indEnabled, indPowerLevel, indGrafana);
-    DEBUG_MSG("Induction: %d MQTT: %s Relais (WHITE): %s Command channel (YELLOW): %s Backchannel (BLUE): %s Delay after power off %d Power level on error: %d\n", inductionStatus, indScript.c_str(), indPinWhite.c_str(), indPinYellow.c_str(), indPinBlue.c_str(), (indDelayOff / 1000), indPowerLevel);
+    DEBUG_MSG("Induction: %d MQTT: %s Relais (WHITE): %s Command channel (YELLOW): %s Backchannel (BLUE): %s Delay after power off %d Power level on error: %d Graf: %d\n", inductionStatus, indScript.c_str(), indPinWhite.c_str(), indPinYellow.c_str(), indPinBlue.c_str(), (indDelayOff / 1000), indPowerLevel, indGrafana);
   }
   else
   {
@@ -236,8 +248,8 @@ bool loadConfig()
   DEBUG_MSG("Actors update intervall: %d sec\n", (ACT_UPDATE / 1000));
   DEBUG_MSG("Induction update intervall: %d sec\n", (IND_UPDATE / 1000));
 
-  if (miscObj.containsKey("STARTDB") == 1)
-    startDB = miscObj["STARTDB"];
+  if (miscObj["STARTDB"] == "1")
+    startDB = true;
   else
     startDB = false;
 
@@ -296,7 +308,7 @@ bool loadConfig()
 void saveConfigCallback()
 {
 
-  if (SPIFFS.begin())
+  if (LittleFS.begin())
   {
     saveConfig();
     shouldSaveConfig = true;
@@ -320,10 +332,20 @@ bool saveConfig()
     actorsObj["PIN"] = PinToString(actors[i].pin_actor);
     actorsObj["NAME"] = actors[i].name_actor;
     actorsObj["SCRIPT"] = actors[i].argument_actor;
-    actorsObj["INV"] = actors[i].getInverted();
-    actorsObj["SW"] = actors[i].getSwitchable();
-    actorsObj["GRAF"] = actors[i].getGrafana();
-    DEBUG_MSG("Actor #: %d Name: %s MQTT: %s PIN: %s INV: %s SW: %s GRAF: %s\n", (i + 1), actors[i].name_actor.c_str(), actors[i].argument_actor.c_str(), PinToString(actors[i].pin_actor).c_str(), actors[i].getInverted().c_str(), actors[i].getSwitchable().c_str(), actors[i].getGrafana().c_str());
+    if (actors[i].isInverted)
+      actorsObj["INV"] = "1";
+    else
+      actorsObj["INV"] = "0";
+    if (actors[i].switchable)
+      actorsObj["SW"] = "1";
+    else
+      actorsObj["SW"] = "0";
+    if (actors[i].setGrafana)
+      actorsObj["GRAF"] = "1";
+    else
+      actorsObj["GRAF"] = "0";
+
+    DEBUG_MSG("Actor #: %d Name: %s MQTT: %s PIN: %s INV: %d SW: %d GRAF: %d\n", (i + 1), actors[i].name_actor.c_str(), actors[i].argument_actor.c_str(), PinToString(actors[i].pin_actor).c_str(), actors[i].isInverted, actors[i].switchable, actors[i].setGrafana);
   }
   if (numberOfActors == 0)
   {
@@ -337,11 +359,14 @@ bool saveConfig()
   {
     JsonObject sensorsObj = sensorsArray.createNestedObject();
     sensorsObj["ADDRESS"] = sensors[i].getSens_adress_string();
-    sensorsObj["NAME"] = sensors[i].sens_name;
-    sensorsObj["OFFSET"] = sensors[i].sens_offset;
-    sensorsObj["SCRIPT"] = sensors[i].sens_mqtttopic;
-    sensorsObj["SW"] = sensors[i].getSwitchable();
-    DEBUG_MSG("Sensor #: %d Name: %s Address: %s MQTT: %s Offset: %f SW: %s\n", (i + 1), sensors[i].sens_name.c_str(), sensors[i].getSens_adress_string().c_str(), sensors[i].sens_mqtttopic, sensors[i].sens_offset, sensors[i].getSwitchable().c_str());
+    sensorsObj["NAME"] = sensors[i].getName();
+    sensorsObj["OFFSET"] = sensors[i].getOffset();
+    sensorsObj["SCRIPT"] = sensors[i].getTopic();
+    if (sensors[i].getSw())
+      sensorsObj["SW"] = "1";
+    else
+      sensorsObj["SW"] = "0";
+    DEBUG_MSG("Sensor #: %d Name: %s Address: %s MQTT: %s Offset: %f SW: %d\n", (i + 1), sensors[i].getName().c_str(), sensors[i].getSens_adress_string().c_str(), sensors[i].getTopic().c_str(), sensors[i].getOffset(), sensors[i].getSw());
   }
   if (numberOfSensors == 0)
     DEBUG_MSG("Sensors: %d\n", numberOfSensors);
@@ -361,7 +386,10 @@ bool saveConfig()
     indObj["DELAY"] = inductionCooker.delayAfteroff;
     indObj["ENABLED"] = "1";
     indObj["PL"] = inductionCooker.powerLevelOnError;
-    indObj["GRAF"] = inductionCooker.setGrafana;
+    if (inductionCooker.setGrafana)
+      indObj["GRAF"] = "1";
+    else
+      indObj["GRAF"] = "0";
     DEBUG_MSG("Induction: %d MQTT: %s Relais (WHITE): %s Command channel (YELLOW): %s Backchannel (BLUE): %s Delay after power off %d Power level on error: %d\n", inductionCooker.isEnabled, inductionCooker.mqtttopic.c_str(), PinToString(inductionCooker.PIN_WHITE).c_str(), PinToString(inductionCooker.PIN_YELLOW).c_str(), PinToString(inductionCooker.PIN_INTERRUPT).c_str(), (inductionCooker.delayAfteroff / 1000), inductionCooker.powerLevelOnError);
   }
   else
@@ -455,7 +483,10 @@ bool saveConfig()
   else
     miscObj["mdns"] = "0";
 
-  miscObj["STARTDB"] = startDB;
+  if (startDB)
+    miscObj["STARTDB"] = "1";
+  else
+    miscObj["STARTDB"] = "0";
   miscObj["DBSERVER"] = dbServer;
   miscObj["DB"] = dbDatabase;
   miscObj["DBUSER"] = dbUser;
@@ -509,7 +540,7 @@ bool saveConfig()
     return false;
   }
 
-  File configFile = SPIFFS.open("/config.txt", "w");
+  File configFile = LittleFS.open("/config.txt", "w");
   if (!configFile)
   {
     DEBUG_MSG("%s\n", "Failed to open config file for writing");

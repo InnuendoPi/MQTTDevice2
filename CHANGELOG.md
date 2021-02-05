@@ -1,7 +1,13 @@
 # Changelog
 
-Version 2.19
+Version 2.30
 
+- Changed:  Dateisystem LittleFS
+- Reworked: Handling Aktoren und Sensoren
+- Optimize: Web Interface
+- Optimize: Speicherverbrauch
+- Update:   Bootstrap und JQUery
+- Optimize: WebIf
 - Fixed:    WLAN reconnect
 - Added:    DEBUG_MSG mit Zeitstempel
 - Fixed:    Fehler beim Speichern negativer Sensor Offset behoben
