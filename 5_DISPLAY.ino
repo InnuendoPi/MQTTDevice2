@@ -15,7 +15,8 @@ public:
   int counter_act = 0;
 
   oled()
-  {}
+  {
+  }
 
   void dispUpdate()
   {
@@ -39,7 +40,7 @@ public:
     if (is_enabled == 1 && dispAddress != 0)
     {
       address = dispAddress;
-      // Display mit SSD1306 
+      // Display mit SSD1306
       //display.begin(SSD1306_SWITCHCAPVCC, address);
       //display.ssd1306_command(SSD1306_DISPLAYON);
 
@@ -67,7 +68,7 @@ void turnDisplay()
     {
       // Display mit SSD1306
       //display.ssd1306_command(SSD1306_DISPLAYOFF);
-      
+
       // Display mit SH1106
       display.SH1106_command(SH1106_DISPLAYOFF);
       oledDisplay.dispEnabled = false;
@@ -92,29 +93,17 @@ void turnDisplay()
 void handleRequestDisplay()
 {
   StaticJsonDocument<128> doc;
-  doc["enabled"] = 0;
-  doc["displayOn"] = 0;
-  doc["enabled"] = oledDisplay.dispEnabled;
+  doc["enabled"] = (int)oledDisplay.dispEnabled;
   doc["updisp"] = DISP_UPDATE;
-  if (oledDisplay.dispEnabled)
-    doc["displayOn"] = 1;
-  else
-    doc["displayOn"] = 0;
-
+  doc["displayOn"] = (int)oledDisplay.dispEnabled;
   String response;
   serializeJson(doc, response);
   server.send(200, "application/json", response);
 }
-
 void handleRequestDisp()
 {
   String request = server.arg(0);
   String message;
-  if (request == "isEnabled")
-  {
-    message = oledDisplay.dispEnabled;
-    goto SendMessage;
-  }
   if (request == "address")
   {
     if (isAddress(oledDisplay.address))
@@ -130,11 +119,6 @@ void handleRequestDisp()
       message += String(decToHex(address[i], 2));
       message += F("</option>");
     }
-    goto SendMessage;
-  }
-  if (request == "updisp")
-  {
-    message = DISP_UPDATE / 1000;
     goto SendMessage;
   }
 SendMessage:
@@ -165,14 +149,7 @@ void handleSetDisp()
   {
     if (server.argName(i) == "enabled")
     {
-      if (server.arg(i) == "true")
-      {
-        oledDisplay.dispEnabled = true;
-      }
-      else
-      {
-        oledDisplay.dispEnabled = false;
-      }
+      oledDisplay.dispEnabled = checkBool(server.arg(i));
     }
     if (server.argName(i) == "address")
     {
@@ -244,10 +221,10 @@ void showDispWlan() // Show WLAN icon
   else
   {
     showDispErr("WLAN ERROR");
-    unsigned long val = 2*wait_on_error_wlan - (millis() - wlanconnectlasttry);
+    unsigned long val = 2 * wait_on_error_wlan - (millis() - wlanconnectlasttry);
     if (val > wait_on_error_wlan)
       return;
-    showDispErr2(String(val/1000));
+    showDispErr2(String(val / 1000));
   }
 }
 void showDispMqtt() // SHow MQTT icon
@@ -257,10 +234,10 @@ void showDispMqtt() // SHow MQTT icon
   else
   {
     showDispErr("MQTT ERROR");
-    unsigned long val = 2*wait_on_error_mqtt - (millis() - mqttconnectlasttry);
-    if (val > wait_on_error_mqtt )
+    unsigned long val = 2 * wait_on_error_mqtt - (millis() - mqttconnectlasttry);
+    if (val > wait_on_error_mqtt)
       return;
-    showDispErr2(String(val/1000));
+    showDispErr2(String(val / 1000));
   }
 }
 void showDispCbpi() // SHow CBPI icon
@@ -340,7 +317,7 @@ void showDispTime(const String &value) // Show time value in the upper left with
   display.setCursor(5, 5);
   display.setTextSize(2);
   display.setTextColor(WHITE);
-  display.print(value.substring(0,(value.length()-3))); // substring w/o seconds
+  display.print(value.substring(0, (value.length() - 3))); // substring w/o seconds
 }
 
 void showDispIP(const String &value) // Show IP address under time value with fontsize 1
@@ -371,7 +348,6 @@ void showDispErr2(const String &value) // Show IP address under time value with 
   display.print("sec");
   display.display();
 }
-
 
 void showDispSet(const String &value) // Show current station mode
 {

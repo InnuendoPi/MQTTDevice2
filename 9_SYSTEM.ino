@@ -61,6 +61,14 @@ bool isValidDigit(const String &str)
   return true;
 }
 
+bool checkBool(const String &value)
+{
+  if (value == "true")
+    return true;
+  else
+    return false;
+}
+
 void checkChars(char *input)
 {
   char *output = input;

@@ -263,10 +263,7 @@ void handleSetSensor()
     }
     if (server.argName(i) == "sw")
     {
-      if (server.arg(i) == "true")
-        new_sw = true;
-      else
-        new_sw = false;
+      new_sw = checkBool(server.arg(i));
     }
     yield();
   }
@@ -323,77 +320,48 @@ void handleRequestSensorAddresses()
 
 void handleRequestSensors()
 {
+  int id = server.arg(0).toInt();
   StaticJsonDocument<1024> doc;
-  JsonArray sensorsArray = doc.to<JsonArray>();
-
-  for (int i = 0; i < numberOfSensors; i++)
+  
+  if (id == -1) // fetch all sensors
   {
-    JsonObject sensorsObj = doc.createNestedObject();
-    sensorsObj["name"] = sensors[i].getName();
-    String str = sensors[i].getName();
-    str.replace(" ", "%20"); // Erstze Leerzeichen für URL Charts
-    sensorsObj["namehtml"] = str;
-    sensorsObj["offset"] = sensors[i].getOffset();
-    sensorsObj["sw"] = sensors[i].getSw();
-    sensorsObj["state"] = sensors[i].getState();
-    if (sensors[i].getValue() != -127.0)
-      sensorsObj["value"] = sensors[i].getValueString();
-    else
+    JsonArray sensorsArray = doc.to<JsonArray>();
+    for (int i = 0; i < numberOfSensors; i++)
     {
-      if (sensors[i].getErr() == 1)
-        sensorsObj["value"] = "CRC";
-      if (sensors[i].getErr() == 2)
-        sensorsObj["value"] = "DER";
-      if (sensors[i].getErr() == 3)
-        sensorsObj["value"] = "UNP";
+      JsonObject sensorsObj = doc.createNestedObject();
+      sensorsObj["name"] = sensors[i].getName();
+      String str = sensors[i].getName();
+      str.replace(" ", "%20"); // Erstze Leerzeichen für URL Charts
+      sensorsObj["namehtml"] = str;
+      sensorsObj["offset"] = sensors[i].getOffset();
+      sensorsObj["sw"] = sensors[i].getSw();
+      sensorsObj["state"] = sensors[i].getState();
+      if (sensors[i].getValue() != -127.0)
+        sensorsObj["value"] = sensors[i].getValueString();
       else
-        sensorsObj["value"] = "ERR";
+      {
+        if (sensors[i].getErr() == 1)
+          sensorsObj["value"] = "CRC";
+        if (sensors[i].getErr() == 2)
+          sensorsObj["value"] = "DER";
+        if (sensors[i].getErr() == 3)
+          sensorsObj["value"] = "UNP";
+        else
+          sensorsObj["value"] = "ERR";
+      }
+      sensorsObj["mqtt"] = sensors[i].getTopic();
+      yield();
     }
-    sensorsObj["mqtt"] = sensors[i].getTopic();
-    yield();
+  }
+  else // get single sensor by id
+  {
+    doc["name"] = sensors[id].getName();
+    doc["offset"] = sensors[id].getOffset();
+    doc["sw"] = sensors[id].getSw();
+    doc["script"] = sensors[id].getTopic();
   }
 
   String response;
   serializeJson(doc, response);
   server.send(200, "application/json", response);
-}
-
-void handleRequestSensor()
-{
-  int id = server.arg(0).toInt();
-  String request = server.arg(1);
-  String message;
-
-  if (id == -1)
-  {
-    message = "";
-    goto SendMessage;
-  }
-  else
-  {
-    if (request == "name")
-    {
-      message = sensors[id].getName();
-      goto SendMessage;
-    }
-    if (request == "offset")
-    {
-      message = sensors[id].getOffset();
-      goto SendMessage;
-    }
-    if (request == "sw")
-    {
-      message = sensors[id].getSw();
-      goto SendMessage;
-    }
-    if (request == "script")
-    {
-      message = sensors[id].getTopic();
-      goto SendMessage;
-    }
-    message = "not found";
-  }
-  saveConfig();
-SendMessage:
-  server.send(200, "text/plain", message);
 }

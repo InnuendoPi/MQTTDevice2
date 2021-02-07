@@ -123,8 +123,6 @@ void setupServer()
   server.on("/reqInduction", handleRequestInduction);
   server.on("/reqSearchSensorAdresses", handleRequestSensorAddresses);
   server.on("/reqPins", handlereqPins);
-  server.on("/reqSensor", handleRequestSensor); // Infos der Sensoren für WebConfig
-  server.on("/reqActor", handleRequestActor);   // Infos der Aktoren für WebConfig
   server.on("/reqIndu", handleRequestIndu);     // Infos der Indu für WebConfig
   server.on("/setSensor", handleSetSensor);     // Sensor ändern
   server.on("/setActor", handleSetActor);       // Aktor ändern
@@ -135,8 +133,8 @@ void setupServer()
   server.on("/reqDisplay", handleRequestDisplay);
   server.on("/reqDisp", handleRequestDisp); // Infos Display für WebConfig
   server.on("/setDisp", handleSetDisp);     // Display ändern
-  server.on("/reqMiscSet", handleRequestMiscSet);
   server.on("/reqMisc", handleRequestMisc);       // Misc Infos für WebConfig
+  server.on("/reqFirm", handleRequestFirm);
   server.on("/setMisc", handleSetMisc);           // Misc ändern
   server.on("/startHTTPUpdate", startHTTPUpdate); // Firmware WebUpdate
   server.on("/visualisieren", visualisieren);     // Visualisierung

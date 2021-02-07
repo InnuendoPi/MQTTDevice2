@@ -42,13 +42,14 @@ bool loadConfig()
       String actorScript = actorObj["SCRIPT"];
       String actorName = actorObj["NAME"];
       bool actorInv = false;
-      if (actorObj["INV"] == "1")
-        actorInv = true;
       bool actorSwitch = false;
-      if (actorObj["SW"] == "1")
-        actorSwitch = true;
       bool actorGrafana = false;
-      if (actorObj["GRAF"] == "1")
+
+      if (actorObj["INV"] || actorObj["INV"] == "1")
+        actorInv = true;
+      if (actorObj["SW"] || actorObj["SW"] == "1")
+        actorSwitch = true;
+      if (actorObj["GRAF"] || actorObj["GRAF"] == "1")
         actorGrafana = true;
 
       actors[i].change(actorPin, actorScript, actorName, actorInv, actorSwitch, actorGrafana);
@@ -77,10 +78,9 @@ bool loadConfig()
       String sensorsScript = sensorsObj["SCRIPT"];
       String sensorsName = sensorsObj["NAME"];
       bool sensorsSwitch = false;
-      if (sensorsObj["SW"] == "1")
-        sensorsSwitch = true;
-
       float sensorsOffset = 0.0;
+      if (sensorsObj["SW"] || sensorsObj["SW"] == "1")
+        sensorsSwitch = true;
       if (sensorsObj.containsKey("OFFSET"))
         sensorsOffset = sensorsObj["OFFSET"];
 
@@ -90,11 +90,6 @@ bool loadConfig()
     }
     else
       sensors[i].change("", "", "", 0.0, false);
-  }
-
-  if (numberOfSensors == 0)
-  {
-    DEBUG_MSG("Sensors: %d\n", numberOfSensors);
   }
   DEBUG_MSG("%s\n", "--------------------");
 
@@ -109,14 +104,13 @@ bool loadConfig()
     String indPinYellow = indObj["PINYELLOW"];
     String indPinBlue = indObj["PINBLUE"];
     String indScript = indObj["TOPIC"];
-    if (indObj["GRAF"] == "1")
-      indGrafana = true;
-
     long indDelayOff = DEF_DELAY_IND; //default delay
     int indPowerLevel = 100;
+
+    if (indObj["GRAF"] || indObj["GRAF"] == "1")
+      indGrafana = true;
     if (indObj.containsKey("PL"))
       indPowerLevel = indObj["PL"];
-
     if (indObj.containsKey("DELAY"))
       indDelayOff = indObj["DELAY"];
 
@@ -131,10 +125,9 @@ bool loadConfig()
   DEBUG_MSG("%s\n", "--------------------");
   JsonArray displayArray = doc["display"];
   JsonObject displayObj = displayArray[0];
-  if (displayObj["ENABLED"] == "1")
+  useDisplay = false;
+  if (displayObj["ENABLED"] || displayObj["ENABLED"] == "1")
     useDisplay = true;
-  else
-    useDisplay = false;
 
   if (useDisplay)
   {
@@ -154,7 +147,6 @@ bool loadConfig()
   }
   else
   {
-    useDisplay = false;
     oledDisplay.dispEnabled = false;
     DEBUG_MSG("OLED Display: %d\n", oledDisplay.dispEnabled);
     TickerDisp.stop();
@@ -167,64 +159,36 @@ bool loadConfig()
 
   if (miscObj.containsKey("del_sen_act"))
     wait_on_Sensor_error_actor = miscObj["del_sen_act"];
-
   if (miscObj.containsKey("del_sen_ind"))
     wait_on_Sensor_error_induction = miscObj["del_sen_ind"];
-
-  if (miscObj.containsKey("delay_mqtt"))
-    wait_on_error_mqtt = miscObj["delay_mqtt"];
-
   DEBUG_MSG("Wait on sensor error actors: %d sec\n", wait_on_Sensor_error_actor / 1000);
   DEBUG_MSG("Wait on sensor error induction: %d sec\n", wait_on_Sensor_error_induction / 1000);
 
-  if (miscObj["enable_mqtt"] == "1")
-  {
+  StopOnMQTTError = false;
+  if (miscObj["enable_mqtt"] || miscObj["enable_mqtt"] == "1")
     StopOnMQTTError = true;
-    DEBUG_MSG("Switch off actors on error after %d\n", (wait_on_error_mqtt / 1000));
-  }
-  else
-  {
-    StopOnMQTTError = false;
-    DEBUG_MSG("%s\n", "Switch off actors on error disabled");
-  }
+  if (miscObj.containsKey("delay_mqtt"))
+    wait_on_error_mqtt = miscObj["delay_mqtt"];
+  DEBUG_MSG("Switch off actors on MQTT error: %d after %d sec\n", StopOnMQTTError, (wait_on_error_mqtt / 1000));
 
+  StopOnWLANError = false;
+  if (miscObj["enable_wlan"] || miscObj["enable_wlan"] == "1")
+    StopOnWLANError = true;
   if (miscObj.containsKey("delay_wlan"))
     wait_on_error_wlan = miscObj["delay_wlan"];
+  DEBUG_MSG("Switch off actors on WLAN error: %d after %d sec\n", StopOnWLANError, (wait_on_error_wlan / 1000));
 
-  if (miscObj["enable_wlan"] == "1")
-  {
-    StopOnWLANError = true;
-    DEBUG_MSG("Switch off induction on error after %d sec\n", (wait_on_error_wlan / 1000));
-  }
-  else
-  {
-    StopOnWLANError = false;
-    DEBUG_MSG("%s\n", "Switch off induction on error disabled");
-  }
-
-  if (miscObj["buzzer"] == "1")
-  {
+  startBuzzer = false;
+  if (miscObj["buzzer"] || miscObj["buzzer"] == "1")
     startBuzzer = true;
-    DEBUG_MSG("%s\n", "Buzzer activated");
-  }
-  else
-  {
-    startBuzzer = false;
-    DEBUG_MSG("%s\n", "Buzzer disabled");
-  }
+  DEBUG_MSG("Buzzer: %d\n", startBuzzer);
+
   if (miscObj.containsKey("mdns_name"))
     strlcpy(nameMDNS, miscObj["mdns_name"], sizeof(nameMDNS));
-
-  if (miscObj["mdns"] == "1")
-  {
+  startMDNS = false;
+  if (miscObj["mdns"] || miscObj["mdns"] == "1")
     startMDNS = true;
-    DEBUG_MSG("mDNS activated: %s\n", nameMDNS);
-  }
-  else
-  {
-    startMDNS = false;
-    DEBUG_MSG("%s\n", "mDNS disabled");
-  }
+  DEBUG_MSG("mDNS: %d name: %s\n", startMDNS, nameMDNS);
 
   if (miscObj.containsKey("upsen"))
     SEN_UPDATE = miscObj["upsen"];
@@ -248,10 +212,9 @@ bool loadConfig()
   DEBUG_MSG("Actors update intervall: %d sec\n", (ACT_UPDATE / 1000));
   DEBUG_MSG("Induction update intervall: %d sec\n", (IND_UPDATE / 1000));
 
-  if (miscObj["STARTDB"] == "1")
+  startDB = false;
+  if (miscObj["STARTDB"] || miscObj["STARTDB"] == "1")
     startDB = true;
-  else
-    startDB = false;
 
   if (miscObj.containsKey("DBSERVER"))
     strlcpy(dbServer, miscObj["DBSERVER"], sizeof(dbServer));
@@ -332,18 +295,9 @@ bool saveConfig()
     actorsObj["PIN"] = PinToString(actors[i].pin_actor);
     actorsObj["NAME"] = actors[i].name_actor;
     actorsObj["SCRIPT"] = actors[i].argument_actor;
-    if (actors[i].isInverted)
-      actorsObj["INV"] = "1";
-    else
-      actorsObj["INV"] = "0";
-    if (actors[i].switchable)
-      actorsObj["SW"] = "1";
-    else
-      actorsObj["SW"] = "0";
-    if (actors[i].setGrafana)
-      actorsObj["GRAF"] = "1";
-    else
-      actorsObj["GRAF"] = "0";
+    actorsObj["INV"] = (int)actors[i].isInverted;
+    actorsObj["SW"] = (int)actors[i].switchable;
+    actorsObj["GRAF"] = (int)actors[i].setGrafana;
 
     DEBUG_MSG("Actor #: %d Name: %s MQTT: %s PIN: %s INV: %d SW: %d GRAF: %d\n", (i + 1), actors[i].name_actor.c_str(), actors[i].argument_actor.c_str(), PinToString(actors[i].pin_actor).c_str(), actors[i].isInverted, actors[i].switchable, actors[i].setGrafana);
   }
@@ -362,15 +316,10 @@ bool saveConfig()
     sensorsObj["NAME"] = sensors[i].getName();
     sensorsObj["OFFSET"] = sensors[i].getOffset();
     sensorsObj["SCRIPT"] = sensors[i].getTopic();
-    if (sensors[i].getSw())
-      sensorsObj["SW"] = "1";
-    else
-      sensorsObj["SW"] = "0";
+    sensorsObj["SW"] = (int)sensors[i].getSw();
     DEBUG_MSG("Sensor #: %d Name: %s Address: %s MQTT: %s Offset: %f SW: %d\n", (i + 1), sensors[i].getName().c_str(), sensors[i].getSens_adress_string().c_str(), sensors[i].getTopic().c_str(), sensors[i].getOffset(), sensors[i].getSw());
   }
-  if (numberOfSensors == 0)
-    DEBUG_MSG("Sensors: %d\n", numberOfSensors);
-
+  
   DEBUG_MSG("%s\n", "--------------------");
 
   // Write Induction
@@ -384,12 +333,9 @@ bool saveConfig()
     indObj["PINBLUE"] = PinToString(inductionCooker.PIN_INTERRUPT);
     indObj["TOPIC"] = inductionCooker.mqtttopic;
     indObj["DELAY"] = inductionCooker.delayAfteroff;
-    indObj["ENABLED"] = "1";
+    indObj["ENABLED"] = (int)inductionCooker.isEnabled;
     indObj["PL"] = inductionCooker.powerLevelOnError;
-    if (inductionCooker.setGrafana)
-      indObj["GRAF"] = "1";
-    else
-      indObj["GRAF"] = "0";
+    indObj["GRAF"] = (int)inductionCooker.setGrafana;
     DEBUG_MSG("Induction: %d MQTT: %s Relais (WHITE): %s Command channel (YELLOW): %s Backchannel (BLUE): %s Delay after power off %d Power level on error: %d\n", inductionCooker.isEnabled, inductionCooker.mqtttopic.c_str(), PinToString(inductionCooker.PIN_WHITE).c_str(), PinToString(inductionCooker.PIN_YELLOW).c_str(), PinToString(inductionCooker.PIN_INTERRUPT).c_str(), (inductionCooker.delayAfteroff / 1000), inductionCooker.powerLevelOnError);
   }
   else
@@ -404,7 +350,7 @@ bool saveConfig()
   if (oledDisplay.dispEnabled)
   {
     JsonObject displayObj = displayArray.createNestedObject();
-    displayObj["ENABLED"] = "1";
+    displayObj["ENABLED"] = 1;
     displayObj["ADDRESS"] = String(decToHex(oledDisplay.address, 2));
     displayObj["updisp"] = DISP_UPDATE;
 
@@ -419,7 +365,7 @@ bool saveConfig()
     }
     else
     {
-      displayObj["ENABLED"] = "0";
+      displayObj["ENABLED"] = 0;
       oledDisplay.dispEnabled = false;
       useDisplay = false;
     }
@@ -447,46 +393,19 @@ bool saveConfig()
   miscObj["del_sen_ind"] = wait_on_Sensor_error_induction;
   DEBUG_MSG("Wait on sensor error actors: %d sec\n", wait_on_Sensor_error_actor / 1000);
   DEBUG_MSG("Wait on sensor error induction: %d sec\n", wait_on_Sensor_error_induction / 1000);
+
   miscObj["delay_mqtt"] = wait_on_error_mqtt;
-  if (StopOnMQTTError)
-  {
-    miscObj["enable_mqtt"] = "1";
-    DEBUG_MSG("Switch off actors on error enabled after %d sec\n", (wait_on_error_mqtt / 1000));
-  }
-  else
-  {
-    miscObj["enable_mqtt"] = "0";
-    DEBUG_MSG("%s\n", "Switch off actors on error disabled");
-  }
+  miscObj["enable_mqtt"] = (int)StopOnMQTTError;
+  DEBUG_MSG("Switch off actors on error enabled after %d sec\n", (wait_on_error_mqtt / 1000));
 
   miscObj["delay_wlan"] = wait_on_error_wlan;
+  miscObj["enable_wlan"] = (int)StopOnWLANError;
+  DEBUG_MSG("Switch off induction on error enabled after %d sec\n", (wait_on_error_wlan / 1000));
 
-  if (StopOnWLANError)
-  {
-    miscObj["enable_wlan"] = "1";
-    DEBUG_MSG("Switch off induction on error enabled after %d sec\n", (wait_on_error_wlan / 1000));
-  }
-  else
-  {
-    miscObj["enable_wlan"] = "0";
-    DEBUG_MSG("%s\n", "Switch off induction on error disabled");
-  }
-
-  if (startBuzzer)
-    miscObj["buzzer"] = "1";
-  else
-    miscObj["buzzer"] = "0";
-
+  miscObj["buzzer"] = (int)startBuzzer;
   miscObj["mdns_name"] = nameMDNS;
-  if (startMDNS)
-    miscObj["mdns"] = "1";
-  else
-    miscObj["mdns"] = "0";
-
-  if (startDB)
-    miscObj["STARTDB"] = "1";
-  else
-    miscObj["STARTDB"] = "0";
+  miscObj["mdns"] = (int)startMDNS;
+  miscObj["STARTDB"] = (int)startDB;
   miscObj["DBSERVER"] = dbServer;
   miscObj["DB"] = dbDatabase;
   miscObj["DBUSER"] = dbUser;

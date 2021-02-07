@@ -1,12 +1,17 @@
 # Changelog
 
-Version 2.30
+Version 2.51
 
+- Optimize: Speicherverbrauch
+- Optimize: Traffic
+- Optimize: Web Interface (JSON)
+- Added:    ESC schließt modal dialog
+- Optimize: Speichern und Lesen der Konfiguration
 - Changed:  Dateisystem LittleFS
 - Reworked: Handling Aktoren und Sensoren
 - Optimize: Web Interface
 - Optimize: Speicherverbrauch
-- Update:   Bootstrap und JQUery
+- Update:   Bootstrap und JQuery
 - Optimize: WebIf
 - Fixed:    WLAN reconnect
 - Added:    DEBUG_MSG mit Zeitstempel

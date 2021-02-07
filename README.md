@@ -4,9 +4,9 @@ MQTTDevice2 ermöglicht die Anbindung von Sensoren, Aktoren und einem Induktions
 
 MQTTDevice2 ist ein Arduino Sketch für die Module ESP8266 Wemos D1 mini. Damit ist es möglich eine Kommunikation zwischen dem MQTT Broker mosquitto und einem ESP8266 herzustellen, um Sensoren und Aktoren mit CraftBeerPi V3 zu steuern. Zusätzlich unterstützt der Sketch eine Visualisierung von Temperaturen und Leistungen während der Braurasten mit Grafana.
 
-## Update Hinweis Version 2.50
+## Update Hinweis Version 2.5
 
-Beim Update auf Version 2.5 von 2.20 oder älter muss das Dateisystem ersetzt werden.
+Beim Update auf Version 2.5 oder neuer von 2.20 oder älter muss das Dateisystem ersetzt werden.
 Die Firmware und das Filesystem LittleFS müssen neu geflasht werden. Ein WebUpdate von 2.2x auf 2.50 oder neuer ist nicht möglich.
 
 ## Dokumentation

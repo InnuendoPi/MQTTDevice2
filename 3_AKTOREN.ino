@@ -186,12 +186,12 @@ public:
   // bool getGrafana()
   // {
   //   return setGrafana;
-    
+
   // }
   // bool getState()
   // {
   //   return actor_state;
-    
+
   // }
 };
 
@@ -219,77 +219,39 @@ void handleActors()
 /* Funktionen für Web */
 void handleRequestActors()
 {
+  int id = server.arg(0).toInt();
   StaticJsonDocument<1024> doc;
-  JsonArray actorsArray = doc.to<JsonArray>();
-
-  for (int i = 0; i < numberOfActors; i++)
+  if (id == -1) // fetch all sensors
   {
-    JsonObject actorsObj = doc.createNestedObject();
+    JsonArray actorsArray = doc.to<JsonArray>();
 
-    actorsObj["name"] = actors[i].name_actor;
-    actorsObj["status"] = actors[i].isOn;
-    actorsObj["power"] = actors[i].power_actor;
-    actorsObj["mqtt"] = actors[i].argument_actor;
-    actorsObj["pin"] = PinToString(actors[i].pin_actor);
-    actorsObj["sw"] = actors[i].switchable;
-    actorsObj["state"] = actors[i].actor_state;
-    actorsObj["grafana"] = actors[i].setGrafana;
-    yield();
+    for (int i = 0; i < numberOfActors; i++)
+    {
+      JsonObject actorsObj = doc.createNestedObject();
+
+      actorsObj["name"] = actors[i].name_actor;
+      actorsObj["status"] = actors[i].isOn;
+      actorsObj["power"] = actors[i].power_actor;
+      actorsObj["mqtt"] = actors[i].argument_actor;
+      actorsObj["pin"] = PinToString(actors[i].pin_actor);
+      actorsObj["sw"] = actors[i].switchable;
+      actorsObj["state"] = actors[i].actor_state;
+      actorsObj["grafana"] = actors[i].setGrafana;
+      yield();
+    }
+  }
+  else
+  {
+    doc["name"] = actors[id].name_actor;
+    doc["mqtt"] = actors[id].argument_actor;
+    doc["sw"] = actors[id].switchable;
+    doc["inv"] = actors[id].isInverted;
+    doc["grafana"] = actors[id].setGrafana;
   }
 
   String response;
   serializeJson(doc, response);
   server.send(200, "application/json", response);
-}
-
-void handleRequestActor()
-{
-  int id = server.arg(0).toInt();
-  String request = server.arg(1);
-  String message;
-
-  if (id == -1)
-  {
-    message = "";
-    goto SendMessage;
-  }
-  else
-  {
-    if (request == "name")
-    {
-      message = actors[id].name_actor;
-      goto SendMessage;
-    }
-    if (request == "script")
-    {
-      message = actors[id].argument_actor;
-      goto SendMessage;
-    }
-    if (request == "pin")
-    {
-      message = PinToString(actors[id].pin_actor);
-      goto SendMessage;
-    }
-    if (request == "inv")
-    {
-      message = actors[id].isInverted;
-      goto SendMessage;
-    }
-    if (request == "sw")
-    {
-      message = actors[id].switchable;
-      goto SendMessage;
-    }
-    if (request == "grafana")
-    {
-      message = actors[id].setGrafana;
-      goto SendMessage;
-    }
-    message = "not found";
-  }
-  saveConfig();
-SendMessage:
-  server.send(200, "text/plain", message);
 }
 
 void handleSetActor()
@@ -327,24 +289,15 @@ void handleSetActor()
     }
     if (server.argName(i) == "inv")
     {
-      if (server.arg(i) == "true")
-        ac_isinverted = true;
-      else
-        ac_isinverted = false;
+      ac_isinverted = checkBool(server.arg(i));
     }
     if (server.argName(i) == "sw")
     {
-      if (server.arg(i) == "true")
-        ac_switchable = true;
-      else
-        ac_switchable = false;
+      ac_switchable = checkBool(server.arg(i));
     }
     if (server.argName(i) == "grafana")
     {
-      if (server.arg(i) == "true")
-        ac_grafana = true;
-      else
-        ac_grafana = false;
+      ac_grafana = checkBool(server.arg(i));
     }
     yield();
   }

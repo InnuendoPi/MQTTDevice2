@@ -17,9 +17,9 @@ class induction
   long powerLow = 0;
 
 public:
-  unsigned char PIN_WHITE = 9;     // RELAIS
-  unsigned char PIN_YELLOW = 9;    // AUSGABE AN PLATTE
-  unsigned char PIN_INTERRUPT = 9; // EINGABE VON PLATTE
+  unsigned char PIN_WHITE = 14;     // D5 RELAIS
+  unsigned char PIN_YELLOW = 12;    // D6 AUSGABE AN PLATTE
+  unsigned char PIN_INTERRUPT = 13; // D7 EINGABE VON PLATTE
   int power = 0;
   int newPower = 0;
   unsigned char CMD_CUR = 0; // Aktueller Befehl
@@ -401,8 +401,7 @@ void handleRequestInduction()
     doc["power"] = inductionCooker.power;
     doc["relayOn"] = inductionCooker.isRelayon;
     doc["state"] = inductionCooker.induction_state;
-    doc["grafana"] = inductionCooker.setGrafana;
-    doc["pl"] = inductionCooker.powerLevelOnError;
+        
     if (inductionCooker.isPower)
     {
       doc["powerLevel"] = inductionCooker.CMD_CUR;
@@ -412,6 +411,11 @@ void handleRequestInduction()
       doc["powerLevel"] = max(0, inductionCooker.CMD_CUR - 1);
     }
   }
+  doc["topic"] = inductionCooker.mqtttopic;
+  doc["delay"] = inductionCooker.delayAfteroff / 1000;
+  doc["pl"] = inductionCooker.powerLevelOnError;
+  doc["grafana"] = inductionCooker.setGrafana;
+
   String response;
   serializeJson(doc, response);
   server.send(200, "application/json", response);
@@ -422,31 +426,6 @@ void handleRequestIndu()
   String request = server.arg(0);
   String message;
 
-  if (request == "isEnabled")
-  {
-    message = inductionCooker.isEnabled;
-    goto SendMessage;
-  }
-  if (request == "topic")
-  {
-    message = inductionCooker.mqtttopic;
-    goto SendMessage;
-  }
-  if (request == "delay")
-  {
-    message = inductionCooker.delayAfteroff / 1000;
-    goto SendMessage;
-  }
-  if (request == "pl")
-  {
-    message = inductionCooker.powerLevelOnError;
-    goto SendMessage;
-  }
-  if (request == "grafana")
-  {
-    message = inductionCooker.setGrafana;
-    goto SendMessage;
-  }
   if (request == "pins")
   {
     int id = server.arg(1).toInt();
@@ -502,10 +481,7 @@ void handleSetIndu()
   {
     if (server.argName(i) == "enabled")
     {
-      if (server.arg(i) == "true")
-        is_enabled = true;
-      else
-        is_enabled = false;
+        is_enabled = checkBool(server.arg(i));
     }
     if (server.argName(i) == "topic")
     {
@@ -536,10 +512,7 @@ void handleSetIndu()
     }
     if (server.argName(i) == "grafana")
     {
-      if (server.arg(i) == "true")
-        new_grafana = true;
-      else
-        new_grafana = false;
+        new_grafana = checkBool(server.arg(i));
     }
     yield();
   }

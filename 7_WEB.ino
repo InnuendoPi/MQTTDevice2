@@ -116,145 +116,59 @@ void mqttcallback(char *topic, unsigned char *payload, unsigned int length)
   }
 }
 
-void handleRequestMiscSet()
+void handleRequestMisc()
 {
   StaticJsonDocument<512> doc;
-
-  doc["MQTTHOST"] = mqtthost;
-  doc["del_sen_act"] = wait_on_Sensor_error_actor / 1000;
-  doc["del_sen_ind"] = wait_on_Sensor_error_induction / 1000;
+  doc["mqtthost"] = mqtthost;
+  doc["mdns_name"] = nameMDNS;
+  doc["mdns"] = startMDNS;
+  doc["buzzer"] = startBuzzer;
   doc["enable_mqtt"] = StopOnMQTTError;
   doc["enable_wlan"] = StopOnWLANError;
-  doc["mqtt_state"] = oledDisplay.mqttOK; // Anzeige MQTT Status -> mqtt_state verzögerter Status!
-  doc["wlan_state"] = oledDisplay.wlanOK;
   doc["delay_mqtt"] = wait_on_error_mqtt / 1000;
   doc["delay_wlan"] = wait_on_error_wlan / 1000;
+  doc["del_sen_act"] = wait_on_Sensor_error_actor / 1000;
+  doc["del_sen_ind"] = wait_on_Sensor_error_induction / 1000;
+  doc["upsen"] = SEN_UPDATE / 1000;
+  doc["upact"] = ACT_UPDATE / 1000;
+  doc["upind"] = IND_UPDATE / 1000;
+  doc["dbserver"] = dbServer;
   doc["startdb"] = startDB;
+  doc["dbdatabase"] = dbDatabase;
+  doc["dbuser"] = dbUser;
+  doc["dbpass"] = dbPass;
+  doc["dbup"] = (upInflux / 1000);
+  doc["mqtt_state"] = oledDisplay.mqttOK; // Anzeige MQTT Status -> mqtt_state verzögerter Status!
+  doc["wlan_state"] = oledDisplay.wlanOK;
   doc["vistag"] = dbVisTag;
   doc["alertstate"] = alertState;
   if (alertState)
     alertState = false;
-
+  
   String response;
   serializeJson(doc, response);
   server.send(200, "application/json", response);
 }
 
-void handleRequestMisc()
+void handleRequestFirm()
 {
-  String request = server.arg(0);
-  String message;
-  if (request == "MQTTHOST")
-  {
-    message = mqtthost;
-    goto SendMessage;
-  }
-  if (request == "buzzer")
-  {
-    message = startBuzzer;
-    goto SendMessage;
-  }
-  if (request == "mdns_name")
-  {
-    message = nameMDNS;
-    goto SendMessage;
-  }
-  if (request == "mdns")
-  {
-    message = startMDNS;
-    goto SendMessage;
-  }
-  if (request == "enable_mqtt")
-  {
-    message = StopOnMQTTError;
-    goto SendMessage;
-  }
-  if (request == "enable_wlan")
-  {
-    message = StopOnWLANError;
-    goto SendMessage;
-  }
-  if (request == "delay_mqtt")
-  {
-    message = wait_on_error_mqtt / 1000;
-    goto SendMessage;
-  }
-  if (request == "delay_wlan")
-  {
-    message = wait_on_error_wlan / 1000;
-    goto SendMessage;
-  }
-  if (request == "del_sen_act")
-  {
-    message = wait_on_Sensor_error_actor / 1000;
-    goto SendMessage;
-  }
-  if (request == "del_sen_ind")
-  {
-    message = wait_on_Sensor_error_induction / 1000;
-    goto SendMessage;
-  }
-  if (request == "upsen")
-  {
-    message = SEN_UPDATE / 1000;
-    goto SendMessage;
-  }
-  if (request == "upact")
-  {
-    message = ACT_UPDATE / 1000;
-    goto SendMessage;
-  }
-  if (request == "upind")
-  {
-    message = IND_UPDATE / 1000;
-    goto SendMessage;
-  }
-  if (request == "firmware")
-  {
-    if (startMDNS)
+    String request = server.arg(0);
+    String message;
+    if (request == "firmware")
     {
-      message = nameMDNS;
-      message += " V";
+        if (startMDNS)
+        {
+            message = nameMDNS;
+            message += " V";
+        }
+        else
+            message = "MQTTDevice V ";
+        message += Version;
+        goto SendMessage;
     }
-    else
-      message = "MQTTDevice V ";
-
-    message += Version;
-    goto SendMessage;
-  }
-  if (request == "dbserver")
-  {
-    message = dbServer;
-    goto SendMessage;
-  }
-  if (request == "startdb")
-  {
-    message = startDB;
-    goto SendMessage;
-  }
-  if (request == "dbdatabase")
-  {
-    message = dbDatabase;
-    goto SendMessage;
-  }
-  if (request == "dbuser")
-  {
-    message = dbUser;
-    goto SendMessage;
-  }
-  if (request == "dbpass")
-  {
-    message = dbPass;
-    goto SendMessage;
-  }
-  if (request == "dbup")
-  {
-    message = (upInflux / 1000);
-    goto SendMessage;
-  }
 
 SendMessage:
-  server.send(200, "text/plain", message);
+    server.send(200, "text/plain", message);
 }
 
 void handleSetMisc()
@@ -285,10 +199,7 @@ void handleSetMisc()
 
     if (server.argName(i) == "buzzer")
     {
-      if (server.arg(i) == "true")
-        startBuzzer = true;
-      else
-        startBuzzer = false;
+      startBuzzer = checkBool(server.arg(i));
     }
     if (server.argName(i) == "mdns_name")
     {
@@ -297,17 +208,11 @@ void handleSetMisc()
     }
     if (server.argName(i) == "mdns")
     {
-      if (server.arg(i) == "true")
-        startMDNS = true;
-      else
-        startMDNS = false;
+      startMDNS = checkBool(server.arg(i));
     }
     if (server.argName(i) == "enable_mqtt")
     {
-      if (server.arg(i) == "true")
-        StopOnMQTTError = true;
-      else
-        StopOnMQTTError = false;
+      StopOnMQTTError = checkBool(server.arg(i));
     }
     if (server.argName(i) == "delay_mqtt")
       if (isValidInt(server.arg(i)))
@@ -316,10 +221,7 @@ void handleSetMisc()
       }
     if (server.argName(i) == "enable_wlan")
     {
-      if (server.arg(i) == "true")
-        StopOnWLANError = true;
-      else
-        StopOnWLANError = false;
+      StopOnWLANError = checkBool(server.arg(i));
     }
     if (server.argName(i) == "delay_wlan")
       if (isValidInt(server.arg(i)))
@@ -370,10 +272,7 @@ void handleSetMisc()
     }
     if (server.argName(i) == "startdb")
     {
-      if (server.arg(i) == "true")
-        startDB = true;
-      else
-        startDB = false;
+      startDB = checkBool(server.arg(i));
     }
     if (server.argName(i) == "dbdatabase")
     {
@@ -415,10 +314,7 @@ void visualisieren()
     }
     if (server.argName(i) == "startvis")
     {
-      if (server.arg(i) == "true")
-        startVis = true;
-      else
-        startVis = false;
+      startVis = checkBool(server.arg(i));
     }
     yield();
   }
