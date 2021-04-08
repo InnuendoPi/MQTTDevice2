@@ -94,7 +94,7 @@ void handleRequestDisplay()
 {
   StaticJsonDocument<128> doc;
   doc["enabled"] = (int)oledDisplay.dispEnabled;
-  doc["updisp"] = DISP_UPDATE;
+  doc["updisp"] = DISP_UPDATE / 1000;
   doc["displayOn"] = (int)oledDisplay.dispEnabled;
   String response;
   serializeJson(doc, response);

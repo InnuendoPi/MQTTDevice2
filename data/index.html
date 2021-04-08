@@ -856,7 +856,7 @@
       $('#modal_induction_pinblue').load('/reqIndu?req=pins&id=2');
       var modal = $(this);
       $.get("/reqInduction", function (data) {
-        modal.find('#modal_induction_script').val(data.mqtttopic);
+        modal.find('#modal_induction_script').val(data.topic);
         modal.find('#modal_induction_delay').val(data.delay);
         modal.find('#modal_induction_pl').val(data.pl);
         modal.find('#modal_induction_enabled').prop("checked", Boolean(Number(data.enabled)));

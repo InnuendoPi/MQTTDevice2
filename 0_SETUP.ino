@@ -43,6 +43,7 @@ void setup()
     // Starte NTP
     timeClient.begin();
     timeClient.forceUpdate();
+    checkSummerTime();
     TickerNTP.start();
 
     if (shouldSaveConfig) // WiFiManager
