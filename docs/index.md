@@ -486,23 +486,21 @@ Installation der Datenbank InfluxDB:
 
 Mit shh (bspw. Putty) anmelden und die folgenden Befehle ausführen
 
- `wget -qO- <https://repos.influxdata.com/influxdb.key> \| sudo apt-key add -`
-  
-*ENTWEDER*   wenn auf dem RaspberryPi die OS Version "stretch" installiert ist
+`wget -qO- https://repos.influxdata.com/influxdb.key | sudo apt-key add -`
 
-`echo "deb <https://repos.influxdata.com/debian> stretch stable" \| sudo tee /etc/apt/sources.list.d/influxdb.list`
-  
-*ODER*       wenn auf dem RaspberryPi die OS Version "buster" installiert ist
-  
-`echo "deb <https://repos.influxdata.com/debian> buster stable" \| sudo tee /etc/apt/sources.list.d/influxdb.list`
+`source /etc/os-release`
+
+`echo "deb https://repos.influxdata.com/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/influxdb.list`
 
 `sudo apt update`
 
-`sudo apt install influxdb`
+`sudo apt install -y influxdb`
 
-`sudo systemctl unmask influxdb`
+`sudo systemctl unmask influxdb.service`
 
-`sudo systemctl enable influxdb`
+`sudo systemctl start influxdb.service`
+
+`sudo systemctl enable influxdb.service`
 
 Die Datenbank InfluxDB ist mit diesen 6 Schritten installiert und startet automatisch bei jedem Neustart vom RaspberryPi.
 
@@ -545,17 +543,25 @@ Mit dieser Regel (Retention Policy) wird die Standard-Einstellung "behalte die D
 
 **Installation Grafana:**
 
-Vor der Eingabe der Befehle die aktuelle Version Grafana überprüfen und in Schritt 1 und 2 die Versionsnummer 6.6.1 ersetzen.
+Der erste Schritt ist das Grafana APT Repository hinzufügen:
 
-`wget <https://dl.grafana.com/oss/release/grafana_6.6.1_armhf.deb>`
+`wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -`
 
-`sudo dpkg -i grafana_6.6.1_armhf.deb`
+`echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list`
+
+Nun kann Grafana installiert werden:
+
+`sudo apt-get update`
+
+`sudo apt-get install -y grafana`
+
+Grafana automatisch bei Systemstart starten:
 
 `sudo systemctl enable grafana-server`
 
 `sudo systemctl start grafana-server`
 
-Im Grafana Web Interface muss nun abschließend nur noch die DataSource InfluxDB hinzugefügt werden.
+Im Grafana Web Interface <http://ip_rasberrypi:3000> muss nun abschließend nur noch die DataSource InfluxDB hinzugefügt werden.
 
 * URL: <http://ip_rasberrypi:8086>
 * Database: mqttdevice

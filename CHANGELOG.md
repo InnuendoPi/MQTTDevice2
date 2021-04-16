@@ -1,7 +1,10 @@
 # Changelog
 
-Version 2.51
+Version 2.52
 
+- Fixed:    MQTT Topic IDS2 wurde nicht angezeigt
+- Fixed:    Display Update Intervall wurde fehlerhaft angezeigt
+- Fixed:    Sommerzeit wurde nicht geprüft
 - Optimize: Speicherverbrauch
 - Optimize: Traffic
 - Optimize: Web Interface (JSON)
