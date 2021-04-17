@@ -561,7 +561,7 @@ Grafana automatisch bei Systemstart starten:
 
 `sudo systemctl start grafana-server`
 
-Im Grafana Web Interface <http://ip_rasberrypi:3000> muss nun abschließend nur noch die DataSource InfluxDB hinzugefügt werden.
+Im Grafana Web Interface <http://ip_rasberrypi:3000> muss nun abschließend nur noch die DataSource InfluxDB hinzugefügt werden. Nach der Anmeldung (default admin/admin) die Configuration (Zahnrad) öffenen. Im Tab Data Sources eine Data Source hinzufügen
 
 * URL: <http://ip_rasberrypi:8086>
 * Database: mqttdevice
@@ -569,4 +569,6 @@ Im Grafana Web Interface <http://ip_rasberrypi:3000> muss nun abschließend nur 
 * Password: xxx
 * HTTP Method: POST
 
-Mit "Save & Test" wird die Verbindung gespeichert und überprüft. Nun kann entweder das Beispiel-Dashboard MQTTDevice (Datei MQTTDevice Dashboard.json) aus dem Ordner Info in Grafana importiert oder ein eigenes Dashboard erstellt werden.
+![Grafana-Configuration](img/grafana_config.jpg)
+
+Mit "Save & Test" wird die Verbindung gespeichert und überprüft. Nun kann entweder das Beispiel-Dashboard MQTTDevice (Datei MQTTDevice Dashboard.json) aus dem Ordner Info in Grafana importiert oder ein eigenes Dashboard erstellt werden. Das Beispiel Dashboard kann über das Menü Dashboards im Tab Manage über den Button "Upload JSON file" importiert werden.
