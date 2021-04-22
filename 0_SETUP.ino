@@ -93,7 +93,8 @@ void setup()
   {
     setInfluxDB();
     TickerInfluxDB.start();
-    TickerInfluxDB.pause();
+    if (!startVis)
+      TickerInfluxDB.pause();
   }
   if (startBuzzer)
   {

@@ -195,7 +195,7 @@ void handleSetMisc()
       }
     }
     if (server.argName(i) == "MQTTHOST")
-      server.arg(i).toCharArray(mqtthost, 16);
+      server.arg(i).toCharArray(mqtthost, sizeof(mqtthost));
 
     if (server.argName(i) == "buzzer")
     {
@@ -203,7 +203,7 @@ void handleSetMisc()
     }
     if (server.argName(i) == "mdns_name")
     {
-      server.arg(i).toCharArray(nameMDNS, 16);
+      server.arg(i).toCharArray(nameMDNS, sizeof(nameMDNS));
       checkChars(nameMDNS);
     }
     if (server.argName(i) == "mdns")
@@ -267,7 +267,7 @@ void handleSetMisc()
     }
     if (server.argName(i) == "dbserver")
     {
-      server.arg(i).toCharArray(dbServer, 30);
+      server.arg(i).toCharArray(dbServer, sizeof(dbServer));
       checkChars(dbServer);
     }
     if (server.argName(i) == "startdb")
@@ -276,17 +276,17 @@ void handleSetMisc()
     }
     if (server.argName(i) == "dbdatabase")
     {
-      server.arg(i).toCharArray(dbDatabase, 15);
+      server.arg(i).toCharArray(dbDatabase, sizeof(dbDatabase));
       checkChars(dbDatabase);
     }
     if (server.argName(i) == "dbuser")
     {
-      server.arg(i).toCharArray(dbUser, 15);
+      server.arg(i).toCharArray(dbUser, sizeof(dbUser));
       checkChars(dbUser);
     }
     if (server.argName(i) == "dbpass")
     {
-      server.arg(i).toCharArray(dbPass, 15);
+      server.arg(i).toCharArray(dbPass, sizeof(dbPass));
       checkChars(dbPass);
     }
     if (server.argName(i) == "dbup")
@@ -309,7 +309,7 @@ void visualisieren()
   {
     if (server.argName(i) == "vistag")
     {
-      server.arg(i).toCharArray(dbVisTag, 15);
+      server.arg(i).toCharArray(dbVisTag, sizeof(dbVisTag));
       checkChars(dbVisTag);
     }
     if (server.argName(i) == "startvis")
@@ -322,6 +322,9 @@ void visualisieren()
   {
     if (checkDBConnect())
     {
+      fsUploadFile = LittleFS.open("/vistag.txt", "w");
+      int bytesWritten = fsUploadFile.print(dbVisTag);
+      fsUploadFile.close();
       startVis = true;
       TickerInfluxDB.interval(upInflux);
       TickerInfluxDB.start();
@@ -334,7 +337,11 @@ void visualisieren()
     // TickerInfluxDB.resume();
   }
   else
+  {
+    if (LittleFS.exists("/vistag.txt"))
+      LittleFS.remove("/vistag.txt");
     TickerInfluxDB.pause();
+  }
 
   server.send(201, "text/plain", "created");
 }

@@ -1,7 +1,8 @@
 # Changelog
 
-Version 2.52
+Version 2.53
 
+- Added:    Visualisierung bleibt nach Neustart aktiv. Visualisierung muss beendet werden.
 - Fixed:    MQTT Topic IDS2 wurde nicht angezeigt
 - Fixed:    Display Update Intervall wurde fehlerhaft angezeigt
 - Fixed:    Sommerzeit wurde nicht geprüft

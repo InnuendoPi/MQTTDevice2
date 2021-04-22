@@ -256,8 +256,39 @@ bool loadConfig()
   if (startDB)
   {
     setInfluxDB();
-    TickerInfluxDB.config(upInflux, 0);
-    TickerInfluxDB.start();
+    // Lade visTag wenn vorhanden
+    if (LittleFS.exists("/vistag.txt"))
+    {
+      fsUploadFile = LittleFS.open("/vistag.txt", "r");
+      int cIndex = 0;
+      if (fsUploadFile.available())
+      {
+        char c = fsUploadFile.read();
+        while (c != '\n' && cIndex < 15) // Newline oder Array End
+        {
+          dbVisTag[cIndex] = c;
+          cIndex++;
+          dbVisTag[cIndex] = '\0';
+          if (!fsUploadFile.available())
+            break;
+          c = fsUploadFile.read();
+        }
+      }
+      fsUploadFile.close();
+
+      if (checkDBConnect())
+      {
+        DEBUG_MSG("Found visualize tag dbVis: %s\n", dbVisTag);
+        startVis = true;
+        TickerInfluxDB.interval(upInflux);
+        TickerInfluxDB.start();
+      }
+    }
+    else
+    {
+      TickerInfluxDB.config(upInflux, 0);
+      TickerInfluxDB.start();
+    }
   }
   else
     TickerInfluxDB.stop();
@@ -319,7 +350,7 @@ bool saveConfig()
     sensorsObj["SW"] = (int)sensors[i].getSw();
     DEBUG_MSG("Sensor #: %d Name: %s Address: %s MQTT: %s Offset: %f SW: %d\n", (i + 1), sensors[i].getName().c_str(), sensors[i].getSens_adress_string().c_str(), sensors[i].getTopic().c_str(), sensors[i].getOffset(), sensors[i].getSw());
   }
-  
+
   DEBUG_MSG("%s\n", "--------------------");
 
   // Write Induction

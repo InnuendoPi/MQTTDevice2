@@ -196,7 +196,7 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
 
     **Grafana Einstellungen**
 
-    Die Anbindung an Grafana, um einen Brautag graphisch darzustellen, ist optional. Die Eingabefelder sind selbsterklärend. Wird Grafana über die Checkbox aktiviert, benötigt das MQTTDevice einen Reboot.
+    Die Anbindung an Grafana, um einen Brautag graphisch darzustellen, ist optional. Die Eingabefelder sind selbsterklärend. Wird Grafana über die Checkbox aktiviert, benötigt das MQTTDevice zwingend einen Reboot.
 
     Zur Konfiguration siehe Rubrik Visualisierung.
 
@@ -466,7 +466,7 @@ Mit der Checkbox "Aktiviere Visualisierung Grafana" wird die Visualisierung akti
 
 Mit diesen Einstellungen ist die Visualisierung betriebsbereit. Der Status für die Visualisierung lautet "betriebsbereit und pausiert". Das MQTTDevice schreibt nicht permanent Daten in die Influx Datenbank. Nach dem Start oder Reset vom MQTTDevice ist die Visualisierung betriebsbereit und wartet auf ein Startsignal.
 
-Über den Button "Visualisierung" im WebIf kann nun das Schreiben in die Datenbank gestartet bzw. gestoppt werden. Zusätzlich kann optional eine Sud-ID eingegeben werden. Diese Sud-ID wird in der InfluxDB als zusätzlicher tag verwendet. Die Daten Temperatur, Zieltemperatur und Powerlevel befinden sich dann unter den tags "mqttdevice-status, sud-id". Es empfiehlt sich für das tag Sud-ID eine eindeutige Bezeichnung zu verwenden, bsp. mit Datumsangabe.
+Über den Button "Visualisierung" im WebIf kann nun das Schreiben in die Datenbank gestartet bzw. gestoppt werden. Zusätzlich kann optional eine Sud-ID eingegeben werden. Diese Sud-ID wird in der InfluxDB als zusätzliche Markierung (tag) verwendet. Die Daten Temperatur, Zieltemperatur und Powerlevel befinden sich dann unter den tags "mqttdevice-status, sud-id". Es empfiehlt sich für das tag Sud-ID eine eindeutige Bezeichnung zu verwenden, bsp. mit Datumsangabe.
 
 Beispiel für eine Sud-ID: Helles-20200201
 
@@ -474,11 +474,11 @@ Maximal können 15 Zeichen für die Sud-ID eingegeben werden.
 
 Vorgehensweise an einem Brautag:
 
-An einem Brautag wird, wenn alle Vorbereitungen abgeschlossen sind, Craftbeerpi3 mit dem gewünschten Rezept gestartet. Das ist der Zeitpunkt, zu dem die Visualisierung - also das Schreiben von Daten in die Datenbank - mit einem Klick auf "Visualisierung" gestartet wird.
+An einem Brautag wird, wenn alle Vorbereitungen abgeschlossen sind, Craftbeerpi3 mit dem gewünschten Rezept gestartet. Das ist der Zeitpunkt, zu dem die Visualisierung - also das Schreiben von Daten in die Datenbank - mit einem Klick auf "Visualisierung starten" gestartet wird.
 
-Wenn der Brauvorgang abgeschlossen ist, wird das Schreiben der Daten mit einem Klick auf Visualisierung beendet.
+Wenn der Brauvorgang abgeschlossen ist, wird das Schreiben der Daten mit einem Klick auf "Visualisierung Stoppen" beendet.
 
-Mit dieser Vorgehensweise beinhaltet die Visualisierung nur die relevanten Daten für den Brauvorgang.
+Mit dieser Vorgehensweise beinhaltet die Visualisierung nur die relevanten Daten für den Brauvorgang. Zu beachten ist, dass die Visualisierung auch bei Reboot aktiv bleibt. Die Sud-ID wird in einer Datei gespeichert.
 
 **Installation Datenbank:**
 
