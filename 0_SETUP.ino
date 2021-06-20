@@ -111,8 +111,6 @@ void setup()
 
   // Verarbeite alle Events Setup
   gEM.processAllEvents();
-
-  // Serial.printf("*** SYSINFO: %s\n", timeClient.getFormattedTime().c_str());
 }
 
 void setupServer()
@@ -125,17 +123,17 @@ void setupServer()
   server.on("/reqInduction", handleRequestInduction);
   server.on("/reqSearchSensorAdresses", handleRequestSensorAddresses);
   server.on("/reqPins", handlereqPins);
-  server.on("/reqIndu", handleRequestIndu);     // Infos der Indu für WebConfig
-  server.on("/setSensor", handleSetSensor);     // Sensor ändern
-  server.on("/setActor", handleSetActor);       // Aktor ändern
-  server.on("/setIndu", handleSetIndu);         // Indu ändern
-  server.on("/delSensor", handleDelSensor);     // Sensor löschen
-  server.on("/delActor", handleDelActor);       // Aktor löschen
-  server.on("/reboot", rebootDevice);           // reboots the whole Device
+  server.on("/reqIndu", handleRequestIndu); // Infos der Indu für WebConfig
+  server.on("/setSensor", handleSetSensor); // Sensor ändern
+  server.on("/setActor", handleSetActor);   // Aktor ändern
+  server.on("/setIndu", handleSetIndu);     // Indu ändern
+  server.on("/delSensor", handleDelSensor); // Sensor löschen
+  server.on("/delActor", handleDelActor);   // Aktor löschen
+  server.on("/reboot", rebootDevice);       // reboots the whole Device
   server.on("/reqDisplay", handleRequestDisplay);
   server.on("/reqDisp", handleRequestDisp); // Infos Display für WebConfig
   server.on("/setDisp", handleSetDisp);     // Display ändern
-  server.on("/reqMisc", handleRequestMisc);       // Misc Infos für WebConfig
+  server.on("/reqMisc", handleRequestMisc); // Misc Infos für WebConfig
   server.on("/reqFirm", handleRequestFirm);
   server.on("/setMisc", handleSetMisc);           // Misc ändern
   server.on("/startHTTPUpdate", startHTTPUpdate); // Firmware WebUpdate
@@ -152,9 +150,8 @@ void setupServer()
   server.on("/edit", HTTP_PUT, handleFileCreate);    // Datei erstellen
   server.on("/edit", HTTP_DELETE, handleFileDelete); // Datei löschen
   server.on(
-      "/edit", HTTP_POST, []() {
-        server.send(200, "text/plain", "");
-      },
+      "/edit", HTTP_POST, []()
+      { server.send(200, "text/plain", ""); },
       handleFileUpload);
 
   server.onNotFound(handleWebRequests); // Sonstiges

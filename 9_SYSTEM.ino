@@ -248,6 +248,19 @@ void sendAlarm(const uint8_t &setAlarm)
     }
     millis2wait(PAUSE1SEC);
     break;
+  case ALARM_ERROR2:
+    for (int i = 0; i < 4; i++)
+    {
+      tone(PIN_BUZZER, 880, 50);
+      delay(100);
+      tone(PIN_BUZZER, 880, 50);
+      delay(100);
+      tone(PIN_BUZZER, 440, 50);
+      delay(100);
+      tone(PIN_BUZZER, 440, 50);
+      delay(100);
+    }
+    break;
   default:
     break;
   }

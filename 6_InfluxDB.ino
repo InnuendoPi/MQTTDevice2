@@ -1,10 +1,9 @@
 class DBServer
 {
 public:
-    String kettle_id = "";           // Kettle ID
-    String kettle_topic = "";        // Kettle Topic
-    String kettle_heater_topic = ""; // Kettle Heater MQTT Topic
-    // String kettle_name = "";          // Kettle Name
+    String kettle_id = "";            // Kettle ID
+    String kettle_topic = "";         // Kettle Topic
+    String kettle_heater_topic = "";  // Kettle Heater MQTT Topic
     float kettle_sensor_temp = 0.0;   // Kettle Sensor aktuelle Temperatur
     int kettle_target_temp = 0;       // Kettle Heater TargetTemp
     int kettle_heater_powerlevel = 0; // Kettle Heater aktueller Powerlevel
@@ -120,7 +119,13 @@ void sendData()
         dbData.addField("Temperatur", dbInflux[i].kettle_sensor_temp);
         dbData.addField("TargetTemp", dbInflux[i].kettle_target_temp);
         if (dbInflux[i].kettle_heater_state == 1)
-            dbData.addField("Powerlevel", dbInflux[i].kettle_heater_powerlevel);
+        {
+            // Test: Grafana powerlevel "no value"
+            if (dbInflux[i].kettle_heater_powerlevel >= 0)
+                dbData.addField("Powerlevel", dbInflux[i].kettle_heater_powerlevel);
+            else
+                dbData.addField("Powerlevel", 0);
+        }
         else
             dbData.addField("Powerlevel", 0);
         DEBUG_MSG("Sende an InfluxDB: %s\n", dbData.toLineProtocol().c_str());
@@ -128,6 +133,7 @@ void sendData()
         if (!dbClient.writePoint(dbData))
         {
             DEBUG_MSG("InfluxDB Schreibfehler: %s\n", dbClient.getLastErrorMessage().c_str());
+            sendAlarm(ALARM_ERROR2);
         }
     }
 }
@@ -148,6 +154,7 @@ bool checkDBConnect()
     else
     {
         DEBUG_MSG("Verbindung zu InfluxDB Datenbank fehlgeschlagen: %s\n", dbClient.getLastErrorMessage().c_str());
+        sendAlarm(ALARM_ERROR2);
         return false;
     }
 }

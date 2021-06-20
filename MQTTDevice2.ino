@@ -1,4 +1,4 @@
-//    Erstellt:	2020
+//    Erstellt:	2021
 //    Author:	Innuendo
 
 //    Sketch für ESP8266
@@ -8,30 +8,30 @@
 //    Unterstützung für GPIO Aktoren
 //    Unterstützung für GGM IDS2 Induktionskochfeld
 //    Unterstützung für Web Update
+//    Visulaisierung über Grafana
 //    Unterstützung für OLED Display 126x64 I2C SH1106
 
-#include <OneWire.h>           // OneWire Bus Kommunikation
-#include <DallasTemperature.h> // Vereinfachte Benutzung der DS18B20 Sensoren
-#include <ESP8266WiFi.h>       // Generelle WiFi Funktionalität
-#include <ESP8266WebServer.h>  // Unterstützung Webserver
+#include <OneWire.h>            // OneWire Bus Kommunikation
+#include <DallasTemperature.h>  // Vereinfachte Benutzung der DS18B20 Sensoren
+#include <ESP8266WiFi.h>        // Generelle WiFi Funktionalität
+#include <ESP8266WebServer.h>   // Unterstützung Webserver
 #include <ESP8266HTTPUpdateServer.h>
-#include <WiFiManager.h>  // WiFiManager zur Einrichtung
-#include <DNSServer.h>    // Benötigt für WiFiManager
-// #include <FS.h>           // SPIFFS Zugriff -> ESP8266 2.6.3
-#include "LittleFS.h"     // LittleFS Zugriff -> ESP 2.7.4
-#include <ArduinoJson.h>  // Lesen und schreiben von JSON Dateien 6.16
-#include <ESP8266mDNS.h>  // mDNS
-#include <WiFiUdp.h>      // WiFi
-#include <EventManager.h> // Eventmanager
+#include <WiFiManager.h>        // WiFiManager zur Einrichtung
+#include <DNSServer.h>          // Benötigt für WiFiManager
+#include "LittleFS.h"
+#include <ArduinoJson.h>        // Lesen und schreiben von JSON Dateien 6.18
+#include <ESP8266mDNS.h>        // mDNS
+#include <WiFiUdp.h>            // WiFi
+#include <EventManager.h>       // Eventmanager
 #include <ESP8266HTTPClient.h>
 #include <ESP8266httpUpdate.h>
 #include <WiFiClientSecure.h>
 #include <WiFiClientSecureBearSSL.h>
 #include <NTPClient.h>
-#include "InnuTicker.h"
-#include <PubSubClient.h> // MQTT Kommunikation 2.7.0
-#include <CertStoreBearSSL.h>
-#include <InfluxDbClient.h>
+#include "InnuTicker.h"         // Bibliothek für Hintergrund Aufgaben (Tasks)
+#include <PubSubClient.h>       // MQTT Kommunikation 2.8.0
+#include <CertStoreBearSSL.h>   // WebUpdate
+#include <InfluxDbClient.h>     // InfluxDB mit Grafana
 
 extern "C"
 {
@@ -39,13 +39,15 @@ extern "C"
 }
 
 #ifdef DEBUG_ESP_PORT
-#define DEBUG_MSG(...) DEBUG_ESP_PORT.printf("%s ", timeClient.getFormattedTime().c_str());DEBUG_ESP_PORT.printf(__VA_ARGS__)
+#define DEBUG_MSG(...)                                                   \
+    DEBUG_ESP_PORT.printf("%s ", timeClient.getFormattedTime().c_str()); \
+    DEBUG_ESP_PORT.printf(__VA_ARGS__)
 #else
 #define DEBUG_MSG(...)
 #endif
 
 // Version
-#define Version "2.53"
+#define Version "2.55"
 
 // Definiere Pausen
 #define PAUSE1SEC 1000
@@ -196,7 +198,7 @@ int inductionStatus = 0;
 InfluxDBClient dbClient;
 bool startDB = false;
 bool startVis = false;
-char dbServer[28] = "http://192.168.100.30:8086"; // InfluxDB Server IP
+char dbServer[28] = "http://192.168.100.31:8086"; // InfluxDB Server IP
 char dbUser[15] = "";
 char dbPass[15] = "";
 char dbDatabase[11] = "mqttdevice";
@@ -229,15 +231,16 @@ Adafruit_SH1106 display(OLED_RESET);
 // #include <SPI.h>
 // #include <Wire.h>
 // #include <Adafruit_GFX.h>
-//#include <Adafruit_SSD1306.h>
+// #include <Adafruit_SSD1306.h>
 // #define SCREEN_WIDTH 128       // OLED display width, in pixels
 // #define SCREEN_HEIGHT 64       // OLED display height, in pixels
-//Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+// Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 #define ALARM_ON 1
 #define ALARM_OFF 2
 #define ALARM_OK 3
 #define ALARM_ERROR 4
+#define ALARM_ERROR2 5
 const int PIN_BUZZER = D8; // Buzzer
 bool startBuzzer = false;  // Aktiviere Buzzer
 

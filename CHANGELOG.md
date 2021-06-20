@@ -1,8 +1,11 @@
 # Changelog
 
-Version 2.53
+Version 2.55
 
-- Added:    Visualisierung bleibt nach Neustart aktiv. Visualisierung muss beendet werden.
+- Fixed:    InfluxDB PowerLevel no value
+- Update:   ESP8266 3.0.0 LittleFS
+- Update:   ArduinoJSON 6.18
+- Added:    Visualisierung bleibt nach Neustart aktiv
 - Fixed:    MQTT Topic IDS2 wurde nicht angezeigt
 - Fixed:    Display Update Intervall wurde fehlerhaft angezeigt
 - Fixed:    Sommerzeit wurde nicht geprüft
