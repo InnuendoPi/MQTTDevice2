@@ -19,11 +19,11 @@ Unterstützung gibt es im Hobbybrauerforum <https://hobbybrauer.de/forum/>
 
 ## Sketch Information
 
-Bibliotheken: (Stand ab Version 2.55, 06.2021)
+Bibliotheken: (Stand ab Version 2.56, 07.2021)
 
-- ESP8266 3.0.0 (LittleFS)
+- ESP8266 2.7.4 (LittleFS)
 - Arduino IDE 1.8.15
-- Visual Code 1.56.2 + modifiziertes ESP8266FS Plugin
+- Visual Code 1.57.1 + modifiziertes ESP8266FS Plugin
 - PubSubClient 2.8.0
 - ArduinoJSON 6.18
 - InfluxDB 3.8

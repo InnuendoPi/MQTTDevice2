@@ -1,7 +1,8 @@
 # Changelog
 
-Version 2.55
+Version 2.56
 
+- Reverted: ESP8266 2.7.4 LittleFS (Boardbibliotheken 3.0.0 und 3.0.1 fehlerhaft)
 - Fixed:    InfluxDB PowerLevel no value
 - Update:   ESP8266 3.0.0 LittleFS
 - Update:   ArduinoJSON 6.18

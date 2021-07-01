@@ -18,7 +18,7 @@
     "esp8266fs.mklittlefs.debugLevel": 0,
     // "esp8266fs.mkspiffs.executable": "C:/Arduino/tools/mkspiffs.exe",
     // "esp8266fs.mklittlefs.executable": "c:/arduino/tools/mklittlefs.exe",
-    "esp8266fs.esptool.executable": "C:/Users/pn010.TEAM/AppData/Local/Arduino15/packages/esp8266/hardware/esp8266/3.0.0/tools/esptool/esptool.py",
+    "esp8266fs.esptool.executable": "C:/Users/pn010.TEAM/AppData/Local/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/esptool/esptool.py",
     "esp8266fs.spiffsImage": "C:/Arduino/git/MQTTDevice2/build/MQTTDevice2.spiffs.bin",
     "esp8266fs.littlefsImage": "C:/Arduino/git/MQTTDevice2/build/MQTTDevice2.mklittlefs.bin",
     "esp8266fs.dataFiles": "C:/Arduino/git/MQTTDevice2/data",
