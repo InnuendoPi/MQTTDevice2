@@ -72,7 +72,7 @@ bool loadFromLittlefs(String path)
 
 void mqttcallback(char *topic, unsigned char *payload, unsigned int length)
 {
-  // DEBUG_MSG("Web: Received MQTT Topic: %s ", topic);
+  DEBUG_MSG("Web: Received MQTT Topic: %s ", topic);
   // Serial.print("Web: Payload: ");
   // for (int i = 0; i < length; i++)
   // {
@@ -87,13 +87,20 @@ void mqttcallback(char *topic, unsigned char *payload, unsigned int length)
 
   if (inductionCooker.mqtttopic == topic)
   {
-    if (inductionCooker.induction_state)
+    // if (inductionCooker.induction_state)
+      // {
       inductionCooker.handlemqtt(payload_msg);
-    else
-      DEBUG_MSG("%s\n", "*** Verwerfe MQTT wegen Status Induktion (Event handling)");
+      DEBUG_MSG("%s\n", "*** Handle MQTT Induktion");
+      // }
+    // else
+      // DEBUG_MSG("%s\n", "*** Verwerfe MQTT wegen Status Induktion (Event handling)");
   }
 
-  if (startDB)
+  if (cbpi == true)     // CBPi3 = false CBPi4 = true
+  {
+    //
+  }
+  else if (startDB)     // Visualisierung nach Influx nur CBPi3
   {
     for (int i = 0; i < numberOfDBMax; i++)
     {
@@ -107,10 +114,13 @@ void mqttcallback(char *topic, unsigned char *payload, unsigned int length)
   {
     if (actors[i].argument_actor == topic)
     {
-      if (actors[i].actor_state)
+      // if (actors[i].actor_state)
+        // {
         actors[i].handlemqtt(payload_msg);
-      else
-        DEBUG_MSG("%s\n", "*** Verwerfe MQTT wegen Status Aktoren (Event handling)");
+        DEBUG_MSG("%s %s\n", "*** Handle MQTT Aktor", actors[i].name_actor);
+        // }
+      // else
+        // DEBUG_MSG("%s %s\n", "*** Verwerfe MQTT zum Aktor", actors[i].name_actor);
       yield();
     }
   }
@@ -124,9 +134,7 @@ void handleRequestMisc()
   doc["mdns"] = startMDNS;
   doc["buzzer"] = startBuzzer;
   doc["enable_mqtt"] = StopOnMQTTError;
-  doc["enable_wlan"] = StopOnWLANError;
   doc["delay_mqtt"] = wait_on_error_mqtt / 1000;
-  doc["delay_wlan"] = wait_on_error_wlan / 1000;
   doc["del_sen_act"] = wait_on_Sensor_error_actor / 1000;
   doc["del_sen_ind"] = wait_on_Sensor_error_induction / 1000;
   doc["upsen"] = SEN_UPDATE / 1000;
@@ -139,7 +147,6 @@ void handleRequestMisc()
   doc["dbpass"] = dbPass;
   doc["dbup"] = (upInflux / 1000);
   doc["mqtt_state"] = oledDisplay.mqttOK; // Anzeige MQTT Status -> mqtt_state verzögerter Status!
-  doc["wlan_state"] = oledDisplay.wlanOK;
   doc["vistag"] = dbVisTag;
   doc["alertstate"] = alertState;
   if (alertState)
@@ -201,6 +208,10 @@ void handleSetMisc()
     {
       startBuzzer = checkBool(server.arg(i));
     }
+    if (server.argName(i) == "cbpi")
+    {
+      cbpi = checkBool(server.arg(i));
+    }
     if (server.argName(i) == "mdns_name")
     {
       server.arg(i).toCharArray(nameMDNS, sizeof(nameMDNS));
@@ -218,15 +229,6 @@ void handleSetMisc()
       if (isValidInt(server.arg(i)))
       {
         wait_on_error_mqtt = server.arg(i).toInt() * 1000;
-      }
-    if (server.argName(i) == "enable_wlan")
-    {
-      StopOnWLANError = checkBool(server.arg(i));
-    }
-    if (server.argName(i) == "delay_wlan")
-      if (isValidInt(server.arg(i)))
-      {
-        wait_on_error_wlan = server.arg(i).toInt() * 1000;
       }
     if (server.argName(i) == "del_sen_act")
       if (isValidInt(server.arg(i)))

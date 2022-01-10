@@ -171,17 +171,14 @@ bool loadConfig()
     wait_on_error_mqtt = miscObj["delay_mqtt"];
   DEBUG_MSG("Switch off actors on MQTT error: %d after %d sec\n", StopOnMQTTError, (wait_on_error_mqtt / 1000));
 
-  StopOnWLANError = false;
-  if (miscObj["enable_wlan"] || miscObj["enable_wlan"] == "1")
-    StopOnWLANError = true;
-  if (miscObj.containsKey("delay_wlan"))
-    wait_on_error_wlan = miscObj["delay_wlan"];
-  DEBUG_MSG("Switch off actors on WLAN error: %d after %d sec\n", StopOnWLANError, (wait_on_error_wlan / 1000));
-
   startBuzzer = false;
   if (miscObj["buzzer"] || miscObj["buzzer"] == "1")
     startBuzzer = true;
   DEBUG_MSG("Buzzer: %d\n", startBuzzer);
+  cbpi = false;   // default cbpi3
+  if (miscObj["cbpi"] || miscObj["cbpi"] == "1")
+    cbpi = true;
+  DEBUG_MSG("CBPi Version: %d\n", cbpi);
 
   if (miscObj.containsKey("mdns_name"))
     strlcpy(nameMDNS, miscObj["mdns_name"], sizeof(nameMDNS));
@@ -215,6 +212,8 @@ bool loadConfig()
   startDB = false;
   if (miscObj["STARTDB"] || miscObj["STARTDB"] == "1")
     startDB = true;
+  if (cbpi)   // CBPi4
+    startDB = false;
 
   if (miscObj.containsKey("DBSERVER"))
     strlcpy(dbServer, miscObj["DBSERVER"], sizeof(dbServer));
@@ -428,12 +427,13 @@ bool saveConfig()
   miscObj["delay_mqtt"] = wait_on_error_mqtt;
   miscObj["enable_mqtt"] = (int)StopOnMQTTError;
   DEBUG_MSG("Switch off actors on error enabled after %d sec\n", (wait_on_error_mqtt / 1000));
-
-  miscObj["delay_wlan"] = wait_on_error_wlan;
-  miscObj["enable_wlan"] = (int)StopOnWLANError;
-  DEBUG_MSG("Switch off induction on error enabled after %d sec\n", (wait_on_error_wlan / 1000));
-
+  if (cbpi)   // CBPi4
+  {
+    startDB = false;
+    TickerInfluxDB.stop();
+  }
   miscObj["buzzer"] = (int)startBuzzer;
+  miscObj["cbpi"] = (int)cbpi;
   miscObj["mdns_name"] = nameMDNS;
   miscObj["mdns"] = (int)startMDNS;
   miscObj["STARTDB"] = (int)startDB;
@@ -474,6 +474,7 @@ bool saveConfig()
   DEBUG_MSG("Sensor update interval %d sec\n", (SEN_UPDATE / 1000));
   DEBUG_MSG("Actors update interval %d sec\n", (ACT_UPDATE / 1000));
   DEBUG_MSG("Induction update interval %d sec\n", (IND_UPDATE / 1000));
+  DEBUG_MSG("CBPi Version: %d\n", cbpi);
   DEBUG_MSG("MQTT broker IP: %s\n", mqtthost);
 
   size_t len = measureJson(doc);

@@ -1,7 +1,10 @@
 # Changelog
 
-Version 2.56
+Version 2.65
 
+- Update:   ESP8266 3.0.2 LittleFS
+- Removed:  WLAN events (moved to mqtt handling)
+- Added:    CBPi3-CBPi4 Switch: Influx/Grafana nur im CBPi3 Modus
 - Reverted: ESP8266 2.7.4 LittleFS (Boardbibliotheken 3.0.0 und 3.0.1 fehlerhaft)
 - Fixed:    InfluxDB PowerLevel no value
 - Update:   ESP8266 3.0.0 LittleFS

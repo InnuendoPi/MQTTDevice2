@@ -158,12 +158,19 @@ public:
   {
     return sens_mqtttopic;
   }
-
   char buf[5];
   char *getValueString()
   {
-    // char buf[5];
     dtostrf(sens_value, 2, 1, buf);
+    return buf;
+  }
+  char *getTotalValueString()
+  {
+    sprintf(buf, "%s", "0.0");
+    if (sens_value == -127.0)
+      return buf;
+
+    dtostrf((sens_value + sens_offset), 2, 1, buf);
     return buf;
   }
 };
@@ -322,7 +329,7 @@ void handleRequestSensors()
 {
   int id = server.arg(0).toInt();
   StaticJsonDocument<1024> doc;
-  
+
   if (id == -1) // fetch all sensors
   {
     JsonArray sensorsArray = doc.to<JsonArray>();
@@ -337,7 +344,7 @@ void handleRequestSensors()
       sensorsObj["sw"] = sensors[i].getSw();
       sensorsObj["state"] = sensors[i].getState();
       if (sensors[i].getValue() != -127.0)
-        sensorsObj["value"] = sensors[i].getValueString();
+        sensorsObj["value"] = sensors[i].getTotalValueString();
       else
       {
         if (sensors[i].getErr() == 1)

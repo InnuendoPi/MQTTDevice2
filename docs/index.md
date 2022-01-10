@@ -219,17 +219,16 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
 
     Ohne das Event handling macht der Wemos nichts automatisert. Der Zustand verbleibt unverändert.
 
-    Es gibt 4 Grundtypen von Ereignissen (Events), die automatisiert behandelt werden können: für Aktoren und für das Induktionkochfeld bei Sensorfehlern, sowie für Aktoren und das Induktionskochfeld bei WLAN und bei MQTT Fehlern. Für diese 4 Typen werden Verzögerungen für das Event handling konfiguriert. Während der Verzögerung verbleibt der Zustand unverändert. Nach der Verzögerung kann das MQTTDevice den Zustand von Aktoren und Induktionskochfeld ändern.
+    Es gibt 4 Grundtypen von Ereignissen (Events), die automatisiert behandelt werden können: für Aktoren und für das Induktionkochfeld bei Sensorfehlern, sowie für Aktoren und das Induktionskochfeld bei MQTT Fehlern. Für diese 4 Typen werden Verzögerungen für das Event handling konfiguriert. Während der Verzögerung verbleibt der Zustand unverändert. Nach der Verzögerung kann das MQTTDevice den Zustand von Aktoren und Induktionskochfeld ändern.
     Die Verzögerungen werden unter Einstellungen -> EventManager konfiguriert:
 
     1. Verzögerung für Aktoren bevor ein Sensor ein Event auslöst.
     2. Verzögerung für das Induktionskochfeld bevor ein Sensor ein Event auslöst.
     3. Verzögerung bei MQTT Fehlern.
-    4. Verzögerung bei WLAN Fehlern.
 
-    Die Standard Verzögerung für diese 4 Ereignisse beträgt 120 Sekunden.
+    Die Standard Verzögerung für diese 3 Ereignisse beträgt 120 Sekunden.
 
-    Das WLAN und MQTT Event handling kann grundsätzlich aktiviert oder für alle Aktoren und Induktionskochfeld deaktiviert werden. Wird das WLAN und MQTT Event handling aktiviert, muss in den Einstellungen der Aktoren und für das Induktionskochfeld zusätzlich das Event handling aktiviert werden. So kann jedes Gerät individuell konfiguriert werden.
+    Das MQTT Event handling kann grundsätzlich aktiviert oder für alle Aktoren und Induktionskochfeld deaktiviert werden. Wird das MQTT Event handling aktiviert, muss in den Einstellungen der Aktoren und für das Induktionskochfeld zusätzlich das Event handling aktiviert werden. So kann jedes Gerät individuell konfiguriert werden.
 
     Auch jeder Sensor hat eine Eigenschaft Event handling. Wird für einen Sensor das Event handling aktiviert, so kann dieser Sensor bei einer Sensorstörung die Event Behandlung auslösen. Ein Sensor, der für das Event handling deaktiviert ist, kann dementsprechend keine Event Behandlung auslösen.
 
@@ -255,8 +254,6 @@ Die meisten Funktionen der Firmware sind selbsterklärend. Das Hinzufügen oder 
     * WLAN Fehler
     * MQTT Fehler
     * Sensor Fehler
-
-    Rückwärts betrachtet kann das Event Sensor Fehler nur dann eintreten, wenn die Kommunikation mit dem MQTT Broker fehlerfrei ist. Ein Event MQTT Fehler kann nur ausgelöst werden, wenn eine WLAN Verbindung hergestellt ist.
 
 4. Restore
 

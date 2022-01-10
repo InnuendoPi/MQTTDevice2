@@ -1,8 +1,8 @@
-//    Erstellt:	2021
+//    Erstellt:	2022
 //    Author:	Innuendo
 
 //    Sketch für ESP8266
-//    Kommunikation via MQTT mit CraftBeerPi v3
+//    Kommunikation via MQTT mit CraftBeerPi v3 und v4
 
 //    Unterstützung für DS18B20 Sensoren
 //    Unterstützung für GPIO Aktoren
@@ -47,7 +47,7 @@ extern "C"
 #endif
 
 // Version
-#define Version "2.56"
+#define Version "2.65"
 
 // Definiere Pausen
 #define PAUSE1SEC 1000
@@ -154,10 +154,11 @@ unsigned long mqttconnectlasttry; // Zeitstempel bei Fehler MQTT
 unsigned long wlanconnectlasttry; // Zeitstempel bei Fehler WLAN
 bool mqtt_state = true;           // Status MQTT
 bool wlan_state = true;           // Status WLAN
+bool cbpi = false;                 // CBPi3 = false CBPi4 = true
 
 // Event handling Zeitintervall für Reconnects WLAN und MQTT
-#define tickerWLAN 20000 // für Ticker Objekt WLAN in ms
-#define tickerMQTT 20000 // für Ticker Objekt MQTT in ms
+#define tickerWLAN 10000 // für Ticker Objekt WLAN in ms
+#define tickerMQTT 30000 // für Ticker Objekt MQTT in ms
 
 // Event handling Standard Verzögerungen
 unsigned long wait_on_error_mqtt = 120000;             // How long should device wait between tries to reconnect WLAN      - approx in ms

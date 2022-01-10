@@ -149,14 +149,13 @@ public:
       DEBUG_MSG("Act: handlemqtt deserialize Json error %s\n", error.c_str());
       return;
     }
-    String state = doc["state"];
-    if (state == "off")
+    if (doc["state"] == "off")
     {
       isOn = false;
       power_actor = 0;
       return;
     }
-    if (state == "on")
+    if (doc["state"] == "on")
     {
       int newpower = doc["power"];
       isOn = true;
@@ -165,34 +164,6 @@ public:
       return;
     }
   }
-
-  // bool getOn()
-  // {
-  //   return isOn;
-  // }
-  // bool getOnBefore()
-  // {
-  //   return isOnBeforeError;
-  // }
-  // bool getInverted()
-  // {
-  //   return isInverted;
-  // }
-  // bool getSw()
-  // {
-  //   return switchable;
-
-  // }
-  // bool getGrafana()
-  // {
-  //   return setGrafana;
-
-  // }
-  // bool getState()
-  // {
-  //   return actor_state;
-
-  // }
 };
 
 // Initialisierung des Arrays max 8

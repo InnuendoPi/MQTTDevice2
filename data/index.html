@@ -127,17 +127,17 @@
             <label for="modal_actor_pin">PIN</label>
             <select class="form-control" id="modal_actor_pin"></select>
           </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="modal_actor_inverted" />
-            <label class="form-check-label" for="modal_actor_inverted">GPIO invertieren</label>
+          <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" value="" id="modal_actor_inverted" />
+            <label class="custom-control-label" for="modal_actor_inverted">GPIO invertieren</label>
           </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="modal_actor_switchable" />
-            <label class="form-check-label" for="modal_actor_switchable">Aktiviere Event handling</label>
+          <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" value="" id="modal_actor_switchable" />
+            <label class="custom-control-label" for="modal_actor_switchable">Aktiviere Event handling</label>
           </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="modal_actor_grafana" />
-            <label class="form-check-label" for="modal_actor_grafana">Aktiviere Grafana</label>
+          <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" value="" id="modal_actor_grafana" />
+            <label class="custom-control-label" for="modal_actor_grafana">Nur CBPi3: Aktiviere Grafana</label>
           </div>
         </div>
         <div class="modal-footer"> <button type="button" class="btn btn-outline-success"
@@ -176,9 +176,9 @@
               <label for="modal_sensor_offset">Offset</label>
               <input type="text" class="form-control" placeholder="" id="modal_sensor_offset" />
             </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="" id="modal_sensor_sw" />
-              <label class="form-check-label" for="modal_sensor_sw">Aktiviere Event handling</label>
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" value="" id="modal_sensor_sw" />
+              <label class="custom-control-label" for="modal_sensor_sw">Aktiviere Event handling</label>
             </div>
           </form>
         </div>
@@ -229,9 +229,9 @@
               Änderung)</label>
             <input type="text" class="form-control" placeholder="" id="modal_induction_pl" />
           </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="modal_induction_grafana" />
-            <label class="form-check-label" for="modal_induction_grafana">Aktiviere Grafana</label>
+          <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" value="" id="modal_induction_grafana" />
+            <label class="custom-control-label" for="modal_induction_grafana">Nur CBPi3: Aktiviere Grafana</label>
           </div>
         </div>
         <div class="modal-footer"> <button type="button" class="btn btn-outline-success"
@@ -303,13 +303,17 @@
                 <label for="modal_misc_address">IP Adresse MQTT Server (CBPi)</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_address" />
               </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="modal_misc_buzzer" />
-                <label class="form-check-label" for="modal_misc_buzzer">Aktiviere Buzzer</label>
+              <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" value=""  id="modal_misc_buzzer" />
+                <label class="custom-control-label" for="modal_misc_buzzer">Aktiviere Buzzer</label>
               </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="modal_misc_mdns" />
-                <label class="form-check-label" for="modal_misc_mdns">Aktiviere mDNS</label>
+              <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" value="" id="modal_misc_cbpi" />
+                <label class="custom-control-label" for="modal_misc_cbpi">CBPi4 ON - CBPi3 OFF</label>
+              </div>
+              <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" value="" id="modal_misc_mdns" />
+                <label class="custom-control-label" for="modal_misc_mdns">Aktiviere mDNS</label>
               </div>
               <div class="form-group">
                 <label for="modal_misc_mdns_name">Eindeutiger mDNS Name</label>
@@ -317,7 +321,7 @@
               </div>
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="modal_misc_db_enable" />
-                <label class="form-check-label" for="modal_misc_db_enable">Aktiviere Visualisierung Grafana (Neustart
+                <label class="form-check-label" for="modal_misc_db_enable">Nur CBPi3: Aktiviere Visualisierung Grafana (Neustart
                   erforderlich!)</label>
               </div>
               <div class="form-group">
@@ -364,23 +368,15 @@
                   auslösen (Sek)</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_del_sen_ind" />
               </div>
+              <br />
+              <label class="form-check-label">Event handling</label>
+              <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" value="" id="modal_misc_onErrorMQTT" />
+                <label class="custom-control-label" for="modal_misc_onErrorMQTT">Aktiviere MQTT Event handling</label>
+              </div>
               <div class="form-group">
                 <label for="modal_misc_delay_mqtt">Verzögerung bei MQTT Fehlern (Sek)</label>
                 <input type="text" class="form-control" placeholder="" id="modal_misc_delay_mqtt" />
-              </div>
-              <div class="form-group">
-                <label for="modal_misc_delay_wlan">Verzögerung bei WLAN Fehlern (Sek)</label>
-                <input type="text" class="form-control" placeholder="" id="modal_misc_delay_wlan" />
-              </div>
-              <br />
-              <label class="form-check-label">Event handling</label>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="modal_misc_onErrorMQTT" />
-                <label class="form-check-label" for="modal_misc_onErrorMQTT">Aktiviere MQTT Event handling</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="modal_misc_onErrorWLAN" />
-                <label class="form-check-label" for="modal_misc_onErrorWLAN">Aktiviere WLAN Event handling</label>
               </div>
             </div>
             <div class="tab-pane fade" id="misc4" role="tabpanel" aria-labelledby="misc4-tab">
@@ -474,7 +470,9 @@
           }
           else {
             sensor += " badge-light'>"
-            sensor += element.value + "°C";
+            var result = parseFloat(element.value);
+            // result += parseFloat(element.offset);
+            sensor += result.toFixed(1) + "°C";
           }
           sensor += "</span> "
           sensor += " <span class='badge";
@@ -643,21 +641,7 @@
         else {
           miscRender += " badge-danger'> Offline";
         }
-        miscRender += "</span></li> <li class='list-group-item d-flex justify-content-between align-items-center'> WLAN Verbindung <span class='badge ";
-        if (data.enable_wlan) {
-          miscRender += " badge-success'> Events aktiviert";
-        }
-        else {
-          miscRender += " badge-dark'> Events deaktiviert";
-        }
-        miscRender += "</span><span class='badge";
-        if (data.wlan_state) {
-          miscRender += " badge-success'> Online";
-        }
-        else {
-          miscRender += " badge-danger'> Offline";
-        }
-        miscRender += "</span></li>  <li class='list-group-item d-flex justify-content-between align-items-center'> Visualisierung Grafana <span class='badge ";
+        miscRender += "</span></li> </li>  <li class='list-group-item d-flex justify-content-between align-items-center'> Visualisierung Grafana <span class='badge ";
         if (data.startdb) {
           miscRender += " badge-success'> Aktiviert";
         }
@@ -921,10 +905,9 @@
         modal.find('#modal_misc_mdns_name').val(data.mdns_name);
         modal.find('#modal_misc_mdns').prop("checked", Boolean(Number(data.mdns)));
         modal.find('#modal_misc_buzzer').prop("checked", Boolean(Number(data.buzzer)));
+        modal.find('#modal_misc_cbpi').prop("checked", Boolean(Number(data.cbpi)));
         modal.find('#modal_misc_onErrorMQTT').prop("checked", Boolean(Number(data.enable_mqtt)));
-        modal.find('#modal_misc_onErrorWLAN').prop("checked", Boolean(Number(data.enable_wlan)));
         modal.find('#modal_misc_delay_mqtt').val(data.delay_mqtt);
-        modal.find('#modal_misc_delay_wlan').val(data.delay_wlan);
         modal.find('#modal_misc_del_sen_act').val(data.del_sen_act);
         modal.find('#modal_misc_del_sen_ind').val(data.del_sen_ind);
         modal.find('#modal_misc_upsen').val(data.upsen);
@@ -944,7 +927,6 @@
       var mqttaddress = modal.find('#modal_misc_address').val();
       var mdns_name = modal.find('#modal_misc_mdns_name').val();
       var delay_mqtt = modal.find('#modal_misc_delay_mqtt').val();
-      var delay_wlan = modal.find('#modal_misc_delay_wlan').val();
       var del_sen_act = modal.find('#modal_misc_del_sen_act').val();
       var del_sen_ind = modal.find('#modal_misc_del_sen_ind').val();
       var upsen = modal.find('#modal_misc_upsen').val();
@@ -961,14 +943,14 @@
 
       var mdns = modal.find('#modal_misc_mdns').prop("checked");
       var buzzer = modal.find('#modal_misc_buzzer').prop("checked");
+      var cbpi = modal.find('#modal_misc_cbpi').prop("checked");
       var enable_mqtt = modal.find('#modal_misc_onErrorMQTT').prop("checked");
-      var enable_wlan = modal.find('#modal_misc_onErrorWLAN').prop("checked");
       var startdb = modal.find('#modal_misc_db_enable').prop("checked");
       var clear = modal.find('#modal_misc_clear').prop("checked");
       var reset = modal.find('#modal_misc_reset').prop("checked");
 
       $.ajax({
-        url: '/setMisc?reset=' + reset + '&clear=' + clear + '&MQTTHOST=' + mqttaddress + '&enable_mqtt=' + enable_mqtt + '&delay_mqtt=' + delay_mqtt + '&enable_wlan=' + enable_wlan + '&delay_wlan=' + delay_wlan + '&del_sen_act=' + del_sen_act + '&del_sen_ind=' + del_sen_ind + '&mdns=' + mdns + '&mdns_name=' + mdns_name + '&buzzer=' + buzzer + '&upsen=' + upsen + '&upact=' + upact + '&upind=' + upind + '&startdb=' + startdb + '&dbserver=' + dbserver + '&dbdatabase=' + dbdatabase + '&dbuser=' + dbuser + '&dbpass=' + dbpass + '&dbup=' + dbup,
+        url: '/setMisc?reset=' + reset + '&clear=' + clear + '&MQTTHOST=' + mqttaddress + '&enable_mqtt=' + enable_mqtt + '&delay_mqtt=' + delay_mqtt + '&del_sen_act=' + del_sen_act + '&del_sen_ind=' + del_sen_ind + '&mdns=' + mdns + '&mdns_name=' + mdns_name + '&cbpi=' + cbpi + '&buzzer=' + buzzer + '&upsen=' + upsen + '&upact=' + upact + '&upind=' + upind + '&startdb=' + startdb + '&dbserver=' + dbserver + '&dbdatabase=' + dbdatabase + '&dbuser=' + dbuser + '&dbpass=' + dbpass + '&dbup=' + dbup,
         type: 'POST',
         dataType: 'html',
         async: false,

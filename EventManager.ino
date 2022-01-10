@@ -20,21 +20,6 @@ void listenerSystem(int event, int parm) // System event listener
       break;
     }
     DEBUG_MSG("%s", "EM WLAN: WLAN Fehler ... versuche neu zu verbinden\n");
-    if (millis() - wlanconnectlasttry >= wait_on_error_wlan) // Wait bevor Event handling
-    {
-      if (StopOnWLANError && wlan_state)
-      {
-        if (startBuzzer)
-          sendAlarm(ALARM_ERROR);
-        // if (useDisplay)
-        //   showDispErr("WLAN ERROR")
-        DEBUG_MSG("EM WLAN: WLAN Verbindung verloren! StopOnWLANError: %d WLAN state: %d\n", StopOnWLANError, wlan_state);
-        wlan_state = false;
-        mqtt_state = false; // MQTT in error state - required to restore values
-        cbpiEventActors(EM_ACTER);
-        cbpiEventInduction(EM_INDER);
-      }
-    }
     break;
   case EM_MQTTER: // MQTT Error -> handling
     oledDisplay.mqttOK = false;
@@ -160,8 +145,11 @@ void listenerSystem(int event, int parm) // System event listener
       }
       if (inductionCooker.isEnabled)
         inductionCooker.mqtt_subscribe();
-
-      if (startDB)
+      if (cbpi == true) // CBPi4
+      {
+        // 
+      }
+      else if (startDB)
       {
         for (int i = 0; i < numberOfDBMax; i++)
         {
