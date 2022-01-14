@@ -133,6 +133,7 @@ void handleRequestMisc()
   doc["mdns_name"] = nameMDNS;
   doc["mdns"] = startMDNS;
   doc["buzzer"] = startBuzzer;
+  doc["cbpi"] = cbpi;
   doc["enable_mqtt"] = StopOnMQTTError;
   doc["delay_mqtt"] = wait_on_error_mqtt / 1000;
   doc["del_sen_act"] = wait_on_Sensor_error_actor / 1000;
